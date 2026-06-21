@@ -3,8 +3,8 @@
     <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="logo.png">
-    <title>CYBERSCAM — เกมการ์ดต้านภัยไซเบอร์</title>
+    <link rel="icon" type="image/png" href="lg1.png">
+    <title>CYBERSCAM</title>
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Share+Tech+Mono&display=swap');
 
@@ -830,14 +830,159 @@
     .zoom-card-desc { text-align:center; font-size: 0.92rem; color: var(--ink); line-height: 1.6; }
     .zoom-card-value { text-align:center; font-family: var(--mono); font-size: 1.6rem; font-weight: 800; margin-top: 10px; }
 
+    /* ════════════════════════════════════════════════════════════
+       RESPONSIVE — TABLET / SMALL LAPTOP (≤768px)
+       Tighten outer paddings and grid sizing before we hit phone widths.
+    ════════════════════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+        #screen-home { padding: 28px 16px 40px; }
+        #screen-lobby > div { padding: 24px 16px 32px !important; }
+        .player-slots { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+        .play-area { gap: 28px; }
+        .opponent-card { min-width: 112px; }
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       RESPONSIVE — PHONES (≤480px), tuned for ~375–430px viewports
+    ════════════════════════════════════════════════════════════ */
     @media (max-width: 480px) {
-        :root { --card-w: 92px; --card-h: 132px; }
-        .logo-title { font-size: 1.85rem; }
-        .hand-card { --card-w: 82px; --card-h: 118px; }
+        html { -webkit-text-size-adjust: 100%; }
+        body { overflow-x: hidden; }
+
+        :root {
+            --card-w: 78px;
+            --card-h: 112px;
+            --radius: 13px;
+            --radius-sm: 9px;
+        }
+
+        /* ── HOME ── */
+        #screen-home { padding: 22px 14px 34px; gap: 16px; }
+        .logo-mark { width: 46px; height: 46px; margin-bottom: 10px; }
+        .logo-mark svg { width: 24px; height: 24px; }
+        .logo-title { font-size: 1.7rem; }
+        .logo-sub { font-size: 0.66rem; letter-spacing: 2px; }
+        .home-col { gap: 12px; }
+        .panel { padding: 16px; }
+        .panel-title { font-size: 0.72rem; margin-bottom: 12px; padding-bottom: 10px; }
+        .input-group input, .input-group select { padding: 10px 12px; font-size: 16px; }
+        .avatar-pick { width: 44px; height: 44px; }
+        #joinCodeInput { font-size: 1.1rem !important; letter-spacing: 4px !important; }
+        .tabs { gap: 2px; margin-bottom: 14px; }
+        .tab { padding: 8px 10px; font-size: 0.72rem; }
+        .room-item { padding: 11px 12px; flex-wrap: wrap; }
+        .room-meta { font-size: 0.68rem; }
+        .footer-row { gap: 10px; }
+
+        /* ── LOBBY ── */
+        #screen-lobby > div { padding: 22px 14px 32px !important; gap: 14px !important; }
+        .lobby-code { font-size: 1.7rem; letter-spacing: 7px; padding: 8px 14px 8px 18px; }
+        .lobby-code-label { margin-top: 12px !important; }
+        .player-slots { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .player-slot { padding: 12px 8px; }
+        .player-avatar-big { width: 42px; height: 42px; font-size: 1.4rem; }
+        .player-name { font-size: 0.76rem; }
+        .timer-presets { gap: 6px; }
+        .timer-chip { min-width: 0; padding: 9px 4px; font-size: 0.72rem; }
+        #lobby-actions { flex-direction: column; }
+        #lobby-actions .btn { width: 100%; }
+
+        /* ── GAME TOPBAR ── */
+        .game-topbar { padding: 7px 10px; gap: 6px; }
+        .game-title-small { font-size: 0.7rem; }
+        .timer-wrap { gap: 6px; }
+        .timer-ring { width: 36px; height: 36px; }
+        .timer-ring svg { width: 36px; height: 36px; }
+        .timer-num { font-size: 0.72rem; }
+        .whose-turn-label { font-size: 0.58rem; }
+        .whose-turn-name { font-size: 0.72rem; }
+        .sound-toggle { width: 36px; height: 20px; }
+        .sound-toggle::after { width: 14px; height: 14px; }
+        .sound-toggle.on::after { left: 19px; }
+
+        .setup-phase-banner { margin: 0 10px; font-size: 0.66rem; padding: 7px 10px; }
+
+        /* ── OPPONENTS ROW ── */
+        .opponents-row { padding: 8px 10px; gap: 8px; }
+        .opponent-card { min-width: 92px; padding: 8px 8px; }
+        .opp-avatar { width: 28px; height: 28px; font-size: 1.05rem; }
+        .opp-name { font-size: 0.66rem; }
+        .hp-coin { width: 12px; height: 12px; }
+        .opp-cards, .opp-setup-label { font-size: 0.56rem; }
+
+        /* ── PLAY AREA / DECK ── */
+        .play-area { gap: 14px; padding: 6px; }
+        .deck-label { font-size: 0.52rem; padding: 2px 8px; }
+        .deck-count { font-size: 1rem; }
         .game-log, .chat-panel { display: none; }
-        .play-area { gap: 16px; }
-        .lobby-code { font-size: 1.8rem; letter-spacing: 9px; padding: 6px 16px; }
-        .timer-ring { width: 40px; height: 40px; }
+
+        /* ── CARDS (general) ── */
+        .card-name { font-size: 0.6rem; padding: 4px 4px 0; }
+        .card-effect { font-size: 0.48rem; padding: 1px 4px 3px; }
+        .card-type-badge { font-size: 0.4rem; padding: 1px 4px; top: 4px; left: 4px; }
+        .card-value { font-size: 0.66rem; bottom: 3px; right: 5px; }
+        .card-zoom-btn { width: 18px; height: 18px; font-size: 0.6rem; }
+        .card-back-mark { width: 30px; height: 30px; }
+        .card-back-mark svg { width: 16px; height: 16px; }
+
+        /* ── MY HAND / BOTTOM PANEL ── */
+        .my-section { padding: 10px 10px 12px; }
+        .hand-card { --card-w: 70px; --card-h: 100px; }
+        .hand-cards { min-height: 104px; gap: 6px; }
+        .my-avatar-img { width: 26px; height: 26px; font-size: 1rem; }
+        .my-name { font-size: 0.82rem; }
+        .hp-big { width: 17px; height: 17px; }
+        .turn-indicator { font-size: 0.62rem; padding: 5px 10px; }
+        .draw-btn-wrap .btn, .setup-draw-btn-wrap .btn { font-size: 0.82rem; padding: 11px 16px; }
+        .setup-progress-label { font-size: 0.6rem; }
+
+        /* ── MODALS ── */
+        .modal { padding: 18px; border-radius: 16px; max-width: calc(100vw - 32px); }
+        .modal h2 { font-size: 0.96rem; margin-bottom: 10px; }
+        .modal p { font-size: 0.78rem; margin-bottom: 12px; }
+        .threat-alert-icon, .forced-draw-icon { font-size: 2.2rem; }
+        .threat-img { width: 52px; height: 52px; font-size: 1.8rem; }
+        .threat-damage { font-size: 1.8rem; }
+        .forced-draw-amount { font-size: 2rem; }
+        .pick-cards-grid .card { --card-w: 68px; --card-h: 98px; }
+        .target-item { padding: 10px 12px; }
+        .zoom-card-img { width: 110px; height: 110px; font-size: 3rem; }
+
+        /* ── WINNER OVERLAY ── */
+        .winner-trophy { font-size: 3.4rem; }
+        .winner-avatar { width: 66px; height: 66px; font-size: 2.2rem; }
+        .winner-name { font-size: 1.6rem; }
+
+        /* ── TOASTS ── */
+        .toast-container { top: 64px; right: 10px; left: 10px; max-width: none; }
+        .toast { max-width: none; font-size: 0.78rem; padding: 10px 14px; }
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       RESPONSIVE — SMALL PHONES (≤360px), e.g. older/compact Android
+    ════════════════════════════════════════════════════════════ */
+    @media (max-width: 360px) {
+        :root { --card-w: 68px; --card-h: 98px; }
+        .logo-title { font-size: 1.5rem; }
+        .lobby-code { font-size: 1.4rem; letter-spacing: 5px; padding: 7px 10px 7px 14px; }
+        .player-slots { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+        .hand-card { --card-w: 62px; --card-h: 90px; }
+        .opponent-card { min-width: 82px; }
+        .game-topbar { padding: 6px 8px; }
+        .my-section { padding: 8px 8px 10px; }
+        .timer-chip { font-size: 0.66rem; padding: 8px 2px; }
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       RESPONSIVE — short viewports (landscape phones / small height)
+       Keep the game screen usable when vertical space is tight.
+    ════════════════════════════════════════════════════════════ */
+    @media (max-height: 700px) and (max-width: 900px) {
+        .opponents-row { padding: 6px 14px; }
+        .opponent-card { padding: 6px 10px; }
+        .play-area { padding: 4px; gap: 16px; }
+        .hand-cards { min-height: 92px; }
+        .my-section { padding: 8px 16px 10px; }
     }
     </style>
     </head>
@@ -850,7 +995,7 @@
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L4 6v6c0 5 3.4 8.6 8 10 4.6-1.4 8-5 8-10V6l-8-4z" fill="white" fill-opacity="0.95"/><path d="M9.5 12l2 2 4-4" stroke="#6c3fd4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <div class="logo-title">CYBERSCAM</div>
-        <div class="logo-sub">เกมการ์ดต้านภัยไซเบอร์ · เล่นหลายคนสด</div>
+        <div class="logo-sub">เกมการ์ดต้านภัยไซเบอร์ · senz</div>
     </div>
 
     <div class="home-col">
