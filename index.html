@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🖤 CyberScam – เกมการ์ดต้านภัยไซเบอร์</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&family=Share+Tech+Mono&display=swap');
+
+  :root {
+    --bg: #0a0010;
+    --surface: #13001f;
+    --surface2: #1a0028;
+    --border: #3d0060;
+    --accent: #c77dff;
+    --accent2: #ff6b9d;
+    --accent3: #e040fb;
+    --gold: #ff9de2;
+    --text: #f0d6ff;
+    --text-dim: #7c5c99;
+    --threat: #ff3366;
+    --defense: #b39ddb;
+    --action: #e040fb;
+    --recovery: #ff80ab;
+    --font: 'Sarabun', sans-serif;
+    --mono: 'Share Tech Mono', monospace;
+    --radius: 14px;
+    --card-w: 110px;
+    --card-h: 160px;
+
+    /* Kuromi star/bow accent */
+    --kuro-purple: #6a0dad;
+    --kuro-pink: #ff6b9d;
+    --kuro-dark: #1a0028;
+    --kuro-light: #e8b4f8;
+    --kuro-skull: #d4b8e0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(ellipse at 15% 15%, #3d006040 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 85%, #6a0dad30 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 50%, #c77dff08 0%, transparent 70%);
+  }
+
+  /* Stars background */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, #c77dff40, transparent),
+      radial-gradient(1px 1px at 25% 45%, #ff6b9d40, transparent),
+      radial-gradient(1px 1px at 60% 10%, #e040fb50, transparent),
+      radial-gradient(1px 1px at 80% 55%, #c77dff30, transparent),
+      radial-gradient(1px 1px at 35% 80%, #ff80ab30, transparent),
+      radial-gradient(1px 1px at 90% 30%, #e040fb40, transparent),
+      radial-gradient(1.5px 1.5px at 45% 60%, #c77dff50, transparent),
+      radial-gradient(1px 1px at 70% 80%, #ff6b9d30, transparent);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Scanline */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(199,125,255,0.012) 3px, rgba(199,125,255,0.012) 6px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .screen { display: none; min-height: 100vh; position: relative; z-index: 1; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ─── HOME ─── */
+  #screen-home {
+    align-items: center;
+    justify-content: flex-start;
+    padding: 32px 20px;
+    gap: 20px;
+  }
+
+  /* Kuromi logo */
+  .logo { text-align: center; margin-bottom: 4px; }
+  .kuromi-face {
+    font-size: 4rem;
+    line-height: 1;
+    filter: drop-shadow(0 0 20px #c77dff80);
+    animation: kuromi-bob 3s ease-in-out infinite;
+  }
+  @keyframes kuromi-bob {
+    0%,100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-6px) rotate(2deg); }
+  }
+  .logo-title {
+    font-size: 2.6rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, #c77dff, #ff6b9d, #e040fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 16px rgba(199,125,255,0.6));
+    line-height: 1.1;
+    margin-top: 4px;
+  }
+  .logo-sub {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    letter-spacing: 4px;
+    font-family: var(--mono);
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  /* Bow decoration */
+  .logo-bow {
+    font-size: 1.2rem;
+    display: inline-block;
+    animation: bow-spin 4s ease-in-out infinite;
+  }
+  @keyframes bow-spin { 0%,100% { transform: rotate(-5deg) scale(1); } 50% { transform: rotate(5deg) scale(1.1); } }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+    overflow: hidden;
+  }
+  .panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), var(--accent3), transparent);
+  }
+  .panel-title {
+    font-size: 0.72rem;
+    font-family: var(--mono);
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .input-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+  .input-group label { font-size: 0.8rem; color: var(--text-dim); }
+  .input-group input, .input-group select {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    padding: 10px 14px;
+    font-family: var(--font);
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+  .input-group input:focus, .input-group select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(199,125,255,0.15);
+  }
+  .input-group select option { background: var(--surface2); }
+
+  .btn {
+    padding: 11px 22px;
+    border: none;
+    border-radius: 10px;
+    font-family: var(--font);
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn::after { content:''; position:absolute; inset:0; background:rgba(255,255,255,0); transition:background 0.2s; border-radius:inherit; }
+  .btn:hover::after { background:rgba(255,255,255,0.08); }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: linear-gradient(135deg, #8b2fc9, #c77dff); color: white; box-shadow: 0 4px 15px rgba(199,125,255,0.3); }
+  .btn-primary:hover { box-shadow: 0 6px 22px rgba(199,125,255,0.5); }
+  .btn-danger { background: linear-gradient(135deg, #aa1142, #ff3366); color: white; box-shadow: 0 4px 15px rgba(255,51,102,0.3); }
+  .btn-danger:hover { box-shadow: 0 6px 22px rgba(255,51,102,0.5); }
+  .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-success { background: linear-gradient(135deg, #5c2d8a, #b39ddb); color: white; }
+  .btn-gold { background: linear-gradient(135deg, #c2185b, #ff80ab); color: white; box-shadow: 0 4px 15px rgba(255,128,171,0.3); }
+  .btn-full { width: 100%; justify-content: center; }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  /* ─── ROOM LIST ─── */
+  .room-list { display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto; }
+  .room-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .room-item:hover { border-color: var(--accent); background: rgba(199,125,255,0.05); }
+  .room-item.waiting { border-left: 3px solid var(--accent3); }
+  .room-item.playing { border-left: 3px solid var(--threat); }
+  .room-name { font-weight: 700; font-size: 0.9rem; }
+  .room-meta { font-size: 0.72rem; color: var(--text-dim); margin-top: 2px; }
+  .room-badge {
+    font-size: 0.68rem;
+    font-family: var(--mono);
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-weight: 700;
+  }
+  .badge-waiting { background: rgba(224,64,251,0.15); color: var(--accent3); border: 1px solid var(--accent3); }
+  .badge-playing { background: rgba(255,51,102,0.15); color: var(--threat); border: 1px solid var(--threat); }
+  .badge-private { background: rgba(199,125,255,0.15); color: var(--accent); border: 1px solid var(--accent); }
+  .empty-state { text-align: center; padding: 28px; color: var(--text-dim); font-size: 0.85rem; }
+
+  /* ─── LOBBY ─── */
+  #screen-lobby { padding: 20px; gap: 16px; align-items: center; }
+  .lobby-header { text-align: center; width: 100%; max-width: 700px; }
+  .lobby-code {
+    font-family: var(--mono);
+    font-size: 2.2rem;
+    color: var(--accent);
+    letter-spacing: 10px;
+    font-weight: bold;
+    filter: drop-shadow(0 0 12px var(--accent));
+  }
+  .lobby-code-label { font-size: 0.72rem; color: var(--text-dim); margin-bottom: 4px; }
+
+  .player-slots {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+    width: 100%;
+    max-width: 700px;
+  }
+  .player-slot {
+    background: var(--surface2);
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    padding: 16px 10px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .player-slot.filled { border-style: solid; border-color: var(--accent); background: rgba(199,125,255,0.05); }
+  .player-slot.me { border-color: var(--gold); background: rgba(255,157,226,0.07); }
+  .player-avatar { font-size: 2rem; margin-bottom: 4px; }
+  .player-name { font-size: 0.82rem; font-weight: 700; }
+  .player-status { font-size: 0.68rem; color: var(--text-dim); margin-top: 2px; }
+  .slot-empty { color: var(--text-dim); font-size: 0.78rem; margin-top: 8px; }
+
+  /* ─── GAME ─── */
+  #screen-game { padding: 0; position: relative; overflow: hidden; }
+  .game-layout { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+  .game-topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .game-topbar::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent2), var(--accent3), var(--accent), transparent);
+  }
+  .game-title-small {
+    font-size: 0.78rem;
+    font-family: var(--mono);
+    color: var(--accent);
+    letter-spacing: 2px;
+  }
+
+  /* Timer */
+  .timer-wrap { display: flex; align-items: center; gap: 8px; }
+  .timer-ring { width: 44px; height: 44px; position: relative; }
+  .timer-ring svg { transform: rotate(-90deg); }
+  .timer-ring circle { fill: none; stroke: var(--border); stroke-width: 3; }
+  .timer-ring circle.progress {
+    stroke: var(--accent);
+    stroke-linecap: round;
+    stroke-dasharray: 113;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear, stroke 0.5s;
+  }
+  .timer-ring circle.progress.danger { stroke: var(--threat); }
+  .timer-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 0.82rem; font-weight: bold; }
+
+  /* Opponents */
+  .opponents-row {
+    display: flex; gap: 8px; padding: 10px 16px;
+    overflow-x: auto; flex-shrink: 0;
+    background: rgba(0,0,0,0.25);
+  }
+  .opponent-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    min-width: 130px;
+    text-align: center;
+    transition: all 0.3s;
+    position: relative;
+  }
+  .opponent-card.active-turn { border-color: var(--accent); box-shadow: 0 0 14px rgba(199,125,255,0.35); }
+  .opponent-card.eliminated { opacity: 0.4; filter: grayscale(1); }
+  .opp-avatar { font-size: 1.5rem; }
+  .opp-name { font-size: 0.78rem; font-weight: 700; margin-top: 4px; }
+  .opp-hp { display: flex; gap: 3px; justify-content: center; margin-top: 6px; }
+  .hp-coin {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: linear-gradient(135deg, #c2185b, #ff80ab);
+    border: 1px solid rgba(255,128,171,0.5);
+    font-size: 0.5rem; display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 900;
+    box-shadow: 0 0 6px rgba(255,128,171,0.4);
+  }
+  .hp-coin.lost { background: var(--surface2); border-color: var(--border); box-shadow: none; }
+  .opp-cards { font-size: 0.68rem; color: var(--text-dim); margin-top: 4px; }
+
+  /* Play area */
+  .play-area {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    gap: 30px; position: relative; padding: 10px; overflow: hidden;
+  }
+  .deck-zone, .discard-zone { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .deck-label { font-size: 0.62rem; font-family: var(--mono); color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; }
+
+  /* ─── CARDS ─── */
+  .card {
+    width: var(--card-w);
+    height: var(--card-h);
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+  }
+  .card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
+  .card.selected { transform: translateY(-14px); border-color: var(--gold); box-shadow: 0 0 22px rgba(255,157,226,0.6); }
+  .card.playable { border-color: var(--accent3); }
+  .card.playable::after {
+    content: '';
+    position: absolute; inset: 0; border-radius: 10px;
+    box-shadow: inset 0 0 0 2px var(--accent3);
+    animation: pulse-border 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse-border { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+  /* Card backs — Kuromi pattern */
+  .card-back {
+    background: var(--surface);
+    background-image:
+      repeating-linear-gradient(45deg, rgba(199,125,255,0.04) 0, rgba(199,125,255,0.04) 1px, transparent 1px, transparent 9px),
+      repeating-linear-gradient(-45deg, rgba(255,107,157,0.04) 0, rgba(255,107,157,0.04) 1px, transparent 1px, transparent 9px);
+    border-color: var(--kuro-purple);
+  }
+  .card-back::before {
+    content: '🖤';
+    position: absolute;
+    top: 6px; right: 8px;
+    font-size: 0.7rem;
+    opacity: 0.5;
+  }
+  .card-back-icon { font-size: 2rem; filter: drop-shadow(0 0 8px var(--accent)); }
+
+  /* Card type backgrounds */
+  .card-threat  { background: linear-gradient(160deg, #1a0010, #33001a); border-color: #ff3366; }
+  .card-defense { background: linear-gradient(160deg, #0d0020, #1a0035); border-color: #b39ddb; }
+  .card-action  { background: linear-gradient(160deg, #18002a, #2d0050); border-color: #e040fb; }
+  .card-recovery{ background: linear-gradient(160deg, #1a0020, #2a0035); border-color: #ff80ab; }
+
+  /* Kuromi skull corner on threat cards */
+  .card-threat::before {
+    content: '💀';
+    position: absolute; top: 4px; right: 6px;
+    font-size: 0.65rem; opacity: 0.4;
+  }
+
+  .card-type-badge {
+    position: absolute; top: 6px; left: 6px;
+    font-size: 0.52rem; font-family: var(--mono);
+    padding: 2px 5px; border-radius: 5px;
+    text-transform: uppercase; letter-spacing: 1px; font-weight: 700;
+  }
+  .badge-threat   { background: rgba(255,51,102,0.25); color: #ff3366; border: 1px solid #ff3366; }
+  .badge-defense  { background: rgba(179,157,219,0.2); color: #b39ddb; border: 1px solid #b39ddb; }
+  .badge-action   { background: rgba(224,64,251,0.2);  color: #e040fb; border: 1px solid #e040fb; }
+  .badge-recovery { background: rgba(255,128,171,0.2); color: #ff80ab; border: 1px solid #ff80ab; }
+
+  /*
+  ╔══════════════════════════════════════════════════════════╗
+  ║  📸 พิกัดใส่รูปการ์ด (CARD IMAGE AREA)                  ║
+  ║  ขนาด: 70×70px ตรงกลางการ์ด                            ║
+  ║  ถ้าไม่มีรูป → แสดง emoji ของการ์ดนั้น                  ║
+  ║  วิธีใส่รูป: คลิก "🖼️ จัดการรูปการ์ด" หน้าแรก          ║
+  ║  หรืออัปโหลดรูป 70×70px (JPG/PNG) ผ่าน Image Manager   ║
+  ╚══════════════════════════════════════════════════════════╝
+  */
+  .card-img-area {
+    width: 70px; height: 70px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 22px auto 4px;
+    background: rgba(255,255,255,0.04);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    border: 1px solid rgba(199,125,255,0.15);
+    /* ← รูปที่อัปโหลดจะแสดงตรงนี้ (70×70px) */
+  }
+  .card-img-area img { width: 100%; height: 100%; object-fit: cover; }
+
+  .card-name  { font-size: 0.68rem; font-weight: 800; text-align: center; padding: 0 5px; line-height: 1.2; margin-bottom: 2px; }
+  .card-effect { font-size: 0.58rem; text-align: center; padding: 0 5px; color: rgba(255,255,255,0.5); line-height: 1.3; display: none; }
+  .card-value {
+    position: absolute; bottom: 6px; right: 8px;
+    font-family: var(--mono); font-size: 0.8rem; font-weight: 800;
+  }
+
+  /* Deck pile */
+  .deck-pile { position: relative; width: var(--card-w); height: var(--card-h); }
+  .deck-pile::before, .deck-pile::after {
+    content: '';
+    position: absolute;
+    width: var(--card-w); height: var(--card-h);
+    border-radius: 12px; border: 2px solid var(--border);
+    background: var(--surface);
+  }
+  .deck-pile::before { top: -4px; left: 2px; opacity: 0.4; }
+  .deck-pile::after  { top: -2px; left: 1px; opacity: 0.65; }
+  .deck-pile .card { position: relative; z-index: 1; }
+  .deck-count {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--mono); font-size: 1.2rem; font-weight: bold;
+    color: var(--accent); z-index: 2; pointer-events: none;
+    text-shadow: 0 0 10px var(--accent);
+  }
+
+  /* My section */
+  .my-section {
+    background: rgba(10,0,16,0.7);
+    border-top: 1px solid var(--border);
+    padding: 10px 16px 16px;
+    flex-shrink: 0;
+    backdrop-filter: blur(4px);
+  }
+  .my-info { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .my-name-hp { display: flex; align-items: center; gap: 12px; }
+  .my-name { font-weight: 800; font-size: 0.95rem; }
+  .my-hp { display: flex; gap: 4px; }
+  .hp-big {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: linear-gradient(135deg, #c2185b, #ff80ab);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.68rem; font-weight: 900; color: white;
+    box-shadow: 0 0 8px rgba(255,128,171,0.5);
+  }
+  .hp-big.lost { background: #1e0030; box-shadow: none; }
+
+  .turn-indicator {
+    font-size: 0.72rem; font-family: var(--mono);
+    padding: 5px 13px; border-radius: 20px; border: 1px solid var(--border);
+  }
+  .turn-indicator.my-turn { border-color: var(--accent3); color: var(--accent3); background: rgba(224,64,251,0.1); animation: blink 1s ease-in-out infinite; }
+  .turn-indicator.wait { color: var(--text-dim); }
+  @keyframes blink { 0%,100%{ opacity:1; } 50%{ opacity:0.5; } }
+
+  .hand-cards { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; justify-content: center; }
+  .hand-cards::-webkit-scrollbar { height: 4px; }
+  .hand-cards::-webkit-scrollbar-track { background: transparent; }
+  .hand-cards::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .hand-card { --card-w: 95px; --card-h: 138px; flex-shrink: 0; }
+  .draw-btn-wrap { text-align: center; margin-top: 10px; }
+
+  /* ─── MODALS ─── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(6px);
+    z-index: 1000; align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 28px;
+    width: 100%; max-width: 420px;
+    animation: slide-up 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .modal::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent3), var(--accent));
+  }
+  @keyframes slide-up { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+  .modal h2 { font-size: 1.15rem; margin-bottom: 16px; font-weight: 800; }
+  .modal p { font-size: 0.88rem; color: var(--text-dim); margin-bottom: 18px; line-height: 1.6; }
+
+  /* Threat modal */
+  .threat-alert-modal .modal { border-color: var(--threat); }
+  .threat-alert-modal .modal::before { background: linear-gradient(90deg, var(--threat), #ff80ab); }
+  .threat-alert-icon { font-size: 3rem; text-align: center; margin-bottom: 12px; animation: shake 0.5s ease; }
+  @keyframes shake { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-8deg)} 75%{transform:rotate(8deg)} }
+  .threat-card-preview {
+    background: rgba(255,51,102,0.08);
+    border: 1px solid var(--threat);
+    border-radius: 12px;
+    padding: 16px; margin: 12px 0; text-align: center;
+  }
+  .threat-damage { font-size: 2rem; font-weight: 900; color: var(--threat); font-family: var(--mono); }
+
+  /* Image manager */
+  .img-manager-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-height: 380px; overflow-y: auto; }
+  .img-slot {
+    background: var(--bg);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 12px; text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .img-slot:hover { border-color: var(--accent); background: rgba(199,125,255,0.05); }
+  .img-slot-preview { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; margin: 0 auto 6px; display: block; }
+  .img-slot-emoji { font-size: 2rem; margin-bottom: 4px; }
+  .img-slot-name { font-size: 0.75rem; font-weight: 700; }
+  .img-slot-hint { font-size: 0.62rem; color: var(--text-dim); margin-top: 2px; }
+
+  /* Log */
+  .game-log {
+    position: absolute; bottom: 10px; left: 10px;
+    width: 220px; max-height: 100px;
+    overflow-y: auto; pointer-events: none;
+  }
+  .log-entry { font-size: 0.68rem; font-family: var(--mono); color: var(--text-dim); padding: 2px 0; animation: fade-in 0.3s ease; }
+  .log-entry.threat   { color: var(--threat); }
+  .log-entry.defense  { color: var(--defense); }
+  .log-entry.action   { color: var(--action); }
+  .log-entry.recovery { color: var(--recovery); }
+  .log-entry.system   { color: var(--accent); }
+  @keyframes fade-in { from{ opacity:0; } to{ opacity:1; } }
+
+  /* Toast */
+  .toast-container { position: fixed; top: 80px; right: 16px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; }
+  .toast {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 0.82rem;
+    max-width: 260px;
+    animation: slide-in 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  @keyframes slide-in { from{ transform:translateX(100%); opacity:0; } to{ transform:translateX(0); opacity:1; } }
+  .toast.success { border-color: var(--defense); }
+  .toast.danger  { border-color: var(--threat); }
+  .toast.info    { border-color: var(--accent); }
+
+  /* Winner */
+  .winner-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(10,0,16,0.95);
+    z-index: 3000;
+    align-items: center; justify-content: center;
+    flex-direction: column; gap: 20px;
+    text-align: center; padding: 20px;
+  }
+  .winner-overlay.open { display: flex; }
+  .winner-trophy { font-size: 5rem; animation: bounce 0.8s ease infinite alternate; }
+  @keyframes bounce { from{ transform:scale(1) rotate(-3deg); } to{ transform:scale(1.1) rotate(3deg); } }
+  .winner-name { font-size: 2rem; font-weight: 900; color: var(--gold); text-shadow: 0 0 20px rgba(255,157,226,0.6); }
+
+  /* Target selector */
+  .target-list { display: flex; flex-direction: column; gap: 8px; }
+  .target-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px; display: flex; align-items: center; gap: 12px;
+    cursor: pointer; transition: border-color 0.2s, background 0.2s;
+  }
+  .target-item:hover { border-color: var(--accent); background: rgba(199,125,255,0.05); }
+  .target-avatar { font-size: 1.5rem; }
+  .target-name { font-weight: 700; }
+  .target-hp { font-size: 0.78rem; color: var(--text-dim); }
+
+  /* Sound toggle */
+  .sound-toggle {
+    width: 44px; height: 24px;
+    background: var(--border); border-radius: 12px;
+    position: relative; cursor: pointer;
+    transition: background 0.2s; border: none; flex-shrink: 0;
+  }
+  .sound-toggle.on { background: var(--accent); }
+  .sound-toggle::after {
+    content: ''; position: absolute;
+    width: 18px; height: 18px; background: white;
+    border-radius: 50%; top: 3px; left: 3px;
+    transition: left 0.2s;
+  }
+  .sound-toggle.on::after { left: 23px; }
+
+  /* Chat */
+  .chat-panel {
+    position: absolute; bottom: 10px; right: 10px;
+    width: 220px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .chat-msgs { height: 80px; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 3px; }
+  .chat-msg { font-size: 0.68rem; }
+  .chat-msg .sender { color: var(--accent); font-weight: 700; }
+  .chat-input-row { display: flex; border-top: 1px solid var(--border); }
+  .chat-input {
+    flex: 1; background: transparent; border: none;
+    padding: 6px 8px; font-size: 0.72rem;
+    color: var(--text); font-family: var(--font); outline: none;
+  }
+  .chat-send { background: transparent; border: none; color: var(--accent); padding: 0 8px; cursor: pointer; font-size: 0.8rem; }
+
+  /* Reactions */
+  .reactions-row { display: flex; gap: 4px; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+  .reaction-btn {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 2px 6px; font-size: 0.85rem;
+    cursor: pointer; transition: transform 0.1s;
+  }
+  .reaction-btn:active { transform: scale(1.35); }
+
+  /* Floating emoji */
+  .float-emoji {
+    position: fixed; font-size: 2rem; pointer-events: none;
+    z-index: 9998; animation: float-up 1.5s ease forwards;
+  }
+  @keyframes float-up { from{ opacity:1; transform:translateY(0) scale(1); } to{ opacity:0; transform:translateY(-110px) scale(1.5); } }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+  .tab {
+    padding: 8px 15px; border-radius: 8px 8px 0 0;
+    border: 1px solid transparent; border-bottom: none;
+    cursor: pointer; font-size: 0.78rem; font-family: var(--font); font-weight: 600;
+    background: transparent; color: var(--text-dim); transition: all 0.2s;
+  }
+  .tab.active { background: var(--surface); border-color: var(--border); color: var(--text); }
+
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .conn-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); display: inline-block; }
+  .conn-dot.connected { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .conn-label { font-size: 0.68rem; color: var(--text-dim); font-family: var(--mono); }
+
+  /* Kuromi skull decorations */
+  .kuro-deco {
+    font-size: 0.8rem;
+    opacity: 0.3;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  @media (max-width: 480px) {
+    :root { --card-w: 90px; --card-h: 130px; }
+    .logo-title { font-size: 1.8rem; }
+    .hand-cards { --card-w: 80px; --card-h: 116px; }
+    .game-log, .chat-panel { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="screen-home" class="screen active">
+  <div class="logo">
+    <div class="kuromi-face">🖤</div>
+    <div class="logo-title">🔐 CYBERSCAM</div>
+    <div class="logo-sub">
+      <span class="logo-bow">🎀</span>
+      เกมการ์ดต้านภัยไซเบอร์ • Multiplayer
+      <span class="logo-bow">🎀</span>
+    </div>
+  </div>
+
+  <div class="panel" style="max-width:600px;width:100%;">
+    <div class="panel-title">💜 ตั้งค่าผู้เล่น</div>
+    <div class="input-group">
+      <label>ชื่อผู้เล่น</label>
+      <input id="playerNameInput" type="text" placeholder="ใส่ชื่อเล่นของคุณ..." maxlength="16" />
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:0.82rem;color:var(--text-dim);">อวาตาร์:</span>
+      <div id="avatar-selector" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+    </div>
+  </div>
+
+  <div class="panel" style="max-width:600px;width:100%;">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('create')">🏗️ สร้างห้อง</button>
+      <button class="tab" onclick="switchTab('join')">🔑 ใส่โค้ด</button>
+      <button class="tab" onclick="switchTab('public')">🌐 ห้องสาธารณะ</button>
+    </div>
+
+    <div id="tab-create" class="tab-content">
+      <div class="input-group">
+        <label>ชื่อห้อง</label>
+        <input id="roomNameInput" type="text" placeholder="ตั้งชื่อห้อง..." maxlength="30" />
+      </div>
+      <div class="input-group">
+        <label>จำนวนผู้เล่นสูงสุด</label>
+        <select id="maxPlayersInput">
+          <option value="2">2 คน</option>
+          <option value="3">3 คน</option>
+          <option value="4" selected>4 คน</option>
+          <option value="5">5 คน</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>ประเภทห้อง</label>
+        <select id="roomTypeInput">
+          <option value="public">🌐 สาธารณะ</option>
+          <option value="private">🔒 ส่วนตัว</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="createRoom()">🚀 สร้างห้อง</button>
+    </div>
+
+    <div id="tab-join" class="tab-content" style="display:none;">
+      <div class="input-group">
+        <label>รหัสห้อง (4 ตัวอักษร)</label>
+        <input id="joinCodeInput" type="text" placeholder="เช่น AB12" maxlength="6"
+          style="text-transform:uppercase;font-family:var(--mono);font-size:1.3rem;letter-spacing:6px;text-align:center;" />
+      </div>
+      <button class="btn btn-primary btn-full" onclick="joinRoomByCode()">🔑 เข้าร่วม</button>
+    </div>
+
+    <div id="tab-public" class="tab-content" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-size:0.78rem;color:var(--text-dim);" id="room-count">กำลังโหลด...</span>
+        <button class="btn btn-ghost" style="padding:5px 12px;font-size:0.72rem;" onclick="loadPublicRooms()">🔄 รีเฟรช</button>
+      </div>
+      <div class="room-list" id="public-room-list">
+        <div class="empty-state">กำลังโหลดห้อง...</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:center;gap:14px;max-width:600px;width:100%;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="conn-dot" id="conn-dot"></span>
+      <span class="conn-label" id="conn-label">กำลังเชื่อมต่อ...</span>
+    </div>
+    <button class="btn btn-ghost" style="padding:5px 12px;font-size:0.72rem;" onclick="openImgManager()">🖼️ จัดการรูปการ์ด</button>
+  </div>
+</div>
+
+<!-- LOBBY -->
+<div id="screen-lobby" class="screen">
+  <div class="lobby-header" style="padding:30px 20px 0;">
+    <div class="logo-title" style="font-size:1.5rem;">🖤 ห้องรอเกม</div>
+    <div class="lobby-code-label" style="margin-top:16px;">รหัสห้อง – แชร์ให้เพื่อน</div>
+    <div class="lobby-code" id="lobby-code-display">----</div>
+    <div style="font-size:0.78rem;color:var(--text-dim);margin-top:6px;" id="lobby-room-name"></div>
+    <button class="btn btn-ghost" style="margin-top:8px;padding:6px 14px;font-size:0.72rem;" onclick="copyRoomCode()">📋 คัดลอกโค้ด</button>
+  </div>
+
+  <div class="player-slots" id="lobby-players" style="padding:0 20px;"></div>
+
+  <div style="max-width:700px;width:100%;padding:0 20px;display:flex;flex-direction:column;gap:10px;">
+    <div class="panel">
+      <div class="panel-title">⚙️ ตั้งเวลาต่อเทิร์น</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <span style="font-size:0.82rem;">เวลาต่อเทิร์น</span>
+        <span style="font-family:var(--mono);color:var(--accent);" id="timer-setting-display">60 วินาที</span>
+      </div>
+      <input type="range" id="timerSetting" min="30" max="120" step="15" value="60"
+        style="width:100%;accent-color:var(--accent);" oninput="updateTimerDisplay(this.value)" />
+      <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:var(--text-dim);">
+        <span>30s</span><span>60s</span><span>120s</span>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;" id="lobby-actions">
+      <button class="btn btn-danger" style="flex:1;" onclick="leaveRoom()">🚪 ออกจากห้อง</button>
+      <button class="btn btn-gold" style="flex:1;display:none;" id="start-game-btn" onclick="startGame()">🎀 เริ่มเกม!</button>
+    </div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div id="screen-game" class="screen">
+  <div class="game-layout">
+    <div class="game-topbar">
+      <div>
+        <div class="game-title-small">🖤 CYBERSCAM</div>
+        <div style="font-size:0.68rem;color:var(--text-dim);font-family:var(--mono);">ห้อง: <span id="g-room-code">----</span></div>
+      </div>
+      <div class="timer-wrap">
+        <div class="timer-ring" id="timer-ring">
+          <svg width="44" height="44" viewBox="0 0 44 44">
+            <circle cx="22" cy="22" r="18" />
+            <circle class="progress" id="timer-circle" cx="22" cy="22" r="18" />
+          </svg>
+          <div class="timer-num" id="timer-num">60</div>
+        </div>
+        <div>
+          <div style="font-size:0.68rem;color:var(--text-dim);">เทิร์นของ</div>
+          <div style="font-size:0.78rem;font-weight:800;" id="whose-turn-label">-</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="sound-toggle on" id="sound-toggle-btn" onclick="toggleSound(this)" title="เสียง"></button>
+        <button class="btn btn-ghost" style="padding:6px 10px;font-size:0.75rem;" onclick="leaveGameToHome()">🚪</button>
+      </div>
+    </div>
+
+    <div class="opponents-row" id="opponents-row"></div>
+
+    <div class="play-area">
+      <div class="deck-zone">
+        <div class="deck-label">กองจั่ว</div>
+        <div class="deck-pile">
+          <div class="card card-back" id="draw-pile-card" onclick="drawCard()" title="จั่วการ์ด">
+            <div class="card-back-icon">🖤</div>
+          </div>
+          <div class="deck-count" id="deck-count">--</div>
+        </div>
+      </div>
+
+      <div class="discard-zone">
+        <div class="deck-label">กองทิ้ง</div>
+        <div class="card" id="discard-top" style="background:var(--surface2);">
+          <div style="font-size:2rem;color:var(--text-dim);">💀</div>
+          <div style="font-size:0.62rem;color:var(--text-dim);margin-top:4px;">ว่าง</div>
+        </div>
+      </div>
+
+      <div class="game-log" id="game-log"></div>
+
+      <div class="chat-panel">
+        <div class="reactions-row">
+          <button class="reaction-btn" onclick="sendReaction('🖤')">🖤</button>
+          <button class="reaction-btn" onclick="sendReaction('💀')">💀</button>
+          <button class="reaction-btn" onclick="sendReaction('🎀')">🎀</button>
+          <button class="reaction-btn" onclick="sendReaction('😈')">😈</button>
+          <button class="reaction-btn" onclick="sendReaction('😱')">😱</button>
+        </div>
+        <div class="chat-msgs" id="chat-msgs"></div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="chat-input" placeholder="พิมพ์ข้อความ..." maxlength="60" onkeydown="if(event.key==='Enter')sendChat()" />
+          <button class="chat-send" onclick="sendChat()">➤</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="my-section">
+      <div class="my-info">
+        <div class="my-name-hp">
+          <div style="font-size:1.2rem;" id="my-avatar-display">🖤</div>
+          <div class="my-name" id="my-name-display">คุณ</div>
+          <div class="my-hp" id="my-hp-display"></div>
+        </div>
+        <div class="turn-indicator wait" id="turn-indicator">รอเทิร์น...</div>
+      </div>
+      <div class="hand-cards" id="hand-cards"></div>
+      <div class="draw-btn-wrap" id="draw-btn-wrap" style="display:none;">
+        <button class="btn btn-primary" onclick="drawCard()">🎴 จั่วการ์ด (จบเทิร์น)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+
+<!-- THREAT -->
+<div class="modal-overlay threat-alert-modal" id="modal-threat">
+  <div class="modal">
+    <div class="threat-alert-icon">⚠️</div>
+    <h2 style="text-align:center;color:var(--threat);" id="threat-title">ภัยคุกคาม!</h2>
+    <div class="threat-card-preview">
+      <div style="font-size:2rem;" id="threat-emoji">🎣</div>
+      <div style="font-weight:800;margin:6px 0;" id="threat-name">-</div>
+      <div class="threat-damage" id="threat-damage">-1</div>
+      <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;" id="threat-desc">-</div>
+    </div>
+    <p id="threat-modal-desc" style="text-align:center;"></p>
+    <div style="display:flex;flex-direction:column;gap:8px;" id="threat-actions"></div>
+  </div>
+</div>
+
+<!-- TARGET -->
+<div class="modal-overlay" id="modal-target">
+  <div class="modal">
+    <h2>🎯 เลือกเป้าหมาย</h2>
+    <p id="target-modal-desc">เลือกผู้เล่นที่ต้องการส่งผลไปให้:</p>
+    <div class="target-list" id="target-list"></div>
+    <button class="btn btn-ghost btn-full" style="margin-top:12px;" onclick="closeModal('modal-target')">❌ ยกเลิก</button>
+  </div>
+</div>
+
+<!-- IMAGE MANAGER -->
+<div class="modal-overlay" id="modal-img-manager">
+  <div class="modal" style="max-width:500px;">
+    <h2>🖼️ จัดการรูปภาพการ์ด</h2>
+    <p>
+      📌 <strong>พิกัดรูป:</strong> แต่ละการ์ดมีช่องรูปขนาด <strong>70×70px</strong> ตรงกลาง<br>
+      คลิกที่ช่องการ์ดด้านล่าง → เลือกไฟล์รูป (JPG/PNG) → รูปจะแสดงบนการ์ดทันที<br>
+      รูปถูกเก็บใน browser นี้เท่านั้น (localStorage)
+    </p>
+    <div class="img-manager-grid" id="img-manager-grid"></div>
+    <button class="btn btn-ghost btn-full" style="margin-top:16px;" onclick="closeModal('modal-img-manager')">✅ เสร็จแล้ว</button>
+    <input type="file" id="img-upload-input" accept="image/*" style="display:none;" onchange="handleImgUpload(event)" />
+  </div>
+</div>
+
+<!-- SEE FUTURE -->
+<div class="modal-overlay" id="modal-see-future">
+  <div class="modal">
+    <h2>🔮 แอบส่องระบบ</h2>
+    <p>การ์ด 3 ใบบนสุดของกองจั่ว (เรียงจากบนลงล่าง):</p>
+    <div id="see-future-cards" style="display:flex;gap:10px;justify-content:center;margin:16px 0;"></div>
+    <button class="btn btn-primary btn-full" onclick="closeModal('modal-see-future')">✅ จดจำแล้ว</button>
+  </div>
+</div>
+
+<!-- WINNER -->
+<div class="winner-overlay" id="winner-overlay">
+  <div style="font-size:2rem;">🖤🎀🖤</div>
+  <div class="winner-trophy">🏆</div>
+  <div class="winner-name" id="winner-name">ผู้ชนะ!</div>
+  <div style="font-size:0.88rem;color:var(--text-dim);margin-top:8px;" id="winner-desc"></div>
+  <div style="display:flex;gap:12px;margin-top:20px;">
+    <button class="btn btn-primary" onclick="playAgain()">🔄 เล่นอีกครั้ง</button>
+    <button class="btn btn-ghost" onclick="leaveGameToHome()">🏠 กลับหน้าหลัก</button>
+  </div>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ═══════════════════ SCRIPTS ═══════════════════ -->
+<script type="module">
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyB41fO-PtNgnhrmf49kkt6lKeVZhZeC_a0",
+  authDomain: "senzpj1.firebaseapp.com",
+  databaseURL: "https://senzpj1-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "senzpj1",
+  storageBucket: "senzpj1.firebasestorage.app",
+  messagingSenderId: "923210481522",
+  appId: "1:923210481522:web:2645e8c5c4343469d4a7eb",
+  measurementId: "G-F6VCN0TBL9"
+};
+
+const CARD_DEFS = {
+  phishing:     { id:'phishing',     type:'threat',   name:'Phishing',        emoji:'🎣', damage:-1, desc:'เผลอกดลิงก์รับของรางวัลฟรีใน LINE', color:'threat' },
+  fake_shop:    { id:'fake_shop',    type:'threat',   name:'ร้านออนไลน์ปลอม', emoji:'🛍️', damage:-2, desc:'ซื้อของโจร ไม่ได้ของ เสียเงินฟรี!', color:'threat' },
+  scammer:      { id:'scammer',      type:'threat',   name:'Scammers',         emoji:'📞', damage:-3, desc:'แก๊งคอลเซ็นเตอร์หลอกโอนเงิน อันตรายมาก!', color:'threat' },
+  awareness:    { id:'awareness',    type:'defense',  name:'มีสติ',            emoji:'🧠', defends:'phishing',  desc:'ป้องกัน Phishing ได้', color:'defense' },
+  double_check: { id:'double_check', type:'defense',  name:'ตรวจสอบสองชั้น',  emoji:'✅', defends:'fake_shop', desc:'ป้องกัน ร้านออนไลน์ปลอม ได้', color:'defense' },
+  block:        { id:'block',        type:'defense',  name:'วางสาย/บล็อก',    emoji:'🚫', defends:'scammer',   desc:'ป้องกัน Scammers ได้', color:'defense' },
+  forward:      { id:'forward',      type:'action',   name:'แชร์ส่งต่อ',       emoji:'📤', desc:'บังคับคนถัดไปเล่น 2 เทิร์นติด', color:'action' },
+  reverse:      { id:'reverse',      type:'action',   name:'เปลี่ยนทิศ',       emoji:'🔄', desc:'เปลี่ยนทิศการเล่น / สะท้อน Forward กลับ', color:'action' },
+  skip:         { id:'skip',         type:'action',   name:'Skip',             emoji:'⏭️', desc:'ข้ามเทิร์นตัวเอง ไม่ต้องจั่วเสี่ยง', color:'action' },
+  see_future:   { id:'see_future',   type:'action',   name:'แอบส่องระบบ',     emoji:'🔮', desc:'ดูการ์ด 3 ใบบนสุดของกองจั่ว', color:'action' },
+  wallet_switch:{ id:'wallet_switch',type:'action',   name:'สลับบัญชี',        emoji:'💱', desc:'สลับแต้มกับผู้เล่นคนอื่น', color:'action' },
+  draw_bottom:  { id:'draw_bottom',  type:'action',   name:'จั่วใต้กอง',       emoji:'⬇️', desc:'จั่วจากใต้กองแทนบนสุด', color:'action' },
+  shuffle:      { id:'shuffle',      type:'action',   name:'สับกองการ์ด',      emoji:'🔀', desc:'สับกองจั่วใหม่ทั้งหมด', color:'action' },
+  bonus:        { id:'bonus',        type:'recovery', name:'โบนัสเข้า!',       emoji:'💰', heal:1, desc:'ได้แต้มคืน +1 ทันที', color:'recovery' },
+  cyber_police: { id:'cyber_police', type:'recovery', name:'ตำรวจไซเบอร์',    emoji:'👮', heal:2, desc:'ได้แต้มคืน +2', color:'recovery' },
+  lucky:        { id:'lucky',        type:'recovery', name:'ถูกรางวัลที่ 5!',  emoji:'🎰', heal:2, desc:'ได้แต้มคืน +2 ไม่มีเงื่อนไข', color:'recovery' },
+};
+
+let db = null, firebaseApp = null;
+let myId = 'p_' + Math.random().toString(36).slice(2, 9);
+let myName = 'ผู้เล่น', myAvatar = '🖤';
+let currentRoomId = null, isHost = false;
+let gameState = null, roomListener = null;
+let timerInterval = null, selectedCards = [];
+let pendingAction = null, cardImages = {}, soundOn = true;
+let currentTab = 'create', threatModalShownFor = null;
+
+const AVATARS = ['🖤','🎀','💀','🌸','🌙','⭐','🦇','👾','🎃','🌺','💜','🐱'];
+
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let actx = null;
+function getACtx() { if (!actx) actx = new AudioCtx(); return actx; }
+function playTone(freq, type='sine', duration=0.15, vol=0.3) {
+  if (!soundOn) return;
+  try {
+    const ctx = getACtx();
+    const osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = type; osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    gain.gain.setValueAtTime(vol, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + duration);
+  } catch(e) {}
+}
+function playSound(name) {
+  if (!soundOn) return;
+  switch(name) {
+    case 'draw':    playTone(380,'sine',0.1,0.2); break;
+    case 'play':    playTone(500,'triangle',0.15,0.3); break;
+    case 'threat':  [180,160,140].forEach((f,i)=>setTimeout(()=>playTone(f,'sawtooth',0.2,0.4),i*80)); break;
+    case 'defense': [500,600,700].forEach((f,i)=>setTimeout(()=>playTone(f,'sine',0.12,0.25),i*60)); break;
+    case 'timer_warn': playTone(800,'square',0.05,0.15); break;
+    case 'win':   [400,500,600,800].forEach((f,i)=>setTimeout(()=>playTone(f,'sine',0.3,0.4),i*150)); break;
+    case 'lose':  [300,240,180].forEach((f,i)=>setTimeout(()=>playTone(f,'sawtooth',0.25,0.4),i*200)); break;
+    case 'join':    playTone(560,'sine',0.1,0.2); break;
+    case 'chat':    playTone(1000,'sine',0.05,0.08); break;
+    case 'reverse': playTone(350,'triangle',0.2,0.3); break;
+  }
+}
+
+// ใช้แหล่งเดียว (gstatic) เวอร์ชันเดียวกับที่ Firebase Console แนะนำ
+// ห้ามมี <script type="module"> อื่นที่ import firebase-app.js คนละเวอร์ชันในหน้านี้
+// เพราะจะทำให้เกิด Firebase app registry คนละตัว -> getDatabase() พัง ("Service database is not available")
+const FIREBASE_SDK_VERSION = '12.15.0';
+const FIREBASE_SDK_SOURCES = [
+  `https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}/`,
+];
+
+async function loadFirebaseSdk() {
+  let lastErr;
+  for (const base of FIREBASE_SDK_SOURCES) {
+    try {
+      const appMod = await import(base + 'firebase-app.js');
+      const dbMod  = await import(base + 'firebase-database.js');
+      return { appMod, dbMod, base };
+    } catch(e) { lastErr = e; }
+  }
+  throw lastErr || new Error('โหลด Firebase ไม่สำเร็จ');
+}
+
+async function connectFirebase() {
+  try {
+    document.getElementById('conn-label').textContent = 'กำลังเชื่อมต่อ...';
+    const { appMod, dbMod, base } = await loadFirebaseSdk();
+    const { initializeApp, getApps, getApp } = appMod;
+    const { getDatabase, ref, set, get, push, onValue, off, update, serverTimestamp, remove } = dbMod;
+    firebaseApp = getApps().length > 0 ? getApp() : initializeApp(FIREBASE_CONFIG);
+    db = getDatabase(firebaseApp);
+    window._fb = { ref, set, get, push, onValue, off, update, serverTimestamp, remove };
+    try {
+      const { getAnalytics, isSupported } = await import(base + 'firebase-analytics.js');
+      if (await isSupported()) getAnalytics(firebaseApp);
+    } catch(e) {}
+    const testRef = ref(db, '.info/connected');
+    onValue(testRef, (snap) => {
+      const ok = snap.val();
+      document.getElementById('conn-dot').className = 'conn-dot' + (ok ? ' connected' : '');
+      document.getElementById('conn-label').textContent = ok ? 'เชื่อมต่อแล้ว ✓' : 'ไม่ได้เชื่อมต่อ';
+    });
+    loadPublicRooms();
+  } catch(e) {
+    showToast('❌ เชื่อมต่อ Firebase ไม่สำเร็จ', 'danger');
+    document.getElementById('conn-label').innerHTML = 'ล้มเหลว <a href="#" onclick="connectFirebase();return false;" style="color:var(--accent);">ลองใหม่</a>';
+    db = null; console.error(e);
+  }
+}
+
+function genCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return Array.from({length:4}, ()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+}
+
+async function createRoom() {
+  if (!db) { showToast('กรุณาเชื่อมต่อ Firebase ก่อน','danger'); return; }
+  validatePlayerInfo();
+  const roomName = document.getElementById('roomNameInput').value.trim() || `ห้องของ ${myName}`;
+  const maxPlayers = parseInt(document.getElementById('maxPlayersInput').value);
+  const isPrivate = document.getElementById('roomTypeInput').value === 'private';
+  const timerSec = parseInt(document.getElementById('timerSetting').value);
+  const code = genCode();
+  const { ref, set, serverTimestamp } = window._fb;
+  await set(ref(db, `rooms/${code}`), {
+    code, name: roomName, host: myId, maxPlayers, isPrivate, timerSec,
+    status: 'waiting', createdAt: serverTimestamp(),
+    players: { [myId]: { id:myId, name:myName, avatar:myAvatar, hp:5, handCount:0, joinedAt:serverTimestamp() } },
+    settings: { timerSec }
+  });
+  currentRoomId = code; isHost = true;
+  showToast('🖤 สร้างห้องแล้ว รอเพื่อน...','success');
+  enterLobby(code);
+}
+
+async function joinRoomByCode() {
+  if (!db) { showToast('กรุณาเชื่อมต่อ Firebase ก่อน','danger'); return; }
+  validatePlayerInfo();
+  const code = document.getElementById('joinCodeInput').value.trim().toUpperCase();
+  if (!code || code.length < 4) { showToast('กรุณากรอกรหัสห้อง','danger'); return; }
+  await joinRoom(code);
+}
+
+async function joinRoom(code) {
+  if (!db) { showToast('กรุณาเชื่อมต่อ Firebase ก่อน','danger'); return; }
+  validatePlayerInfo();
+  const { ref, get, update, serverTimestamp } = window._fb;
+  const snap = await get(ref(db, `rooms/${code}`));
+  if (!snap.exists()) { showToast('❌ ไม่พบห้องนี้','danger'); return; }
+  const room = snap.val();
+  if (room.status === 'playing') { showToast('⚠️ เกมกำลังดำเนินอยู่','danger'); return; }
+  if (Object.keys(room.players||{}).length >= room.maxPlayers) { showToast('⚠️ ห้องเต็มแล้ว','danger'); return; }
+  await update(ref(db, `rooms/${code}/players/${myId}`), { id:myId, name:myName, avatar:myAvatar, hp:5, handCount:0, joinedAt:serverTimestamp() });
+  currentRoomId = code; isHost = room.host === myId;
+  playSound('join'); enterLobby(code);
+}
+
+function enterLobby(code) {
+  showScreen('lobby');
+  document.getElementById('lobby-code-display').textContent = code;
+  listenRoom(code);
+}
+
+function listenRoom(code) {
+  if (roomListener) { window._fb.off(roomListener); }
+  const { ref, onValue } = window._fb;
+  const roomRef = ref(db, `rooms/${code}`);
+  onValue(roomRef, (snap) => {
+    if (!snap.exists()) { showToast('ห้องถูกปิดแล้ว','danger'); showScreen('home'); return; }
+    const room = snap.val();
+    renderLobby(room);
+    if (room.status === 'playing' && room.gameState) {
+      gameState = room.gameState;
+      startGameScreen(room);
+    }
+  });
+  roomListener = roomRef;
+  listenChat(code);
+}
+
+function renderLobby(room) {
+  document.getElementById('lobby-room-name').textContent = room.name + (room.isPrivate?' 🔒':' 🌐');
+  document.getElementById('timerSetting').value = room.settings?.timerSec || 60;
+  updateTimerDisplay(room.settings?.timerSec || 60);
+  const players = Object.values(room.players || {});
+  const slotsEl = document.getElementById('lobby-players');
+  slotsEl.innerHTML = '';
+  for (let i = 0; i < room.maxPlayers; i++) {
+    const p = players[i];
+    const slot = document.createElement('div');
+    slot.className = 'player-slot'+(p?' filled':'')+(p?.id===myId?' me':'');
+    if (p) {
+      slot.innerHTML = `<div class="player-avatar">${p.avatar}</div>
+        <div class="player-name">${p.name}${p.id===myId?' (คุณ)':''}</div>
+        <div class="player-status">${p.id===room.host?'👑 Host':'✅ พร้อม'}</div>`;
+    } else {
+      slot.innerHTML = `<div style="color:var(--text-dim);font-size:1.5rem;">➕</div><div class="slot-empty">รอผู้เล่น...</div>`;
+    }
+    slotsEl.appendChild(slot);
+  }
+  const startBtn = document.getElementById('start-game-btn');
+  if (room.host !== myId) { startBtn.style.display='none'; return; }
+  startBtn.style.display = '';
+  if (players.length >= 2) {
+    startBtn.disabled = false; startBtn.textContent = '🎀 เริ่มเกม!';
+  } else {
+    startBtn.disabled = true; startBtn.textContent = `รอผู้เล่นอีก ${2-players.length} คน`;
+  }
+}
+
+async function startGame() {
+  if (!db || !currentRoomId) return;
+  const { ref, get, update } = window._fb;
+  const snap = await get(ref(db, `rooms/${currentRoomId}`));
+  const room = snap.val();
+  const players = Object.values(room.players || {});
+  if (players.length < 2) { showToast('ต้องการผู้เล่นอย่างน้อย 2 คน','danger'); return; }
+  const gs = buildInitialGameState(players, room.settings?.timerSec || 60);
+  await update(ref(db, `rooms/${currentRoomId}`), { status:'playing', gameState:gs });
+}
+
+function buildInitialGameState(players, timerSec) {
+  const deck = buildDeck(players.length);
+  const shuffled = shuffleArr([...deck]);
+  const hands = {}, playerStates = {};
+  players.forEach(p => {
+    hands[p.id] = [];
+    playerStates[p.id] = { id:p.id, name:p.name, avatar:p.avatar, hp:5, eliminated:false };
+    for (let i = 0; i < 5; i++) { if (shuffled.length > 0) hands[p.id].push(shuffled.pop()); }
+  });
+  return {
+    deck: shuffled, discard: [], hands,
+    players: playerStates,
+    playerOrder: players.map(p=>p.id),
+    currentTurnIdx: 0, direction: 1, timerSec,
+    turnStartTime: Date.now(), turnsLeft: 1, log: [],
+    pendingThreat: null, extraTurns: {}, phase: 'action', version: 1,
+  };
+}
+
+function buildDeck(playerCount) {
+  const cards = [];
+  const add = (id, count) => { for(let i=0;i<count;i++) cards.push({id:Date.now()+Math.random(), defId:id, ...CARD_DEFS[id]}); };
+  const n = Math.max(2, playerCount);
+  add('phishing', n+1); add('fake_shop', n); add('scammer', Math.max(1, playerCount-1));
+  add('awareness', n+2); add('double_check', n+1); add('block', n);
+  add('forward', playerCount+1); add('reverse', playerCount); add('skip', playerCount+1);
+  add('see_future', playerCount); add('wallet_switch', playerCount-1);
+  add('draw_bottom', playerCount); add('shuffle', 2);
+  add('bonus', playerCount+2); add('cyber_police', playerCount); add('lucky', playerCount+1);
+  return cards;
+}
+
+function shuffleArr(arr) {
+  for (let i = arr.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+
+async function loadPublicRooms() {
+  if (!db) { document.getElementById('room-count').textContent='กรุณาเชื่อมต่อก่อน'; return; }
+  const { ref, get } = window._fb;
+  const snap = await get(ref(db, 'rooms'));
+  const listEl = document.getElementById('public-room-list');
+  listEl.innerHTML = '';
+  if (!snap.exists()) {
+    listEl.innerHTML = '<div class="empty-state">ยังไม่มีห้อง สร้างห้องแรกเลย! 🖤</div>';
+    document.getElementById('room-count').textContent = '0 ห้อง';
+    return;
+  }
+  const rooms = snap.val();
+  const publicRooms = Object.values(rooms).filter(r => !r.isPrivate);
+  document.getElementById('room-count').textContent = `${publicRooms.length} ห้องสาธารณะ`;
+  if (publicRooms.length === 0) { listEl.innerHTML = '<div class="empty-state">ไม่มีห้องสาธารณะ</div>'; return; }
+  publicRooms.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  publicRooms.forEach(room => {
+    const playerCount = Object.keys(room.players||{}).length;
+    const isPlaying = room.status === 'playing';
+    const item = document.createElement('div');
+    item.className = `room-item ${isPlaying?'playing':'waiting'}`;
+    item.innerHTML = `
+      <div>
+        <div class="room-name">${room.name}</div>
+        <div class="room-meta">👥 ${playerCount}/${room.maxPlayers} • ⏱️ ${room.timerSec||60}s/เทิร์น</div>
+      </div>
+      <span class="room-badge ${isPlaying?'badge-playing':'badge-waiting'}">${isPlaying?'🎮 กำลังเล่น':'⏳ รอคน'}</span>`;
+    if (!isPlaying && playerCount < room.maxPlayers) item.onclick = () => joinRoom(room.code);
+    listEl.appendChild(item);
+  });
+}
+
+function startGameScreen(room) {
+  showScreen('game');
+  document.getElementById('g-room-code').textContent = currentRoomId;
+  renderGame();
+  startTurnTimer();
+  const { ref, onValue } = window._fb;
+  onValue(ref(db, `rooms/${currentRoomId}/gameState`), (snap) => {
+    if (snap.exists()) {
+      gameState = snap.val();
+      renderGame();
+      checkWin();
+      checkPendingThreatForMe();
+    }
+  });
+}
+
+function checkPendingThreatForMe() {
+  if (!gameState) return;
+  const threat = gameState.pendingThreat;
+  if (threat && threat.targetId === myId) {
+    const key = threat.card.id;
+    if (threatModalShownFor !== key) {
+      threatModalShownFor = key;
+      showThreatModal(threat.card, gameState.hands[myId] || []);
+    }
+  } else {
+    threatModalShownFor = null;
+    closeModal('modal-threat');
+  }
+}
+
+function renderGame() {
+  if (!gameState) return;
+  const gs = gameState;
+  const myState = gs.players[myId];
+  if (!myState) return;
+  const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
+  const isMyTurn = currentPlayerId === myId && !myState.eliminated;
+  document.getElementById('whose-turn-label').textContent = isMyTurn ? '🌸 เทิร์นคุณ!' : (gs.players[currentPlayerId]?.name||'-');
+  const indicator = document.getElementById('turn-indicator');
+  indicator.className = 'turn-indicator'+(isMyTurn?' my-turn':' wait');
+  const extra = isMyTurn && (gs.turnsLeft||1) > 1 ? ` (อีก ${gs.turnsLeft} เทิร์น)` : '';
+  indicator.textContent = isMyTurn ? `🎀 เทิร์นของคุณ!${extra}` : `รอ ${gs.players[currentPlayerId]?.name}...`;
+  document.getElementById('draw-btn-wrap').style.display = isMyTurn ? '' : 'none';
+  document.getElementById('draw-pile-card').style.cursor = isMyTurn ? 'pointer' : 'default';
+  renderMyHP(myState.hp);
+  document.getElementById('my-name-display').textContent = myState.name;
+  document.getElementById('my-avatar-display').textContent = myState.avatar;
+  document.getElementById('deck-count').textContent = gs.deck?.length || 0;
+  const discardEl = document.getElementById('discard-top');
+  const topDiscard = gs.discard?.[gs.discard.length-1];
+  if (topDiscard) {
+    const def = CARD_DEFS[topDiscard.defId] || topDiscard;
+    discardEl.className = `card card-${def.color||'action'}`;
+    discardEl.innerHTML = renderCardInner(def);
+  }
+  renderOpponents(gs, currentPlayerId);
+  renderHand(gs.hands[myId]||[], isMyTurn);
+  renderLog(gs.log||[]);
+}
+
+function renderMyHP(hp) {
+  const el = document.getElementById('my-hp-display');
+  el.innerHTML = '';
+  for (let i = 0; i < 5; i++) {
+    const coin = document.createElement('div');
+    coin.className = 'hp-big'+(i>=hp?' lost':'');
+    coin.textContent = i<hp?'♥':'';
+    el.appendChild(coin);
+  }
+}
+
+function renderOpponents(gs, currentPlayerId) {
+  const row = document.getElementById('opponents-row');
+  row.innerHTML = '';
+  gs.playerOrder.forEach(pid => {
+    if (pid === myId) return;
+    const p = gs.players[pid]; if (!p) return;
+    const div = document.createElement('div');
+    div.className = 'opponent-card'+(pid===currentPlayerId?' active-turn':'')+(p.eliminated?' eliminated':'');
+    let hpHtml = '';
+    for (let i=0;i<5;i++) hpHtml += `<div class="hp-coin${i>=p.hp?' lost':''}">♥</div>`;
+    div.innerHTML = `<div class="opp-avatar">${p.avatar}</div>
+      <div class="opp-name">${p.name}${p.eliminated?' 💀':''}</div>
+      <div class="opp-hp">${hpHtml}</div>
+      <div class="opp-cards">🃏 ${gs.hands[pid]?.length||0} ใบ</div>`;
+    row.appendChild(div);
+  });
+}
+
+function renderHand(hand, isMyTurn) {
+  const el = document.getElementById('hand-cards');
+  el.innerHTML = '';
+  hand.forEach((card, idx) => {
+    const def = CARD_DEFS[card.defId] || card;
+    const div = document.createElement('div');
+    div.className = `card hand-card card-${def.color||'action'}${selectedCards.includes(idx)?' selected':''}${isMyTurn&&def.type!=='threat'?' playable':''}`;
+    div.innerHTML = renderCardInner(def, card);
+    div.onclick = () => isMyTurn && onHandCardClick(idx, card, def);
+    div.title = def.desc || '';
+    el.appendChild(div);
+  });
+}
+
+function renderCardInner(def, cardData) {
+  const imgSrc = cardImages[def.id] || null;
+  const badgeClass = `badge-${def.color||'action'}`;
+  const typeLabel = {threat:'ภัยคุกคาม',defense:'เกราะป้องกัน',action:'แอคชั่น',recovery:'ฟื้นฟู'}[def.type]||def.type;
+  return `
+    <div class="card-type-badge ${badgeClass}">${typeLabel}</div>
+    <div class="card-img-area">
+      ${imgSrc ? `<img src="${imgSrc}" alt="${def.name}" />` : `<span>${def.emoji}</span>`}
+    </div>
+    <div class="card-name">${def.name}</div>
+    <div class="card-effect">${def.desc||''}</div>
+    ${def.damage ? `<div class="card-value" style="color:var(--threat);">${def.damage}</div>` : ''}
+    ${def.heal   ? `<div class="card-value" style="color:var(--recovery);">+${def.heal}</div>` : ''}
+  `;
+}
+
+function renderLog(log) {
+  const el = document.getElementById('game-log');
+  el.innerHTML = '';
+  log.slice(-6).forEach(entry => {
+    const div = document.createElement('div');
+    div.className = 'log-entry '+(entry.type||'system');
+    div.textContent = entry.msg;
+    el.appendChild(div);
+  });
+  el.scrollTop = el.scrollHeight;
+}
+
+async function onHandCardClick(idx, card, def) {
+  if (!gameState) return;
+  const currentPlayerId = gameState.playerOrder[gameState.currentTurnIdx % gameState.playerOrder.length];
+  if (currentPlayerId !== myId) return;
+  if (gameState.pendingThreat) { showToast('ต้องจัดการภัยคุกคามก่อน','info'); return; }
+  if (def.type === 'threat') { showToast('การ์ดภัยคุกคามออกมาเมื่อจั่ว','info'); return; }
+  playSound('play');
+  if (def.type === 'action') await playActionCard(idx, card, def);
+  else if (def.type === 'defense') showToast('การ์ดเกราะใช้ได้เมื่อเจอภัยคุกคามเท่านั้น','info');
+  else if (def.type === 'recovery') await playRecoveryCard(idx, card, def);
+}
+
+async function playActionCard(idx, card, def) {
+  const gs = JSON.parse(JSON.stringify(gameState));
+  if (def.id === 'see_future') {
+    const top3 = gs.deck.slice(-3).reverse();
+    showSeeFuture(top3);
+    removeFromHand(gs, myId, idx);
+    gs.discard.push(card);
+    addLog(gs, `${myName} แอบส่องกองจั่ว 🔮`, 'action');
+    await saveGS(gs); return;
+  }
+  if (def.id === 'shuffle') {
+    gs.deck = shuffleArr([...gs.deck]);
+    removeFromHand(gs, myId, idx); gs.discard.push(card);
+    addLog(gs, `${myName} สับกองการ์ดใหม่ 🔀`, 'action');
+    await saveGS(gs); return;
+  }
+  if (def.id === 'skip') {
+    removeFromHand(gs, myId, idx); gs.discard.push(card);
+    addLog(gs, `${myName} ข้ามเทิร์น ⏭️`, 'action');
+    advanceTurn(gs); await saveGS(gs); return;
+  }
+  if (def.id === 'reverse') {
+    gs.direction *= -1;
+    removeFromHand(gs, myId, idx); gs.discard.push(card);
+    addLog(gs, `${myName} เปลี่ยนทิศการเล่น 🔄`, 'action');
+    playSound('reverse'); advanceTurn(gs); await saveGS(gs); return;
+  }
+  if (def.id === 'draw_bottom') {
+    const bottomCard = gs.deck.shift();
+    if (bottomCard) {
+      gs.hands[myId].push(bottomCard);
+      removeFromHand(gs, myId, idx); gs.discard.push(card);
+      addLog(gs, `${myName} จั่วจากใต้กอง ⬇️`, 'action');
+      advanceTurn(gs); await saveGS(gs);
+    }
+    return;
+  }
+  if (['forward','wallet_switch'].includes(def.id)) {
+    pendingAction = { idx, card, def };
+    showTargetModal(def.id==='forward'?'บังคับเล่น 2 เทิร์น':'สลับแต้มกับ');
+    return;
+  }
+}
+
+async function playActionCardWithTarget(target) {
+  if (!pendingAction) return;
+  const { idx, card, def } = pendingAction;
+  pendingAction = null; closeModal('modal-target');
+  const gs = JSON.parse(JSON.stringify(gameState));
+  if (def.id === 'forward') {
+    gs.extraTurns = gs.extraTurns || {};
+    gs.extraTurns[target] = (gs.extraTurns[target]||0) + 1;
+    addLog(gs, `${myName} ส่งต่อ Forward ให้ ${gs.players[target]?.name} 📤`, 'action');
+  } else if (def.id === 'wallet_switch') {
+    const myHp = gs.players[myId].hp, tHp = gs.players[target].hp;
+    gs.players[myId].hp = Math.min(5, tHp);
+    gs.players[target].hp = Math.min(5, myHp);
+    addLog(gs, `${myName} สลับบัญชีกับ ${gs.players[target]?.name} 💱`, 'action');
+  }
+  removeFromHand(gs, myId, idx); gs.discard.push(card);
+  advanceTurn(gs); await saveGS(gs);
+}
+
+async function playRecoveryCard(idx, card, def) {
+  const gs = JSON.parse(JSON.stringify(gameState));
+  const p = gs.players[myId];
+  const oldHp = p.hp;
+  p.hp = Math.min(5, p.hp + (def.heal||1));
+  removeFromHand(gs, myId, idx); gs.discard.push(card);
+  addLog(gs, `${myName} ฟื้นฟู +${p.hp-oldHp} แต้ม ${def.emoji}`, 'recovery');
+  playSound('defense'); await saveGS(gs);
+}
+
+async function drawCard() {
+  if (!gameState) return;
+  if (gameState.pendingThreat) { showToast('ต้องจัดการภัยคุกคามก่อน','info'); return; }
+  const gs = JSON.parse(JSON.stringify(gameState));
+  const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
+  if (currentPlayerId !== myId) { showToast('ยังไม่ใช่เทิร์นคุณ!','danger'); return; }
+  if (gs.deck.length === 0) reshuffleDeck(gs);
+  if (gs.deck.length === 0) { showToast('กองการ์ดหมดแล้ว!','danger'); return; }
+  const drawn = gs.deck.pop();
+  playSound('draw');
+  if (drawn.type === 'threat') {
+    gs.pendingThreat = { card: drawn, targetId: myId };
+    addLog(gs, `${myName} จั่วได้ "${drawn.name}" ⚠️`, 'threat');
+    await saveGS(gs);
+    threatModalShownFor = drawn.id;
+    showThreatModal(drawn, gs.hands[myId]||[]);
+  } else {
+    gs.hands[myId] = gs.hands[myId]||[];
+    gs.hands[myId].push(drawn);
+    addLog(gs, `${myName} จั่วการ์ด 1 ใบ`, 'system');
+    advanceTurn(gs); await saveGS(gs);
+  }
+}
+
+function showThreatModal(card, hand) {
+  const def = CARD_DEFS[card.defId]||card;
+  document.getElementById('threat-title').textContent = '⚠️ ภัยคุกคาม!';
+  document.getElementById('threat-emoji').textContent = def.emoji;
+  document.getElementById('threat-name').textContent = def.name;
+  document.getElementById('threat-damage').textContent = def.damage;
+  document.getElementById('threat-desc').textContent = def.desc;
+  document.getElementById('threat-modal-desc').textContent = gameState?.pendingThreat?.fromReverse
+    ? 'ภัยคุกคามถูกสะท้อนมาที่คุณ! เลือกวิธีรับมือ:'
+    : 'คุณได้รับการ์ดภัยคุกคาม! เลือกวิธีรับมือ:';
+  playSound('threat');
+  const defCards = hand.map((c,i)=>({c,i,def:CARD_DEFS[c.defId]})).filter(x=>x.def?.type==='defense'&&x.def?.defends===card.defId);
+  const actionCards = hand.map((c,i)=>({c,i,def:CARD_DEFS[c.defId]})).filter(x=>['reverse','forward'].includes(x.def?.id));
+  const actionsEl = document.getElementById('threat-actions');
+  actionsEl.innerHTML = '';
+  const acceptBtn = document.createElement('button');
+  acceptBtn.className = 'btn btn-danger btn-full';
+  acceptBtn.textContent = `😰 ยอมรับ (${def.damage} แต้ม)`;
+  acceptBtn.onclick = () => resolveThreat('accept');
+  actionsEl.appendChild(acceptBtn);
+  defCards.forEach(({c,i,def:dDef}) => {
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-success btn-full';
+    btn.textContent = `🛡️ ใช้ "${dDef.name}" ป้องกัน!`;
+    btn.onclick = () => resolveThreat('defend', i, c);
+    actionsEl.appendChild(btn);
+  });
+  actionCards.forEach(({c,i,def:aDef}) => {
+    if (aDef.id === 'reverse') {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-ghost btn-full'; btn.style.borderColor='var(--action)';
+      btn.textContent = '🔄 ใช้ Reverse โยนกลับ!';
+      btn.onclick = () => resolveThreat('reverse',i,c); actionsEl.appendChild(btn);
+    }
+    if (aDef.id === 'forward') {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-ghost btn-full'; btn.style.borderColor='var(--action)';
+      btn.textContent = '📤 ใช้ Forward โยนให้คนถัดไป!';
+      btn.onclick = () => resolveThreat('forward',i,c); actionsEl.appendChild(btn);
+    }
+  });
+  openModal('modal-threat');
+}
+
+async function resolveThreat(action, cardIdx, card) {
+  if (!gameState?.pendingThreat || gameState.pendingThreat.targetId !== myId) { closeModal('modal-threat'); return; }
+  closeModal('modal-threat'); threatModalShownFor = null;
+  const gs = JSON.parse(JSON.stringify(gameState));
+  const threat = gs.pendingThreat; if (!threat) return;
+  const threatDef = CARD_DEFS[threat.card.defId];
+  gs.pendingThreat = null;
+  if (action === 'accept') {
+    gs.players[myId].hp = Math.max(0, gs.players[myId].hp + threatDef.damage);
+    addLog(gs, `${myName} โดน ${threatDef.name} ${threatDef.damage} แต้ม 💸`, 'threat');
+    playSound('lose');
+    if (gs.players[myId].hp <= 0) { gs.players[myId].eliminated = true; addLog(gs, `${myName} ตกรอบ! 💀`, 'threat'); }
+    reshuffleOneCard(gs, threat.card); advanceTurn(gs);
+  } else if (action === 'defend') {
+    removeFromHand(gs, myId, cardIdx); gs.discard.push(card);
+    addLog(gs, `${myName} ใช้ "${CARD_DEFS[card.defId]?.name}" ป้องกัน ${threatDef.name}! 🛡️`, 'defense');
+    playSound('defense'); reshuffleOneCard(gs, threat.card); advanceTurn(gs);
+  } else if (action === 'reverse') {
+    gs.direction *= -1;
+    removeFromHand(gs, myId, cardIdx); gs.discard.push(card);
+    const nextIdx = getNextPlayerIdx(gs, gs.currentTurnIdx, gs.direction);
+    const nextId = gs.playerOrder[nextIdx];
+    gs.pendingThreat = { card: threat.card, targetId: nextId, fromReverse: true };
+    addLog(gs, `${myName} สะท้อน ${threatDef.name} ไปให้ ${gs.players[nextId]?.name}! 🔄`, 'action');
+  } else if (action === 'forward') {
+    removeFromHand(gs, myId, cardIdx); gs.discard.push(card);
+    const nextIdx = getNextPlayerIdx(gs, gs.currentTurnIdx, gs.direction);
+    const nextId = gs.playerOrder[nextIdx];
+    gs.pendingThreat = { card: threat.card, targetId: nextId };
+    gs.extraTurns = gs.extraTurns||{};
+    gs.extraTurns[nextId] = (gs.extraTurns[nextId]||0)+1;
+    addLog(gs, `${myName} ส่งต่อ ${threatDef.name} ให้ ${gs.players[nextId]?.name}! 📤`, 'action');
+  }
+  await saveGS(gs);
+}
+
+function reshuffleOneCard(gs, card) {
+  const insertAt = Math.floor(Math.random()*Math.max(1, gs.deck.length));
+  gs.deck.splice(insertAt, 0, card);
+}
+
+function reshuffleDeck(gs) {
+  gs.deck = shuffleArr([...gs.discard]); gs.discard = [];
+  addLog(gs, 'สับกองทิ้งกลับเป็นกองจั่ว 🔀', 'system');
+}
+
+function removeFromHand(gs, pid, idx) { gs.hands[pid].splice(idx, 1); }
+
+function advanceTurn(gs) {
+  const alive = gs.playerOrder.filter(id => !gs.players[id]?.eliminated);
+  if (alive.length <= 1) return;
+  gs.turnsLeft = (typeof gs.turnsLeft==='number' ? gs.turnsLeft : 1) - 1;
+  if (gs.turnsLeft > 0) { gs.turnStartTime = Date.now(); return; }
+  const dir = gs.direction;
+  let nextIdx = gs.currentTurnIdx, steps = 0;
+  do {
+    nextIdx = ((nextIdx+dir)%gs.playerOrder.length+gs.playerOrder.length)%gs.playerOrder.length;
+    steps++;
+    if (steps > gs.playerOrder.length*2) break;
+  } while (gs.players[gs.playerOrder[nextIdx]]?.eliminated);
+  gs.currentTurnIdx = nextIdx;
+  const nextPlayerId = gs.playerOrder[nextIdx];
+  gs.extraTurns = gs.extraTurns||{};
+  const bonus = gs.extraTurns[nextPlayerId]||0;
+  gs.extraTurns[nextPlayerId] = 0;
+  gs.turnsLeft = 1 + bonus;
+  gs.turnStartTime = Date.now();
+}
+
+function getNextPlayerIdx(gs, fromIdx, dir) {
+  let nextIdx = fromIdx, steps = 0;
+  do {
+    nextIdx = ((nextIdx+dir)%gs.playerOrder.length+gs.playerOrder.length)%gs.playerOrder.length;
+    steps++;
+    if (steps > gs.playerOrder.length) break;
+  } while (gs.players[gs.playerOrder[nextIdx]]?.eliminated);
+  return nextIdx;
+}
+
+function addLog(gs, msg, type='system') {
+  gs.log = gs.log||[];
+  gs.log.push({msg, type, t:Date.now()});
+  if (gs.log.length > 50) gs.log = gs.log.slice(-50);
+}
+
+async function saveGS(gs) {
+  if (!db || !currentRoomId) return;
+  gs.version = (gs.version||0)+1;
+  await window._fb.update(window._fb.ref(db,`rooms/${currentRoomId}`), {gameState:gs});
+}
+
+function checkWin() {
+  if (!gameState) return;
+  const alive = gameState.playerOrder.filter(id => !gameState.players[id]?.eliminated);
+  if (alive.length === 1) {
+    const winner = gameState.players[alive[0]];
+    document.getElementById('winner-name').textContent = `${winner.avatar} ${winner.name}`;
+    document.getElementById('winner-desc').textContent = alive[0]===myId
+      ? '🎀 คุณชนะ! คุณคือผู้เชี่ยวชาญ Cybersecurity!'
+      : `${winner.name} รักษาเงินในกระเป๋าได้ดีที่สุด!`;
+    document.getElementById('winner-overlay').className = 'winner-overlay open';
+    if (alive[0]===myId) playSound('win'); else playSound('lose');
+    clearInterval(timerInterval);
+  }
+}
+
+function startTurnTimer() {
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    if (!gameState) return;
+    const elapsed = (Date.now()-(gameState.turnStartTime||Date.now()))/1000;
+    const total = gameState.timerSec||60;
+    const remaining = Math.max(0, total-elapsed);
+    const pct = remaining/total;
+    document.getElementById('timer-num').textContent = Math.ceil(remaining);
+    const circumference = 113;
+    const circle = document.getElementById('timer-circle');
+    circle.style.strokeDashoffset = circumference*(1-pct);
+    circle.className = 'progress'+(remaining<10?' danger':'');
+    if (remaining < 10 && Math.ceil(remaining)%2===0) playSound('timer_warn');
+    if (remaining <= 0 && !gameState.pendingThreat) {
+      const currentPlayerId = gameState.playerOrder[gameState.currentTurnIdx%gameState.playerOrder.length];
+      if (currentPlayerId === myId) { showToast('⏰ หมดเวลา! จั่วอัตโนมัติ','danger'); drawCard(); }
+    }
+    if (remaining <= 0 && gameState.pendingThreat && gameState.pendingThreat.targetId===myId) resolveThreat('accept');
+  }, 500);
+}
+
+function listenChat(code) {
+  if (!db) return;
+  const { ref, onValue } = window._fb;
+  onValue(ref(db, `rooms/${code}/chat`), (snap) => {
+    if (!snap.exists()) return;
+    const msgs = Object.values(snap.val()).sort((a,b)=>a.t-b.t);
+    const el = document.getElementById('chat-msgs');
+    el.innerHTML = '';
+    msgs.slice(-20).forEach(m => {
+      const div = document.createElement('div');
+      div.className = 'chat-msg';
+      div.innerHTML = `<span class="sender">${m.avatar}${m.name}</span>: ${m.text}`;
+      el.appendChild(div);
+    });
+    el.scrollTop = el.scrollHeight;
+    playSound('chat');
+  });
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text||!db||!currentRoomId) return;
+  await window._fb.push(window._fb.ref(db,`rooms/${currentRoomId}/chat`), {name:myName, avatar:myAvatar, text, t:Date.now()});
+  input.value = '';
+}
+
+async function sendReaction(emoji) {
+  floatEmoji(emoji);
+  if (!db||!currentRoomId) return;
+  await window._fb.push(window._fb.ref(db,`rooms/${currentRoomId}/chat`), {name:myName, avatar:myAvatar, text:emoji, t:Date.now()});
+}
+
+function floatEmoji(emoji) {
+  const el = document.createElement('div');
+  el.className = 'float-emoji'; el.textContent = emoji;
+  el.style.left = (20+Math.random()*60)+'vw';
+  el.style.bottom = '80px';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 1500);
+}
+
+function openImgManager() {
+  const grid = document.getElementById('img-manager-grid');
+  grid.innerHTML = '';
+  Object.values(CARD_DEFS).forEach(def => {
+    const slot = document.createElement('div');
+    slot.className = 'img-slot';
+    const imgSrc = cardImages[def.id];
+    slot.innerHTML = imgSrc
+      ? `<img class="img-slot-preview" src="${imgSrc}" />`
+      : `<div class="img-slot-emoji">${def.emoji}</div>`;
+    slot.innerHTML += `<div class="img-slot-name">${def.name}</div>
+      <div class="img-slot-hint">${imgSrc ? '✅ มีรูปแล้ว (70×70px)' : '📸 คลิกเพื่ออัปโหลดรูป 70×70px'}</div>`;
+    slot.onclick = () => {
+      document.getElementById('img-upload-input').dataset.cardId = def.id;
+      document.getElementById('img-upload-input').click();
+    };
+    grid.appendChild(slot);
+  });
+  openModal('modal-img-manager');
+}
+
+function handleImgUpload(event) {
+  const file = event.target.files[0];
+  const cardId = event.target.dataset.cardId;
+  if (!file||!cardId) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    cardImages[cardId] = e.target.result;
+    localStorage.setItem('cyberscam_card_images', JSON.stringify(cardImages));
+    showToast(`✅ อัปโหลดรูป "${CARD_DEFS[cardId]?.name}" สำเร็จ!`, 'success');
+    openImgManager();
+  };
+  reader.readAsDataURL(file);
+}
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+}
+
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function showToast(msg, type='info') {
+  const el = document.createElement('div');
+  el.className = 'toast '+type; el.textContent = msg;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(()=>el.remove(), 3500);
+}
+
+function switchTab(name) {
+  currentTab = name;
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const tabs=['create','join','public'];
+    t.classList.toggle('active', tabs[i]===name);
+  });
+  document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none');
+  document.getElementById('tab-'+name).style.display='';
+  if (name==='public') loadPublicRooms();
+}
+
+function updateTimerDisplay(val) { document.getElementById('timer-setting-display').textContent = val+' วินาที'; }
+
+function validatePlayerInfo() {
+  const nameInput = document.getElementById('playerNameInput').value.trim();
+  if (nameInput) myName = nameInput;
+  localStorage.setItem('cyberscam_name', myName);
+  localStorage.setItem('cyberscam_avatar', myAvatar);
+}
+
+function copyRoomCode() { navigator.clipboard?.writeText(currentRoomId||'').then(()=>showToast('คัดลอกโค้ดแล้ว! 📋','success')); }
+function toggleSound(btn) { soundOn=!soundOn; btn.classList.toggle('on',soundOn); }
+
+function showTargetModal(action) {
+  if (!gameState) return;
+  document.getElementById('target-modal-desc').textContent = `เลือกผู้เล่นที่ต้องการ "${action}":`;
+  const list = document.getElementById('target-list'); list.innerHTML = '';
+  gameState.playerOrder.forEach(pid => {
+    if (pid===myId||gameState.players[pid]?.eliminated) return;
+    const p = gameState.players[pid];
+    const item = document.createElement('div');
+    item.className = 'target-item';
+    item.innerHTML = `<div class="target-avatar">${p.avatar}</div>
+      <div><div class="target-name">${p.name}</div><div class="target-hp">💜 ${p.hp} แต้ม</div></div>`;
+    item.onclick = () => playActionCardWithTarget(pid);
+    list.appendChild(item);
+  });
+  openModal('modal-target');
+}
+
+function showSeeFuture(cards) {
+  const el = document.getElementById('see-future-cards'); el.innerHTML = '';
+  cards.forEach(card => {
+    if (!card) return;
+    const def = CARD_DEFS[card.defId]||card;
+    const div = document.createElement('div');
+    div.className = `card card-${def.color||'action'}`;
+    div.style.setProperty('--card-w','90px'); div.style.setProperty('--card-h','130px');
+    div.innerHTML = renderCardInner(def, card);
+    el.appendChild(div);
+  });
+  openModal('modal-see-future');
+}
+
+async function leaveRoom() {
+  if (!db||!currentRoomId) { showScreen('home'); return; }
+  const { ref, remove, get } = window._fb;
+  await remove(ref(db,`rooms/${currentRoomId}/players/${myId}`));
+  const snap = await get(ref(db,`rooms/${currentRoomId}/players`));
+  if (!snap.exists()) await remove(ref(db,`rooms/${currentRoomId}`));
+  currentRoomId = null; showScreen('home');
+}
+
+function leaveGameToHome() {
+  clearInterval(timerInterval); currentRoomId=null; gameState=null; threatModalShownFor=null;
+  showScreen('home');
+}
+
+async function playAgain() {
+  document.getElementById('winner-overlay').className='winner-overlay';
+  if (isHost&&currentRoomId) {
+    await window._fb.update(window._fb.ref(db,`rooms/${currentRoomId}`), {status:'waiting', gameState:null});
+    showScreen('lobby');
+  } else { showScreen('lobby'); }
+}
+
+function init() {
+  const savedName = localStorage.getItem('cyberscam_name');
+  const savedAvatar = localStorage.getItem('cyberscam_avatar');
+  const savedImages = localStorage.getItem('cyberscam_card_images');
+  if (savedName) { myName=savedName; document.getElementById('playerNameInput').value=savedName; }
+  if (savedAvatar) myAvatar = savedAvatar;
+  if (savedImages) try { cardImages=JSON.parse(savedImages); } catch(e){}
+  const sel = document.getElementById('avatar-selector');
+  AVATARS.forEach((av) => {
+    const btn = document.createElement('button');
+    btn.textContent = av;
+    btn.style.cssText = `background:var(--surface2);border:2px solid ${av===myAvatar?'var(--accent)':'var(--border)'};border-radius:8px;padding:4px 8px;font-size:1.3rem;cursor:pointer;transition:all 0.2s;`;
+    btn.onclick = () => {
+      myAvatar=av;
+      document.querySelectorAll('#avatar-selector button').forEach(b=>b.style.borderColor='var(--border)');
+      btn.style.borderColor='var(--accent)';
+      localStorage.setItem('cyberscam_avatar',av);
+    };
+    if (av===myAvatar) btn.style.borderColor='var(--accent)';
+    sel.appendChild(btn);
+  });
+  connectFirebase();
+}
+
+window.switchTab = switchTab; window.createRoom = createRoom; window.joinRoomByCode = joinRoomByCode;
+window.joinRoom = joinRoom; window.loadPublicRooms = loadPublicRooms; window.connectFirebase = connectFirebase;
+window.startGame = startGame; window.leaveRoom = leaveRoom; window.leaveGameToHome = leaveGameToHome;
+window.playAgain = playAgain; window.drawCard = drawCard; window.resolveThreat = resolveThreat;
+window.toggleSound = toggleSound; window.copyRoomCode = copyRoomCode; window.updateTimerDisplay = updateTimerDisplay;
+window.openImgManager = openImgManager; window.handleImgUpload = handleImgUpload;
+window.closeModal = closeModal; window.sendChat = sendChat; window.sendReaction = sendReaction;
+window.playActionCardWithTarget = playActionCardWithTarget;
+
+init();
+</script>
+</body>
+</html>
