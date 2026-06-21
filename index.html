@@ -333,6 +333,15 @@
   input[type="range"] { width:100%; accent-color: var(--accent); }
   .slider-scale { display: flex; justify-content: space-between; font-size: 0.66rem; color: var(--ink-faint); margin-top: 4px; }
 
+  .timer-presets { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+  .timer-chip {
+    flex:1; min-width:54px; padding:10px 6px; border-radius:10px;
+    border:1px solid var(--border); background:var(--surface3); color:var(--ink-dim);
+    font-family:var(--mono); font-size:0.8rem; font-weight:700; cursor:pointer; transition:all .15s;
+  }
+  .timer-chip:hover { border-color:var(--accent); color:var(--ink); transform: translateY(-1px); }
+  .timer-chip.active { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border-color:transparent; box-shadow:0 4px 14px rgba(157,123,255,.35); }
+
   /* ─── GAME ─── */
   #screen-game { padding: 0; position: relative; overflow: hidden; }
   .game-layout { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
@@ -481,6 +490,7 @@
   .card-defense { border-color: var(--defense); }
   .card-action  { border-color: var(--action); }
   .card-recovery{ border-color: var(--recovery); }
+  .card-wildcard{ border-color: var(--accent2); }
 
   .card-type-badge {
     position: absolute; top: 6px; left: 6px; z-index: 2;
@@ -493,6 +503,7 @@
   .badge-defense  { color: var(--defense); border: 1px solid var(--defense); }
   .badge-action   { color: var(--action); border: 1px solid var(--action); }
   .badge-recovery { color: var(--recovery); border: 1px solid var(--recovery); }
+  .badge-wildcard { color: var(--accent2); border: 1px solid var(--accent2); }
 
   .card-img-area {
     width: 100%; height: 64%;
@@ -531,6 +542,17 @@
     color: var(--accent); z-index: 2; pointer-events: none;
     text-shadow: 0 0 18px var(--accent);
   }
+
+  @keyframes deck-shuffle {
+    0% { transform: translateY(0) rotate(0deg); }
+    18% { transform: translateY(-8px) rotate(-10deg); }
+    36% { transform: translateY(0) rotate(10deg); }
+    54% { transform: translateY(-6px) rotate(-7deg); }
+    72% { transform: translateY(0) rotate(6deg); }
+    86% { transform: translateY(-3px) rotate(-2deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+  }
+  .shuffle-anim { animation: deck-shuffle 0.7s ease; }
 
   .my-section {
     background: rgba(11,7,18,0.88);
@@ -609,6 +631,11 @@
   .threat-img { width: 64px; height: 64px; border-radius: 12px; margin: 0 auto 8px; overflow: hidden; display:flex;align-items:center;justify-content:center; background: var(--bg); font-size: 2.2rem; }
   .threat-img img { width:100%;height:100%;object-fit:cover; }
   .threat-damage { font-size: 2.2rem; font-weight: 900; color: var(--threat); font-family: var(--mono); }
+
+  .forced-draw-icon { font-size: 2.8rem; text-align: center; margin-bottom: 10px; }
+  .forced-draw-amount { font-size: 2.4rem; font-weight: 900; color: var(--action); font-family: var(--mono); text-align: center; text-shadow: 0 0 18px rgba(255,184,77,0.4); }
+
+  .pick-cards-grid { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:16px 0; }
 
   .game-log {
     position: absolute; bottom: 10px; left: 10px;
@@ -837,12 +864,19 @@
   <div class="lobby-panel-wrap">
     <div class="panel" id="timer-settings-panel">
       <div class="panel-title">ตั้งเวลาต่อเทิร์น</div>
+      <div class="timer-presets" id="timer-presets">
+        <button type="button" class="timer-chip" data-val="30">30s</button>
+        <button type="button" class="timer-chip" data-val="45">45s</button>
+        <button type="button" class="timer-chip active" data-val="60">60s</button>
+        <button type="button" class="timer-chip" data-val="90">90s</button>
+        <button type="button" class="timer-chip" data-val="120">120s</button>
+      </div>
       <div class="slider-row">
-        <span>เวลาต่อเทิร์น</span>
+        <span>ปรับละเอียด</span>
         <span class="slider-val" id="timer-setting-display">60 วินาที</span>
       </div>
-      <input type="range" id="timerSetting" min="30" max="120" step="15" value="60" oninput="updateTimerDisplay(this.value)" />
-      <div class="slider-scale"><span>30s</span><span>60s</span><span>120s</span></div>
+      <input type="range" id="timerSetting" min="15" max="180" step="5" value="60" oninput="updateTimerDisplay(this.value)" />
+      <div class="slider-scale"><span>15s</span><span>90s</span><span>180s</span></div>
     </div>
 
     <div style="display:flex;gap:10px;" id="lobby-actions">
@@ -952,12 +986,43 @@
   </div>
 </div>
 
+<div class="modal-overlay threat-alert-modal" id="modal-forced-draw">
+  <div class="modal">
+    <div class="forced-draw-icon">📨</div>
+    <h2 style="text-align:center;color:var(--action);">โดนบังคับจั่ว!</h2>
+    <p style="text-align:center;" id="forced-draw-desc">คุณต้องจัดการการบังคับจั่วการ์ด</p>
+    <div class="forced-draw-amount" id="forced-draw-amount">2</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px;">
+      <button class="btn btn-danger btn-full" id="forced-draw-accept-btn" onclick="resolveForcedDraw('draw')">จั่วการ์ด</button>
+      <button class="btn btn-gold btn-full" style="display:none;" id="forced-draw-stack-btn" onclick="resolveForcedDraw('stack')">เล่น Forward ต่อ</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-target">
   <div class="modal">
     <h2 id="target-modal-title">เลือกเป้าหมาย</h2>
     <p id="target-modal-desc">เลือกผู้เล่นที่ต้องการส่งผลไปให้:</p>
     <div class="target-list" id="target-list"></div>
     <button class="btn btn-ghost btn-full" style="margin-top:12px;" onclick="cancelPendingAction()">ยกเลิก</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-steal-pick">
+  <div class="modal">
+    <h2>เลือกการ์ดที่จะขโมย</h2>
+    <p>เห็นแค่หลังการ์ด — เลือกแบบสุ่ม คุณจะรู้ว่าเป็นการ์ดอะไรหลังขโมยมาแล้ว:</p>
+    <div class="pick-cards-grid" id="steal-pick-cards"></div>
+    <button class="btn btn-ghost btn-full" onclick="cancelPendingAction()">ยกเลิก</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-joker-pick">
+  <div class="modal">
+    <h2>โจ๊กเกอร์จะเป็นการ์ดอะไร?</h2>
+    <p>เลือกได้ทุกใบ ยกเว้นการ์ดภัยคุกคามและการ์ดเกราะป้องกัน:</p>
+    <div class="pick-cards-grid" id="joker-pick-options"></div>
+    <button class="btn btn-ghost btn-full" onclick="closeModal('modal-joker-pick')">ยกเลิก</button>
   </div>
 </div>
 
@@ -1021,13 +1086,15 @@ const CARD_DEFS = {
   awareness:    { id:'awareness',    type:'defense',  name:'มีสติ',            emoji:'🧠', defends:'phishing',  desc:'ป้องกัน Phishing ได้', color:'defense' },
   double_check: { id:'double_check', type:'defense',  name:'ตรวจสอบสองชั้น',  emoji:'✅', defends:'fake_shop', desc:'ป้องกัน ร้านออนไลน์ปลอม ได้', color:'defense' },
   block:        { id:'block',        type:'defense',  name:'วางสาย/บล็อก',    emoji:'🚫', defends:'scammer',   desc:'ป้องกัน Scammers ได้', color:'defense' },
-  forward:      { id:'forward',      type:'action',   name:'แชร์ส่งต่อ',       emoji:'📤', desc:'บังคับคนถัดไปเล่น 2 เทิร์นติด', color:'action' },
+  forward:      { id:'forward',      type:'action',   name:'แชร์ส่งต่อ',       emoji:'📤', desc:'บังคับผู้เล่นถัดไปจั่วการ์ด 2 ใบ (เล่นต่อสะสมได้สูงสุด)', color:'action' },
   reverse:      { id:'reverse',      type:'action',   name:'เปลี่ยนทิศ',       emoji:'🔄', desc:'เปลี่ยนทิศการเล่น / สะท้อนกลับ', color:'action' },
   skip:         { id:'skip',         type:'action',   name:'Skip',             emoji:'⏭️', desc:'ข้ามเทิร์นตัวเอง ไม่ต้องจั่วเสี่ยง', color:'action' },
   see_future:   { id:'see_future',   type:'action',   name:'แอบส่องระบบ',     emoji:'🔮', desc:'ดูการ์ด 3 ใบบนสุดของกองจั่ว', color:'action' },
   wallet_switch:{ id:'wallet_switch',type:'action',   name:'สลับบัญชี',        emoji:'💱', desc:'สลับแต้มกับผู้เล่นคนอื่น', color:'action' },
   draw_bottom:  { id:'draw_bottom',  type:'action',   name:'จั่วใต้กอง',       emoji:'⬇️', desc:'จั่วจากใต้กองแทนบนสุด', color:'action' },
   shuffle:      { id:'shuffle',      type:'action',   name:'สับกองการ์ด',      emoji:'🔀', desc:'สับกองจั่วใหม่ทั้งหมด', color:'action' },
+  steal:        { id:'steal',        type:'action',   name:'ขโมยข้อมูล',      emoji:'🕵️', desc:'ขโมยการ์ด 1 ใบจากมือผู้เล่นอื่นแบบสุ่ม (เห็นแค่หลังการ์ด)', color:'action' },
+  joker:        { id:'joker',        type:'wildcard', name:'โจ๊กเกอร์',        emoji:'🃏', desc:'เลือกเป็นการ์ดอะไรก็ได้ ยกเว้นภัยคุกคาม/เกราะป้องกัน', color:'wildcard' },
   bonus:        { id:'bonus',        type:'recovery', name:'โบนัสเข้า!',       emoji:'💰', heal:1, desc:'ได้แต้มคืน +1 ทันที', color:'recovery' },
   cyber_police: { id:'cyber_police', type:'recovery', name:'ตำรวจไซเบอร์',    emoji:'👮', heal:2, desc:'ได้แต้มคืน +2', color:'recovery' },
   lucky:        { id:'lucky',        type:'recovery', name:'ถูกรางวัลที่ 5!',  emoji:'🎰', heal:2, desc:'ได้แต้มคืน +2 ไม่มีเงื่อนไข', color:'recovery' },
@@ -1044,8 +1111,11 @@ let gameState = null, roomListener = null, roomVal = null;
 let timerInterval = null;
 let pendingAction = null, soundOn = true;
 let threatModalShownFor = null;
+let forcedDrawModalShownFor = null;
 let myDisconnectRefs = [];
 let lastDrawAt = 0;
+let lastTimeoutAttempt = 0;
+let lastSeenLogLen = 0;
 
 /* ───────── image helper ───────── */
 function imgOrFallback(src, fallbackHtml) {
@@ -1091,6 +1161,7 @@ function playSound(name) {
     case 'join':    playTone(560,'sine',0.1,0.2); break;
     case 'chat':    playTone(1000,'sine',0.05,0.08); break;
     case 'reverse': playTone(350,'triangle',0.2,0.3); break;
+    case 'shuffle': [300,420,360,480].forEach((f,i)=>setTimeout(()=>playTone(f,'triangle',0.06,0.12),i*70)); break;
   }
 }
 
@@ -1294,7 +1365,8 @@ function listenRoom(code) {
 function teardownRoomState() {
   clearDisconnectHandlers();
   currentRoomId = null; isHost = false; gameState = null; roomVal = null;
-  threatModalShownFor = null; pendingAction = null;
+  threatModalShownFor = null; forcedDrawModalShownFor = null; pendingAction = null;
+  document.getElementById('winner-overlay')?.classList.remove('open');
   clearInterval(timerInterval);
   if (roomListener) { window._fb.off(roomListener); roomListener = null; }
 }
@@ -1352,47 +1424,86 @@ async function startGame() {
   }
 }
 
+/* ── Deck composition: fixed 60-card deck regardless of player count ──
+   15 threats / 15 defense / 23 action (incl. steal + joker) / 7 recovery = 60 */
+function buildDeck() {
+  const cards = [];
+  let seq = 0;
+  const add = (id, count) => { for(let i=0;i<count;i++) cards.push({ uid: `${id}_${seq++}_${Math.random().toString(36).slice(2,7)}`, defId:id }); };
+  add('phishing', 7);
+  add('fake_shop', 5);
+  add('scammer', 3);
+  add('awareness', 6);
+  add('double_check', 5);
+  add('block', 4);
+  add('forward', 4);
+  add('reverse', 3);
+  add('skip', 3);
+  add('see_future', 2);
+  add('wallet_switch', 2);
+  add('draw_bottom', 2);
+  add('shuffle', 2);
+  add('steal', 3);
+  add('joker', 2);
+  add('bonus', 4);
+  add('cyber_police', 2);
+  add('lucky', 1);
+  return cards; // total = 60
+}
+
+/* ── Initial deal ──
+   1) every player is guaranteed at least 2 defense cards in their starting hand
+   2) nobody can be dealt a threat card before the game properly begins
+   3) everyone ends up with exactly 5 cards (dealt in a round so it stays fair),
+      then leftover safe cards + every threat get shuffled back together to
+      form the live draw deck for normal play. */
 function buildInitialGameState(players, timerSec) {
-  const deck = buildDeck(players.length);
-  const shuffled = shuffleArr([...deck]);
+  const fullDeck = shuffleArr(buildDeck());
+  const threatCards = fullDeck.filter(c => CARD_DEFS[c.defId]?.type === 'threat');
+  const safeShuffled = shuffleArr(fullDeck.filter(c => CARD_DEFS[c.defId]?.type !== 'threat'));
+  const defensePool = safeShuffled.filter(c => CARD_DEFS[c.defId]?.type === 'defense');
+  const otherPool = safeShuffled.filter(c => CARD_DEFS[c.defId]?.type !== 'defense');
+
   const hands = {}, playerStates = {};
   players.forEach(p => {
     hands[p.id] = [];
     playerStates[p.id] = { id:p.id, name:p.name, avatar:p.avatar, hp:MAX_HP, eliminated:false };
-    for (let i = 0; i < 5; i++) { if (shuffled.length > 0) hands[p.id].push(shuffled.pop()); }
   });
+
+  // step 1: guarantee 2 defense cards per player
+  players.forEach(p => {
+    for (let i = 0; i < 2; i++) {
+      if (defensePool.length > 0) hands[p.id].push(defensePool.pop());
+      else if (otherPool.length > 0) hands[p.id].push(otherPool.pop());
+    }
+  });
+  while (defensePool.length > 0) otherPool.push(defensePool.pop());
+  const safePool = shuffleArr(otherPool);
+
+  // step 2: round-robin deal (the "draw 2 each in a circle" setup round) until everyone has 5
+  let safety = 0;
+  while (players.some(p => hands[p.id].length < 5) && safePool.length > 0 && safety < 1000) {
+    players.forEach(p => {
+      if (hands[p.id].length < 5 && safePool.length > 0) hands[p.id].push(safePool.pop());
+    });
+    safety++;
+  }
+
+  // step 3: leftovers + all threats become the live deck for normal play
+  const remainingDeck = shuffleArr([...safePool, ...threatCards]);
+
   return {
-    deck: shuffled, discard: [], hands,
+    deck: remainingDeck, discard: [], hands,
     players: playerStates,
     playerOrder: players.map(p=>p.id),
     currentTurnIdx: 0, direction: 1, timerSec,
-    turnStartTime: Date.now(), turnsLeft: 1, log: [{msg:'เกมเริ่มแล้ว! ขอให้โชคดี', type:'system', t:Date.now()}],
-    pendingThreat: null, extraTurns: {}, version: 1, winnerId: null,
+    turnStartTime: Date.now(), turnsLeft: 1,
+    log: [
+      {msg:'แจกไพ่เริ่มต้น: ทุกคนได้การ์ดเกราะป้องกันอย่างน้อย 2 ใบ ครบ 5 ใบ ยังไม่มีภัยคุกคาม', type:'system', t:Date.now()},
+      {msg:'เกมเริ่มแล้ว! ขอให้โชคดี', type:'system', t:Date.now()}
+    ],
+    pendingThreat: null, pendingForcedDraw: null, extraTurns: {}, version: 1, winnerId: null,
   };
-}
-
-function buildDeck(playerCount) {
-  const cards = [];
-  let seq = 0;
-  const add = (id, count) => { for(let i=0;i<count;i++) cards.push({ uid: `${id}_${seq++}_${Math.random().toString(36).slice(2,7)}`, defId:id }); };
-  const n = Math.max(2, playerCount);
-  add('phishing', n+2);
-  add('fake_shop', n+1);
-  add('scammer', Math.max(1, playerCount));
-  add('awareness', n+2);
-  add('double_check', n+1);
-  add('block', n);
-  add('forward', playerCount+1);
-  add('reverse', playerCount);
-  add('skip', playerCount+1);
-  add('see_future', playerCount);
-  add('wallet_switch', Math.max(1, playerCount-1));
-  add('draw_bottom', playerCount);
-  add('shuffle', 2);
-  add('bonus', playerCount+2);
-  add('cyber_police', playerCount);
-  add('lucky', playerCount+1);
-  return cards;
 }
 
 function shuffleArr(arr) {
@@ -1492,10 +1603,12 @@ function enterGameScreen() {
     showScreen('game');
     document.getElementById('g-room-code').textContent = currentRoomId;
     startTurnTimer();
+    lastSeenLogLen = 0;
   }
   renderGame();
   checkWin();
   checkPendingThreatForMe();
+  checkPendingForcedDrawForMe();
 }
 
 function checkPendingThreatForMe() {
@@ -1513,6 +1626,21 @@ function checkPendingThreatForMe() {
   }
 }
 
+function checkPendingForcedDrawForMe() {
+  if (!gameState) return;
+  const fd = gameState.pendingForcedDraw;
+  if (fd && fd.targetId === myId) {
+    const key = 'fd_'+fd.amount+'_'+gameState.currentTurnIdx+'_'+(gameState.turnStartTime||0);
+    if (forcedDrawModalShownFor !== key) {
+      forcedDrawModalShownFor = key;
+      showForcedDrawModal(fd);
+    }
+  } else {
+    forcedDrawModalShownFor = null;
+    closeModal('modal-forced-draw');
+  }
+}
+
 function renderGame() {
   if (!gameState) return;
   const gs = gameState;
@@ -1521,18 +1649,22 @@ function renderGame() {
   const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
   const isMyTurn = currentPlayerId === myId && !myState.eliminated;
   const iAmThreatened = gs.pendingThreat && gs.pendingThreat.targetId === myId;
+  const iAmForcedToDraw = gs.pendingForcedDraw && gs.pendingForcedDraw.targetId === myId;
 
   document.getElementById('whose-turn-label').textContent = isMyTurn ? 'คุณ!' : (gs.players[currentPlayerId]?.name||'-');
   const indicator = document.getElementById('turn-indicator');
   if (iAmThreatened) {
     indicator.className = 'turn-indicator threatened';
     indicator.textContent = 'ภัยคุกคามรอคุณตอบสนอง!';
+  } else if (iAmForcedToDraw) {
+    indicator.className = 'turn-indicator threatened';
+    indicator.textContent = `โดนบังคับจั่ว ${gs.pendingForcedDraw.amount} ใบ!`;
   } else {
     indicator.className = 'turn-indicator'+(isMyTurn?' my-turn':' wait');
     const extra = isMyTurn && (gs.turnsLeft||1) > 1 ? ` (เหลืออีก ${gs.turnsLeft} เทิร์น)` : '';
     indicator.textContent = isMyTurn ? `เทิร์นของคุณ!${extra}` : `รอ ${gs.players[currentPlayerId]?.name||'...'}`;
   }
-  const canAct = isMyTurn && !gs.pendingThreat && !myState.eliminated;
+  const canAct = isMyTurn && !gs.pendingThreat && !gs.pendingForcedDraw && !myState.eliminated;
   document.getElementById('draw-btn-wrap').style.display = canAct ? '' : 'none';
   document.getElementById('draw-pile-card').style.cursor = canAct ? 'pointer' : 'default';
   document.getElementById('draw-pile-card').style.opacity = canAct ? '1' : '0.6';
@@ -1582,7 +1714,7 @@ function renderOpponents(gs, currentPlayerId) {
   gs.playerOrder.forEach(pid => {
     if (pid === myId) return;
     const p = gs.players[pid]; if (!p) return;
-    const isThreatened = gs.pendingThreat && gs.pendingThreat.targetId === pid;
+    const isThreatened = (gs.pendingThreat && gs.pendingThreat.targetId === pid) || (gs.pendingForcedDraw && gs.pendingForcedDraw.targetId === pid);
     const div = document.createElement('div');
     div.className = 'opponent-card'+(pid===currentPlayerId?' active-turn':'')+(p.eliminated?' eliminated':'')+(isThreatened?' threatened':'');
     let hpHtml = '';
@@ -1606,7 +1738,7 @@ function renderHand(hand, canAct) {
     const def = CARD_DEFS[card.defId];
     if (!def) return;
     const div = document.createElement('div');
-    const isPlayable = canAct && (def.type === 'action' || def.type === 'recovery');
+    const isPlayable = canAct && (def.type === 'action' || def.type === 'recovery' || def.type === 'wildcard');
     div.className = `card hand-card card-${def.color||'action'}${isPlayable?' playable':' not-playable'}`;
     div.innerHTML = renderCardInner(def);
     div.onclick = () => onHandCardClick(card, def, canAct);
@@ -1617,7 +1749,7 @@ function renderHand(hand, canAct) {
 
 function renderCardInner(def) {
   const badgeClass = `badge-${def.color||'action'}`;
-  const typeLabel = {threat:'ภัยคุกคาม',defense:'เกราะป้องกัน',action:'แอคชั่น',recovery:'ฟื้นฟู'}[def.type]||def.type;
+  const typeLabel = {threat:'ภัยคุกคาม',defense:'เกราะป้องกัน',action:'แอคชั่น',recovery:'ฟื้นฟู',wildcard:'ไวลด์การ์ด'}[def.type]||def.type;
   return `
     <div class="card-type-badge ${badgeClass}">${typeLabel}</div>
     <div class="card-img-area">${cardImgHtml(def)}</div>
@@ -1632,6 +1764,13 @@ function renderLog(log) {
   const el = document.getElementById('game-log');
   el.innerHTML = '';
   if (!log) return;
+  if (log.length > lastSeenLogLen) {
+    const newEntries = log.slice(lastSeenLogLen);
+    if (newEntries.some(e => e.msg && (e.msg.includes('สับ') || e.msg.includes('จั่วบังคับ') || e.msg.includes('จั่วการ์ดบังคับ')))) {
+      triggerDeckAnim();
+    }
+  }
+  lastSeenLogLen = log.length;
   log.slice(-8).forEach(entry => {
     const div = document.createElement('div');
     div.className = 'log-entry '+(entry.type||'system');
@@ -1641,10 +1780,21 @@ function renderLog(log) {
   el.scrollTop = el.scrollHeight;
 }
 
+function triggerDeckAnim() {
+  const pile = document.getElementById('draw-pile-card');
+  if (!pile) return;
+  pile.classList.remove('shuffle-anim');
+  void pile.offsetWidth;
+  pile.classList.add('shuffle-anim');
+  playSound('shuffle');
+}
+
 function onHandCardClick(card, def, canAct) {
   if (!canAct) {
     if (gameState?.pendingThreat?.targetId === myId) showToast('ต้องจัดการภัยคุกคามก่อน (ดูป็อปอัพ)','info');
+    else if (gameState?.pendingForcedDraw?.targetId === myId) showToast('ต้องจัดการการบังคับจั่วก่อน (ดูป็อปอัพ)','info');
     else if (gameState?.pendingThreat) showToast('รอผู้เล่นอื่นจัดการภัยคุกคามก่อน','info');
+    else if (gameState?.pendingForcedDraw) showToast('รอผู้เล่นอื่นจัดการบังคับจั่วก่อน','info');
     else if (def.type === 'defense') showToast('การ์ดเกราะใช้ได้เมื่อเจอภัยคุกคามเท่านั้น','info');
     else if (def.type === 'threat') showToast('การ์ดภัยคุกคามจะออกเองตอนจั่ว วางเองไม่ได้','info');
     else showToast('ยังไม่ใช่เทิร์นของคุณ','info');
@@ -1652,18 +1802,39 @@ function onHandCardClick(card, def, canAct) {
   }
   if (def.type === 'defense') { showToast('การ์ดเกราะใช้ได้เมื่อเจอภัยคุกคามเท่านั้น','info'); return; }
   if (def.type === 'threat') { showToast('การ์ดภัยคุกคามจะออกเองตอนจั่ว','info'); return; }
+  if (def.type === 'wildcard') { showJokerPickModal(card); return; }
   playSound('play');
   if (def.type === 'action') playActionCard(card, def);
   else if (def.type === 'recovery') playRecoveryCard(card, def);
 }
 
+/* ───────── joker (wildcard) ───────── */
+function showJokerPickModal(jokerCard) {
+  const wrap = document.getElementById('joker-pick-options');
+  wrap.innerHTML = '';
+  Object.values(CARD_DEFS).filter(d => d.type==='action' || d.type==='recovery').forEach(d => {
+    const div = document.createElement('div');
+    div.className = `card card-${d.color||'action'}`;
+    div.style.setProperty('--card-w','82px'); div.style.setProperty('--card-h','118px');
+    div.innerHTML = renderCardInner(d);
+    div.onclick = () => { closeModal('modal-joker-pick'); applyJokerAs(jokerCard, d); };
+    wrap.appendChild(div);
+  });
+  openModal('modal-joker-pick');
+}
+
+function applyJokerAs(jokerCard, chosenDef) {
+  playSound('play');
+  const pseudoCard = { uid: jokerCard.uid, defId: jokerCard.defId };
+  if (chosenDef.type === 'action') playActionCard(pseudoCard, chosenDef);
+  else if (chosenDef.type === 'recovery') playRecoveryCard(pseudoCard, chosenDef);
+}
+
 /* ───────── transactional state mutation core ─────────
    Every gameplay mutation goes through runGameTransaction, which hands the
    mutator the *latest* server copy of gameState (not a possibly-stale local
-   copy). This is the fix for "draw a damage card and then can't do anything,
-   forward doesn't work, etc." — those were caused by concurrent
-   read-modify-write races where one client's write silently overwrote
-   another's. Firebase transactions retry automatically on conflict. */
+   copy). Firebase transactions retry automatically on conflict, which is
+   what keeps concurrent plays (forced draws, steals, threats) consistent. */
 async function runGameTransaction(mutator, opts = {}) {
   if (!db || !currentRoomId) return false;
   const { ref, runTransaction } = window._fb;
@@ -1703,7 +1874,7 @@ async function playActionCard(card, def) {
     let snapshot = null;
     const ok = await runGameTransaction(gs => {
       const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
-      if (currentPlayerId !== myId || gs.pendingThreat) return;
+      if (currentPlayerId !== myId || gs.pendingThreat || gs.pendingForcedDraw) return;
       const taken = removeFromHandByUid(gs, myId, card.uid);
       if (!taken) return;
       gs.discard = gs.discard||[]; gs.discard.push(taken);
@@ -1717,7 +1888,7 @@ async function playActionCard(card, def) {
   if (def.id === 'shuffle') {
     await runGameTransaction(gs => {
       const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
-      if (currentPlayerId !== myId || gs.pendingThreat) return;
+      if (currentPlayerId !== myId || gs.pendingThreat || gs.pendingForcedDraw) return;
       const taken = removeFromHandByUid(gs, myId, card.uid);
       if (!taken) return;
       gs.deck = shuffleArr([...gs.deck]);
@@ -1730,7 +1901,7 @@ async function playActionCard(card, def) {
   if (def.id === 'skip') {
     await runGameTransaction(gs => {
       const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
-      if (currentPlayerId !== myId || gs.pendingThreat) return;
+      if (currentPlayerId !== myId || gs.pendingThreat || gs.pendingForcedDraw) return;
       const taken = removeFromHandByUid(gs, myId, card.uid);
       if (!taken) return;
       gs.discard = gs.discard||[]; gs.discard.push(taken);
@@ -1743,7 +1914,7 @@ async function playActionCard(card, def) {
   if (def.id === 'reverse') {
     const ok = await runGameTransaction(gs => {
       const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
-      if (currentPlayerId !== myId || gs.pendingThreat) return;
+      if (currentPlayerId !== myId || gs.pendingThreat || gs.pendingForcedDraw) return;
       const taken = removeFromHandByUid(gs, myId, card.uid);
       if (!taken) return;
       gs.direction *= -1;
@@ -1758,7 +1929,7 @@ async function playActionCard(card, def) {
   if (def.id === 'draw_bottom') {
     await runGameTransaction(gs => {
       const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
-      if (currentPlayerId !== myId || gs.pendingThreat) return;
+      if (currentPlayerId !== myId || gs.pendingThreat || gs.pendingForcedDraw) return;
       const taken = removeFromHandByUid(gs, myId, card.uid);
       if (!taken) return;
       if (gs.deck.length === 0) reshuffleDeck(gs);
@@ -1782,29 +1953,54 @@ async function playActionCard(card, def) {
     });
     return;
   }
-  if (['forward','wallet_switch'].includes(def.id)) {
+  if (def.id === 'forward') {
+    const ok = await runGameTransaction(gs => {
+      const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
+      if (currentPlayerId !== myId || gs.pendingThreat || gs.pendingForcedDraw) return;
+      const taken = removeFromHandByUid(gs, myId, card.uid);
+      if (!taken) return;
+      gs.discard = gs.discard||[]; gs.discard.push(taken);
+      const nextIdx = getNextPlayerIdx(gs, gs.currentTurnIdx, gs.direction);
+      const nextId = gs.playerOrder[nextIdx];
+      gs.pendingForcedDraw = { targetId: nextId, amount: 2 };
+      gs.currentTurnIdx = nextIdx;
+      gs.turnsLeft = 1;
+      gs.turnStartTime = Date.now();
+      addLog(gs, `${myName} เล่น Forward! บังคับ ${gs.players[nextId]?.name} จั่ว 2 ใบ (เล่นต่อให้กลายเป็น 4 ได้)`, 'action');
+      return gs;
+    });
+    if (ok) playSound('reverse');
+    return;
+  }
+  if (def.id === 'steal') {
     pendingAction = { uid: card.uid, def };
-    showTargetModal(def.id==='forward' ? 'บังคับเล่น 2 เทิร์นติด' : 'สลับแต้มกับ');
+    showTargetModal('ขโมยการ์ดจาก');
+    return;
+  }
+  if (def.id === 'wallet_switch') {
+    pendingAction = { uid: card.uid, def };
+    showTargetModal('สลับแต้มกับ');
     return;
   }
 }
 
 async function playActionCardWithTarget(targetId) {
   if (!pendingAction) return;
+  if (pendingAction.def.id === 'steal') {
+    closeModal('modal-target');
+    showStealPickModal(targetId);
+    return;
+  }
   const { uid, def } = pendingAction;
   pendingAction = null; closeModal('modal-target');
   await runGameTransaction(gs => {
     const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
-    if (currentPlayerId !== myId || gs.pendingThreat) return;
+    if (currentPlayerId !== myId || gs.pendingThreat || gs.pendingForcedDraw) return;
     if (!gs.players[targetId] || gs.players[targetId].eliminated) return;
     const taken = removeFromHandByUid(gs, myId, uid);
     if (!taken) return;
     gs.discard = gs.discard||[]; gs.discard.push(taken);
-    if (def.id === 'forward') {
-      gs.extraTurns = gs.extraTurns || {};
-      gs.extraTurns[targetId] = (gs.extraTurns[targetId]||0) + 1;
-      addLog(gs, `${myName} ส่งการ์ด Forward ให้ ${gs.players[targetId]?.name} (เล่น 2 เทิร์นติด)`, 'action');
-    } else if (def.id === 'wallet_switch') {
+    if (def.id === 'wallet_switch') {
       const myHp = gs.players[myId].hp, tHp = gs.players[targetId].hp;
       gs.players[myId].hp = tHp;
       gs.players[targetId].hp = myHp;
@@ -1818,12 +2014,61 @@ async function playActionCardWithTarget(targetId) {
 function cancelPendingAction() {
   pendingAction = null;
   closeModal('modal-target');
+  closeModal('modal-steal-pick');
+}
+
+/* ───────── steal ───────── */
+function showStealPickModal(targetId) {
+  pendingAction = { ...pendingAction, targetId };
+  const hand = gameState?.hands?.[targetId] || [];
+  const wrap = document.getElementById('steal-pick-cards');
+  wrap.innerHTML = '';
+  if (hand.length === 0) {
+    wrap.innerHTML = '<div style="color:var(--ink-dim);padding:12px;">ผู้เล่นคนนี้ไม่มีการ์ดในมือ</div>';
+  } else {
+    hand.forEach((c, idx) => {
+      const div = document.createElement('div');
+      div.className = 'card card-back';
+      div.style.setProperty('--card-w','78px'); div.style.setProperty('--card-h','112px');
+      div.innerHTML = `<div class="card-back-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6v6c0 5 3.4 8.6 8 10 4.6-1.4 8-5 8-10V6l-8-4z" fill="white"/></svg></div>`;
+      div.onclick = () => resolveSteal(idx);
+      wrap.appendChild(div);
+    });
+  }
+  openModal('modal-steal-pick');
+}
+
+async function resolveSteal(idx) {
+  if (!pendingAction || pendingAction.def.id !== 'steal') return;
+  const { uid, targetId } = pendingAction;
+  pendingAction = null;
+  closeModal('modal-steal-pick');
+  const ok = await runGameTransaction(gs => {
+    const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
+    if (currentPlayerId !== myId || gs.pendingThreat || gs.pendingForcedDraw) return;
+    if (!gs.players[targetId] || gs.players[targetId].eliminated) return;
+    const taken = removeFromHandByUid(gs, myId, uid);
+    if (!taken) return;
+    gs.discard = gs.discard||[]; gs.discard.push(taken);
+    const targetHand = gs.hands[targetId]||[];
+    if (idx < 0 || idx >= targetHand.length) {
+      addLog(gs, `${myName} พยายามขโมยแต่ไม่มีการ์ดให้ขโมยแล้ว`, 'action');
+    } else {
+      const stolen = targetHand.splice(idx,1)[0];
+      gs.hands[myId] = gs.hands[myId]||[];
+      gs.hands[myId].push(stolen);
+      addLog(gs, `${myName} ขโมยการ์ด 1 ใบจาก ${gs.players[targetId]?.name}!`, 'action');
+    }
+    advanceTurn(gs);
+    return gs;
+  });
+  if (ok) playSound('play');
 }
 
 async function playRecoveryCard(card, def) {
   const ok = await runGameTransaction(gs => {
     const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
-    if (currentPlayerId !== myId || gs.pendingThreat) return;
+    if (currentPlayerId !== myId || gs.pendingThreat || gs.pendingForcedDraw) return;
     const taken = removeFromHandByUid(gs, myId, card.uid);
     if (!taken) return;
     const p = gs.players[myId];
@@ -1846,6 +2091,7 @@ async function drawCard() {
     const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
     if (currentPlayerId !== myId) return;
     if (gs.pendingThreat) return;
+    if (gs.pendingForcedDraw) return;
     if (gs.players[myId]?.eliminated) return;
     if (gs.deck.length === 0) reshuffleDeck(gs);
     if (gs.deck.length === 0) { addLog(gs,'กองการ์ดหมดแล้ว! ข้ามเทิร์น','system'); advanceTurn(gs); return gs; }
@@ -1979,8 +2225,6 @@ async function resolveThreat(action, cardUid) {
       const nextIdx = getNextPlayerIdx(gs, gs.currentTurnIdx, gs.direction);
       const nextId = gs.playerOrder[nextIdx];
       gs.pendingThreat = { card: threat.card, targetId: nextId };
-      gs.extraTurns = gs.extraTurns||{};
-      gs.extraTurns[nextId] = (gs.extraTurns[nextId]||0)+1;
       addLog(gs, `${myName} ส่งต่อ "${threatDef.name}" ให้ ${gs.players[nextId]?.name}!`, 'action');
       result = 'forward';
       return gs;
@@ -1992,6 +2236,84 @@ async function resolveThreat(action, cardUid) {
     else if (result === 'defend') playSound('defense');
   } else {
     checkPendingThreatForMe();
+  }
+}
+
+/* ───────── forced draw (Forward chain) ───────── */
+function showForcedDrawModal(fd) {
+  document.getElementById('forced-draw-desc').textContent = `คุณโดน Forward! ต้องจัดการการบังคับจั่ว ${fd.amount} ใบ`;
+  document.getElementById('forced-draw-amount').textContent = fd.amount;
+  document.getElementById('forced-draw-accept-btn').textContent = `จั่วการ์ด ${fd.amount} ใบ`;
+  const hand = gameState?.hands?.[myId] || [];
+  const hasForward = hand.some(c => CARD_DEFS[c.defId]?.id === 'forward');
+  const otherAlive = (gameState?.playerOrder||[]).filter(pid => pid!==myId && !gameState.players[pid]?.eliminated);
+  const stackBtn = document.getElementById('forced-draw-stack-btn');
+  if (hasForward && otherAlive.length > 0) {
+    stackBtn.style.display = '';
+    stackBtn.textContent = `เล่น Forward ต่อ (ส่งต่อเป็น ${fd.amount+2} ใบ)`;
+  } else {
+    stackBtn.style.display = 'none';
+  }
+  playSound('threat');
+  openModal('modal-forced-draw');
+}
+
+async function resolveForcedDraw(action) {
+  closeModal('modal-forced-draw');
+  forcedDrawModalShownFor = null;
+  if (action === 'draw') {
+    const ok = await runGameTransaction(gs => {
+      const fd = gs.pendingForcedDraw;
+      const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
+      if (!fd || fd.targetId !== myId || currentPlayerId !== myId) return;
+      const amount = fd.amount;
+      gs.pendingForcedDraw = null;
+      gs.hands[myId] = gs.hands[myId]||[];
+      let drawnCount = 0;
+      for (let i=0;i<amount;i++) {
+        if (gs.deck.length===0) reshuffleDeck(gs);
+        if (gs.deck.length===0) break;
+        const drawn = gs.deck.pop();
+        drawnCount++;
+        const def = CARD_DEFS[drawn.defId];
+        if (def?.type==='threat') {
+          gs.players[myId].hp = Math.max(0, gs.players[myId].hp + def.damage);
+          addLog(gs, `${myName} จั่วบังคับเจอ "${def.name}" โดน ${def.damage} แต้ม!`, 'threat');
+          reshuffleOneCard(gs, drawn);
+          if (gs.players[myId].hp<=0 && !gs.players[myId].eliminated) {
+            gs.players[myId].eliminated = true;
+            addLog(gs, `${myName} ตกรอบ!`, 'threat');
+          }
+        } else {
+          gs.hands[myId].push(drawn);
+        }
+      }
+      addLog(gs, `${myName} จั่วการ์ดบังคับ ${drawnCount} ใบ`, 'system');
+      maybeFinishGame(gs);
+      if (!gs.winnerId) advanceTurn(gs);
+      return gs;
+    });
+    if (ok) playSound('draw');
+  } else if (action === 'stack') {
+    const ok = await runGameTransaction(gs => {
+      const fd = gs.pendingForcedDraw;
+      const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
+      if (!fd || fd.targetId !== myId || currentPlayerId !== myId) return;
+      const hand = gs.hands[myId]||[];
+      const idx = hand.findIndex(c => CARD_DEFS[c.defId]?.id==='forward');
+      if (idx === -1) return;
+      const taken = hand.splice(idx,1)[0];
+      gs.discard = gs.discard||[]; gs.discard.push(taken);
+      const nextIdx = getNextPlayerIdx(gs, gs.currentTurnIdx, gs.direction);
+      const nextId = gs.playerOrder[nextIdx];
+      gs.pendingForcedDraw = { targetId: nextId, amount: fd.amount + 2 };
+      gs.currentTurnIdx = nextIdx;
+      gs.turnsLeft = 1;
+      gs.turnStartTime = Date.now();
+      addLog(gs, `${myName} เล่น Forward ต่อ! ส่งบังคับจั่ว ${fd.amount+2} ใบให้ ${gs.players[nextId]?.name}`, 'action');
+      return gs;
+    });
+    if (ok) playSound('reverse');
   }
 }
 
@@ -2085,16 +2407,91 @@ function startTurnTimer() {
     circle.className = 'progress'+(remaining<10?' danger':'');
     if (remaining < 10 && remaining > 0 && Math.ceil(remaining)%2===0) playSound('timer_warn');
 
-    const currentPlayerId = gameState.playerOrder[gameState.currentTurnIdx%gameState.playerOrder.length];
     if (remaining <= 0) {
-      if (gameState.pendingThreat) {
-        if (gameState.pendingThreat.targetId === myId) resolveThreat('accept');
-      } else if (currentPlayerId === myId && !gameState.players[myId]?.eliminated) {
-        showToast('หมดเวลา! จั่วอัตโนมัติ','danger');
-        drawCard();
-      }
+      attemptTimeoutResolve();
     }
   }, 500);
+}
+
+function attemptTimeoutResolve() {
+  const now = Date.now();
+  if (now - lastTimeoutAttempt < 1200) return;
+  lastTimeoutAttempt = now;
+  forceTimeoutResolve();
+}
+
+/* Any connected client (not just the player whose turn it is) can trigger
+   this once the timer hits zero — this is the fix for "timer runs out but
+   the turn never passes to someone else", which used to happen whenever the
+   active player's tab was closed/inactive and nobody else was driving their
+   turn forward. The transaction re-checks elapsed time against the *server*
+   copy of turnStartTime, so a late/duplicate trigger from another client is
+   just a safe no-op once the turn has already moved on. */
+async function forceTimeoutResolve() {
+  await runGameTransaction(gs => {
+    const total = gs.timerSec||60;
+    const elapsed = (Date.now() - (gs.turnStartTime||Date.now()))/1000;
+    if (elapsed < total) return; // already moved on
+
+    if (gs.pendingForcedDraw) {
+      const fd = gs.pendingForcedDraw;
+      const targetId = fd.targetId;
+      if (!gs.players[targetId]) return;
+      gs.pendingForcedDraw = null;
+      gs.hands[targetId] = gs.hands[targetId]||[];
+      for (let i=0;i<fd.amount;i++) {
+        if (gs.deck.length===0) reshuffleDeck(gs);
+        if (gs.deck.length===0) break;
+        const drawn = gs.deck.pop();
+        const def = CARD_DEFS[drawn.defId];
+        if (def?.type==='threat') {
+          gs.players[targetId].hp = Math.max(0, gs.players[targetId].hp + def.damage);
+          reshuffleOneCard(gs, drawn);
+          if (gs.players[targetId].hp<=0 && !gs.players[targetId].eliminated) gs.players[targetId].eliminated = true;
+        } else {
+          gs.hands[targetId].push(drawn);
+        }
+      }
+      addLog(gs, `${gs.players[targetId]?.name} หมดเวลา จั่วการ์ดบังคับอัตโนมัติ`, 'system');
+      maybeFinishGame(gs);
+      if (!gs.winnerId) advanceTurn(gs);
+      return gs;
+    }
+
+    if (gs.pendingThreat) {
+      const threat = gs.pendingThreat;
+      const threatDef = CARD_DEFS[threat.card.defId];
+      if (!threatDef || !gs.players[threat.targetId]) return;
+      gs.pendingThreat = null;
+      gs.players[threat.targetId].hp = Math.max(0, gs.players[threat.targetId].hp + threatDef.damage);
+      addLog(gs, `${gs.players[threat.targetId]?.name} หมดเวลา โดน "${threatDef.name}" ${threatDef.damage} แต้ม`, 'threat');
+      if (gs.players[threat.targetId].hp <= 0 && !gs.players[threat.targetId].eliminated) {
+        gs.players[threat.targetId].eliminated = true;
+        addLog(gs, `${gs.players[threat.targetId]?.name} ตกรอบ!`, 'threat');
+      }
+      reshuffleOneCard(gs, threat.card);
+      maybeFinishGame(gs);
+      if (!gs.winnerId) advanceTurn(gs);
+      return gs;
+    }
+
+    const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
+    if (gs.players[currentPlayerId]?.eliminated) { advanceTurn(gs); return gs; }
+    if (gs.deck.length === 0) reshuffleDeck(gs);
+    if (gs.deck.length === 0) { addLog(gs,'กองการ์ดหมดแล้ว! ข้ามเทิร์น','system'); advanceTurn(gs); return gs; }
+    const drawn = gs.deck.pop();
+    const def = CARD_DEFS[drawn.defId];
+    if (def?.type === 'threat') {
+      gs.pendingThreat = { card: drawn, targetId: currentPlayerId };
+      addLog(gs, `${gs.players[currentPlayerId]?.name} หมดเวลา จั่วได้ "${def.name}"!`, 'threat');
+    } else {
+      gs.hands[currentPlayerId] = gs.hands[currentPlayerId]||[];
+      gs.hands[currentPlayerId].push(drawn);
+      addLog(gs, `${gs.players[currentPlayerId]?.name} หมดเวลา จั่วการ์ดอัตโนมัติ`, 'system');
+      advanceTurn(gs);
+    }
+    return gs;
+  }, { silent: true });
 }
 
 /* ───────── chat ───────── */
@@ -2167,7 +2564,12 @@ function switchTab(name) {
   if (name==='public') loadPublicRooms();
 }
 
-function updateTimerDisplay(val) { document.getElementById('timer-setting-display').textContent = val+' วินาที'; }
+function updateTimerDisplay(val) {
+  const v = String(val);
+  document.getElementById('timer-setting-display').textContent = v+' วินาที';
+  document.getElementById('timerSetting').value = v;
+  document.querySelectorAll('.timer-chip').forEach(c => c.classList.toggle('active', String(c.dataset.val)===v));
+}
 
 function validatePlayerInfo() {
   const nameInput = document.getElementById('playerNameInput').value.trim();
@@ -2257,6 +2659,7 @@ async function leaveRoom() {
 }
 
 function leaveGameToHome() {
+  document.getElementById('winner-overlay').classList.remove('open');
   doLeaveRoom().finally(() => {
     showScreen('home');
     loadPublicRooms();
@@ -2305,6 +2708,9 @@ function init() {
     };
     sel.appendChild(btn);
   }
+  document.querySelectorAll('.timer-chip').forEach(btn => {
+    btn.addEventListener('click', () => updateTimerDisplay(btn.dataset.val));
+  });
   window.addEventListener('beforeunload', () => {
     if (currentRoomId && db) {
       try { window._fb.remove(window._fb.ref(db, `rooms/${currentRoomId}/players/${myId}`)); } catch(e){}
@@ -2317,6 +2723,7 @@ window.switchTab = switchTab; window.createRoom = createRoom; window.joinRoomByC
 window.joinRoom = joinRoom; window.loadPublicRooms = loadPublicRooms; window.connectFirebase = connectFirebase;
 window.startGame = startGame; window.leaveRoom = leaveRoom; window.leaveGameToHome = leaveGameToHome;
 window.playAgain = playAgain; window.drawCard = drawCard; window.resolveThreat = resolveThreat;
+window.resolveForcedDraw = resolveForcedDraw;
 window.toggleSound = toggleSound; window.copyRoomCode = copyRoomCode; window.updateTimerDisplay = updateTimerDisplay;
 window.closeModal = closeModal; window.sendChat = sendChat; window.sendReaction = sendReaction;
 window.playActionCardWithTarget = playActionCardWithTarget; window.cancelPendingAction = cancelPendingAction;
