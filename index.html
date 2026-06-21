@@ -3,273 +3,335 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🖤 CyberScam – เกมการ์ดต้านภัยไซเบอร์</title>
+<title>CYBERSCAM — เกมการ์ดต้านภัยไซเบอร์</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&family=Share+Tech+Mono&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Share+Tech+Mono&display=swap');
 
   :root {
-    --bg: #0a0010;
-    --surface: #13001f;
-    --surface2: #1a0028;
-    --border: #3d0060;
-    --accent: #c77dff;
-    --accent2: #ff6b9d;
-    --accent3: #e040fb;
-    --gold: #ff9de2;
-    --text: #f0d6ff;
-    --text-dim: #7c5c99;
-    --threat: #ff3366;
-    --defense: #b39ddb;
-    --action: #e040fb;
-    --recovery: #ff80ab;
+    --bg: #0b0712;
+    --bg2: #100a1a;
+    --surface: #161025;
+    --surface2: #1d1530;
+    --surface3: #261c3d;
+    --border: #382a55;
+    --border-soft: #2a2040;
+    --accent: #9d7bff;
+    --accent2: #ff6fae;
+    --accent3: #ffb84d;
+    --ink: #f2eaff;
+    --ink-dim: #9a8cba;
+    --ink-faint: #5e5479;
+    --threat: #ff4d6a;
+    --defense: #5ed6c0;
+    --action: #ffb84d;
+    --recovery: #7bffb0;
     --font: 'Sarabun', sans-serif;
+    --display: 'Space Grotesk', sans-serif;
     --mono: 'Share Tech Mono', monospace;
-    --radius: 14px;
-    --card-w: 110px;
-    --card-h: 160px;
-
-    /* Kuromi star/bow accent */
-    --kuro-purple: #6a0dad;
-    --kuro-pink: #ff6b9d;
-    --kuro-dark: #1a0028;
-    --kuro-light: #e8b4f8;
-    --kuro-skull: #d4b8e0;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --card-w: 112px;
+    --card-h: 162px;
+    --shadow: 0 12px 40px rgba(0,0,0,0.55);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  html, body { height: 100%; }
+
   body {
     background: var(--bg);
-    color: var(--text);
+    color: var(--ink);
     font-family: var(--font);
     min-height: 100vh;
     overflow-x: hidden;
     background-image:
-      radial-gradient(ellipse at 15% 15%, #3d006040 0%, transparent 55%),
-      radial-gradient(ellipse at 85% 85%, #6a0dad30 0%, transparent 55%),
-      radial-gradient(ellipse at 50% 50%, #c77dff08 0%, transparent 70%);
+      radial-gradient(ellipse 60% 50% at 12% 8%, #5b2bb840 0%, transparent 60%),
+      radial-gradient(ellipse 55% 45% at 90% 90%, #ff6fae22 0%, transparent 60%),
+      radial-gradient(ellipse 80% 60% at 50% 40%, #9d7bff10 0%, transparent 70%);
   }
 
-  /* Stars background */
   body::after {
     content: '';
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background-image:
-      radial-gradient(1px 1px at 10% 15%, #c77dff40, transparent),
-      radial-gradient(1px 1px at 25% 45%, #ff6b9d40, transparent),
-      radial-gradient(1px 1px at 60% 10%, #e040fb50, transparent),
-      radial-gradient(1px 1px at 80% 55%, #c77dff30, transparent),
-      radial-gradient(1px 1px at 35% 80%, #ff80ab30, transparent),
-      radial-gradient(1px 1px at 90% 30%, #e040fb40, transparent),
-      radial-gradient(1.5px 1.5px at 45% 60%, #c77dff50, transparent),
-      radial-gradient(1px 1px at 70% 80%, #ff6b9d30, transparent);
+      radial-gradient(1px 1px at 8% 12%, #9d7bff55, transparent),
+      radial-gradient(1px 1px at 22% 48%, #ff6fae50, transparent),
+      radial-gradient(1px 1px at 58% 8%, #ffb84d40, transparent),
+      radial-gradient(1px 1px at 78% 52%, #9d7bff40, transparent),
+      radial-gradient(1px 1px at 33% 78%, #7bffb030, transparent),
+      radial-gradient(1px 1px at 92% 28%, #ff6fae40, transparent),
+      radial-gradient(1.5px 1.5px at 46% 62%, #9d7bff55, transparent),
+      radial-gradient(1px 1px at 68% 84%, #ffb84d30, transparent);
     pointer-events: none;
     z-index: 0;
-  }
-
-  /* Scanline */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(199,125,255,0.012) 3px, rgba(199,125,255,0.012) 6px);
-    pointer-events: none;
-    z-index: 9999;
   }
 
   .screen { display: none; min-height: 100vh; position: relative; z-index: 1; }
   .screen.active { display: flex; flex-direction: column; }
 
-  /* ─── HOME ─── */
-  #screen-home {
-    align-items: center;
-    justify-content: flex-start;
-    padding: 32px 20px;
-    gap: 20px;
-  }
-
-  /* Kuromi logo */
-  .logo { text-align: center; margin-bottom: 4px; }
-  .kuromi-face {
-    font-size: 4rem;
-    line-height: 1;
-    filter: drop-shadow(0 0 20px #c77dff80);
-    animation: kuromi-bob 3s ease-in-out infinite;
-  }
-  @keyframes kuromi-bob {
-    0%,100% { transform: translateY(0) rotate(-2deg); }
-    50% { transform: translateY(-6px) rotate(2deg); }
-  }
-  .logo-title {
-    font-size: 2.6rem;
-    font-weight: 800;
-    letter-spacing: 3px;
-    background: linear-gradient(135deg, #c77dff, #ff6b9d, #e040fb);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 0 16px rgba(199,125,255,0.6));
-    line-height: 1.1;
-    margin-top: 4px;
-  }
-  .logo-sub {
-    font-size: 0.78rem;
-    color: var(--text-dim);
-    letter-spacing: 4px;
+  /* ─── shared atoms ─── */
+  .eyebrow {
     font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 3px;
     text-transform: uppercase;
-    margin-top: 6px;
+    color: var(--accent);
   }
-  /* Bow decoration */
-  .logo-bow {
-    font-size: 1.2rem;
-    display: inline-block;
-    animation: bow-spin 4s ease-in-out infinite;
-  }
-  @keyframes bow-spin { 0%,100% { transform: rotate(-5deg) scale(1); } 50% { transform: rotate(5deg) scale(1.1); } }
 
   .panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--surface), var(--surface2));
+    border: 1px solid var(--border-soft);
     border-radius: var(--radius);
-    padding: 20px;
+    padding: 22px;
     width: 100%;
-    max-width: 600px;
     position: relative;
     overflow: hidden;
+    box-shadow: var(--shadow);
   }
   .panel::before {
     content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; height: 2px;
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), var(--accent3), transparent);
   }
   .panel-title {
-    font-size: 0.72rem;
-    font-family: var(--mono);
+    font-family: var(--display);
+    font-size: 0.78rem;
     color: var(--accent);
-    letter-spacing: 3px;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    margin-bottom: 14px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-soft);
+    display: flex; align-items: center; gap: 8px;
   }
 
-  .input-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-  .input-group label { font-size: 0.8rem; color: var(--text-dim); }
+  .input-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .input-group label { font-size: 0.78rem; color: var(--ink-dim); font-weight: 600; }
   .input-group input, .input-group select {
     background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text);
-    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    padding: 11px 14px;
     font-family: var(--font);
     font-size: 0.95rem;
     outline: none;
-    transition: border-color 0.25s, box-shadow 0.25s;
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
   .input-group input:focus, .input-group select:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 0 2px rgba(199,125,255,0.15);
+    box-shadow: 0 0 0 3px rgba(157,123,255,0.16);
   }
   .input-group select option { background: var(--surface2); }
 
   .btn {
-    padding: 11px 22px;
+    padding: 12px 22px;
     border: none;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     font-family: var(--font);
     font-size: 0.9rem;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.18s;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     position: relative;
     overflow: hidden;
   }
-  .btn::after { content:''; position:absolute; inset:0; background:rgba(255,255,255,0); transition:background 0.2s; border-radius:inherit; }
+  .btn::after { content:''; position:absolute; inset:0; background:rgba(255,255,255,0); transition:background 0.18s; border-radius:inherit; }
   .btn:hover::after { background:rgba(255,255,255,0.08); }
-  .btn:active { transform: scale(0.97); }
-  .btn-primary { background: linear-gradient(135deg, #8b2fc9, #c77dff); color: white; box-shadow: 0 4px 15px rgba(199,125,255,0.3); }
-  .btn-primary:hover { box-shadow: 0 6px 22px rgba(199,125,255,0.5); }
-  .btn-danger { background: linear-gradient(135deg, #aa1142, #ff3366); color: white; box-shadow: 0 4px 15px rgba(255,51,102,0.3); }
-  .btn-danger:hover { box-shadow: 0 6px 22px rgba(255,51,102,0.5); }
-  .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
-  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-  .btn-success { background: linear-gradient(135deg, #5c2d8a, #b39ddb); color: white; }
-  .btn-gold { background: linear-gradient(135deg, #c2185b, #ff80ab); color: white; box-shadow: 0 4px 15px rgba(255,128,171,0.3); }
+  .btn:active:not(:disabled) { transform: scale(0.97); }
+  .btn-primary { background: linear-gradient(135deg, #6c3fd4, #9d7bff); color: white; box-shadow: 0 4px 16px rgba(157,123,255,0.32); }
+  .btn-primary:hover:not(:disabled) { box-shadow: 0 6px 26px rgba(157,123,255,0.5); transform: translateY(-2px); }
+  .btn-danger { background: linear-gradient(135deg, #c4264a, #ff4d6a); color: white; box-shadow: 0 4px 16px rgba(255,77,106,0.3); }
+  .btn-danger:hover:not(:disabled) { box-shadow: 0 6px 26px rgba(255,77,106,0.5); transform: translateY(-2px); }
+  .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--border); }
+  .btn-ghost:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .btn-success { background: linear-gradient(135deg, #1d8f78, #5ed6c0); color: #08251f; }
+  .btn-success:hover:not(:disabled) { box-shadow: 0 6px 26px rgba(94,214,192,0.4); transform: translateY(-2px); }
+  .btn-gold { background: linear-gradient(135deg, #c47a17, #ffb84d); color: #2a1700; box-shadow: 0 4px 16px rgba(255,184,77,0.3); }
+  .btn-gold:hover:not(:disabled) { box-shadow: 0 6px 26px rgba(255,184,77,0.5); transform: translateY(-2px); }
   .btn-full { width: 100%; justify-content: center; }
-  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .btn-sm { padding: 7px 14px; font-size: 0.74rem; }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; }
+  .btn .spinner { width: 13px; height: 13px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.35); border-top-color: white; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
   .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
 
-  /* ─── ROOM LIST ─── */
-  .room-list { display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto; }
+  /* ─── HOME ─── */
+  #screen-home {
+    align-items: center;
+    justify-content: flex-start;
+    padding: 36px 20px 50px;
+    gap: 20px;
+  }
+
+  .logo { text-align: center; margin-bottom: 6px; }
+  .logo-mark {
+    width: 56px; height: 56px; margin: 0 auto 12px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 30px rgba(157,123,255,0.45);
+    animation: mark-float 3.4s ease-in-out infinite;
+  }
+  .logo-mark svg { width: 30px; height: 30px; }
+  @keyframes mark-float {
+    0%,100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-6px) rotate(3deg); }
+  }
+  .logo-title {
+    font-family: var(--display);
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+  }
+  .logo-sub {
+    font-size: 0.78rem;
+    color: var(--ink-dim);
+    letter-spacing: 3px;
+    font-family: var(--mono);
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  .home-col { max-width: 600px; width: 100%; display: flex; flex-direction: column; gap: 16px; }
+
+  .avatar-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+  .avatar-pick {
+    width: 52px; height: 52px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.18s;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .avatar-pick img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .avatar-pick .fallback { font-size: 1.5rem; }
+  .avatar-pick:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .avatar-pick.selected { border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(255,111,174,0.25); }
+
+  .tabs { display: flex; gap: 4px; margin-bottom: 18px; border-bottom: 1px solid var(--border-soft); }
+  .tab {
+    padding: 9px 16px; border-radius: 8px 8px 0 0;
+    border: 1px solid transparent; border-bottom: none;
+    cursor: pointer; font-size: 0.8rem; font-family: var(--font); font-weight: 600;
+    background: transparent; color: var(--ink-dim); transition: all 0.18s;
+    margin-bottom: -1px;
+  }
+  .tab.active { background: var(--surface); border-color: var(--border-soft); color: var(--ink); }
+
+  .room-list { display: flex; flex-direction: column; gap: 8px; max-height: 300px; overflow-y: auto; padding-right: 4px; }
   .room-item {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 16px;
+    background: var(--surface3);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-sm);
+    padding: 13px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
+    transition: all 0.18s;
+    gap: 10px;
   }
-  .room-item:hover { border-color: var(--accent); background: rgba(199,125,255,0.05); }
-  .room-item.waiting { border-left: 3px solid var(--accent3); }
-  .room-item.playing { border-left: 3px solid var(--threat); }
+  .room-item:hover { border-color: var(--accent); background: rgba(157,123,255,0.08); transform: translateX(3px); }
+  .room-item.full, .room-item.playing { cursor: default; opacity: 0.6; }
+  .room-item.full:hover, .room-item.playing:hover { transform: none; border-color: var(--border-soft); background: var(--surface3); }
   .room-name { font-weight: 700; font-size: 0.9rem; }
-  .room-meta { font-size: 0.72rem; color: var(--text-dim); margin-top: 2px; }
+  .room-meta { font-size: 0.72rem; color: var(--ink-dim); margin-top: 2px; }
   .room-badge {
-    font-size: 0.68rem;
+    font-size: 0.66rem;
     font-family: var(--mono);
-    padding: 3px 9px;
+    padding: 3px 10px;
     border-radius: 20px;
     font-weight: 700;
+    white-space: nowrap;
   }
-  .badge-waiting { background: rgba(224,64,251,0.15); color: var(--accent3); border: 1px solid var(--accent3); }
-  .badge-playing { background: rgba(255,51,102,0.15); color: var(--threat); border: 1px solid var(--threat); }
-  .badge-private { background: rgba(199,125,255,0.15); color: var(--accent); border: 1px solid var(--accent); }
-  .empty-state { text-align: center; padding: 28px; color: var(--text-dim); font-size: 0.85rem; }
+  .badge-waiting { background: rgba(123,255,176,0.12); color: var(--recovery); border: 1px solid var(--recovery); }
+  .badge-playing { background: rgba(255,77,106,0.12); color: var(--threat); border: 1px solid var(--threat); }
+  .badge-full { background: rgba(154,140,186,0.12); color: var(--ink-dim); border: 1px solid var(--ink-faint); }
+  .room-del-btn {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--ink-faint); border-radius: 8px; padding: 4px 8px;
+    font-size: 0.7rem; cursor: pointer; flex-shrink: 0;
+  }
+  .room-del-btn:hover { border-color: var(--threat); color: var(--threat); }
+  .empty-state { text-align: center; padding: 30px; color: var(--ink-dim); font-size: 0.85rem; }
+
+  .footer-row { display:flex;align-items:center;justify-content:center;gap:16px;max-width:600px;width:100%;flex-wrap:wrap; }
+  .conn-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-faint); display: inline-block; transition: background 0.3s; }
+  .conn-dot.connected { background: var(--recovery); box-shadow: 0 0 8px var(--recovery); }
+  .conn-dot.pending { background: var(--action); box-shadow: 0 0 8px var(--action); animation: blink 1s infinite; }
+  .conn-label { font-size: 0.7rem; color: var(--ink-dim); font-family: var(--mono); }
+  .conn-label a { color: var(--accent); }
 
   /* ─── LOBBY ─── */
-  #screen-lobby { padding: 20px; gap: 16px; align-items: center; }
+  #screen-lobby { padding: 30px 20px 40px; gap: 18px; align-items: center; }
   .lobby-header { text-align: center; width: 100%; max-width: 700px; }
+  .lobby-code-label { font-size: 0.72rem; color: var(--ink-dim); margin-bottom: 8px; font-family: var(--mono); letter-spacing: 1px; }
   .lobby-code {
     font-family: var(--mono);
-    font-size: 2.2rem;
+    font-size: 2.6rem;
     color: var(--accent);
-    letter-spacing: 10px;
+    letter-spacing: 13px;
     font-weight: bold;
-    filter: drop-shadow(0 0 12px var(--accent));
+    text-shadow: 0 0 24px rgba(157,123,255,0.5);
+    background: var(--surface);
+    padding: 10px 24px 10px 30px;
+    border-radius: 14px;
+    border: 1px solid var(--border-soft);
+    display: inline-block;
   }
-  .lobby-code-label { font-size: 0.72rem; color: var(--text-dim); margin-bottom: 4px; }
 
   .player-slots {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
     width: 100%;
     max-width: 700px;
   }
   .player-slot {
     background: var(--surface2);
-    border: 1px dashed var(--border);
-    border-radius: 12px;
-    padding: 16px 10px;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 18px 12px;
     text-align: center;
     transition: all 0.3s;
   }
-  .player-slot.filled { border-style: solid; border-color: var(--accent); background: rgba(199,125,255,0.05); }
-  .player-slot.me { border-color: var(--gold); background: rgba(255,157,226,0.07); }
-  .player-avatar { font-size: 2rem; margin-bottom: 4px; }
-  .player-name { font-size: 0.82rem; font-weight: 700; }
-  .player-status { font-size: 0.68rem; color: var(--text-dim); margin-top: 2px; }
-  .slot-empty { color: var(--text-dim); font-size: 0.78rem; margin-top: 8px; }
+  .player-slot.filled { border-style: solid; border-color: var(--border-soft); background: var(--surface3); }
+  .player-slot.host-slot.filled { border-color: var(--accent3); }
+  .player-slot.me { border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(255,111,174,0.15); }
+  .player-avatar-big {
+    width: 52px; height: 52px; border-radius: 14px; margin: 0 auto 8px;
+    overflow: hidden; display: flex; align-items: center; justify-content: center;
+    background: var(--bg); border: 1px solid var(--border-soft); font-size: 1.7rem;
+  }
+  .player-avatar-big img { width: 100%; height: 100%; object-fit: cover; }
+  .player-name { font-size: 0.84rem; font-weight: 700; }
+  .player-status { font-size: 0.68rem; color: var(--ink-dim); margin-top: 3px; font-family: var(--mono); }
+  .slot-empty { color: var(--ink-faint); font-size: 0.78rem; margin-top: 10px; }
+  .slot-plus { color: var(--ink-faint); font-size: 1.8rem; }
+
+  .lobby-panel-wrap { max-width: 700px; width: 100%; display: flex; flex-direction: column; gap: 12px; }
+
+  .slider-row { display:flex;align-items:center;justify-content:space-between;margin-bottom:8px; }
+  .slider-row span:first-child { font-size: 0.84rem; color: var(--ink-dim); }
+  .slider-val { font-family: var(--mono); color: var(--accent); font-weight: 700; }
+  input[type="range"] { width:100%; accent-color: var(--accent); }
+  .slider-scale { display: flex; justify-content: space-between; font-size: 0.66rem; color: var(--ink-faint); margin-top: 4px; }
 
   /* ─── GAME ─── */
   #screen-game { padding: 0; position: relative; overflow: hidden; }
@@ -277,8 +339,8 @@
 
   .game-topbar {
     background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 8px 16px;
+    border-bottom: 1px solid var(--border-soft);
+    padding: 9px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -286,23 +348,23 @@
     flex-shrink: 0;
     flex-wrap: wrap;
     position: relative;
+    z-index: 5;
   }
   .game-topbar::after {
     content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0; height: 1px;
+    position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, transparent, var(--accent2), var(--accent3), var(--accent), transparent);
   }
   .game-title-small {
-    font-size: 0.78rem;
-    font-family: var(--mono);
+    font-family: var(--display);
+    font-size: 0.82rem;
     color: var(--accent);
-    letter-spacing: 2px;
+    letter-spacing: 1px;
+    font-weight: 700;
   }
 
-  /* Timer */
-  .timer-wrap { display: flex; align-items: center; gap: 8px; }
-  .timer-ring { width: 44px; height: 44px; position: relative; }
+  .timer-wrap { display: flex; align-items: center; gap: 12px; }
+  .timer-ring { width: 46px; height: 46px; position: relative; }
   .timer-ring svg { transform: rotate(-90deg); }
   .timer-ring circle { fill: none; stroke: var(--border); stroke-width: 3; }
   .timer-ring circle.progress {
@@ -310,268 +372,250 @@
     stroke-linecap: round;
     stroke-dasharray: 113;
     stroke-dashoffset: 0;
-    transition: stroke-dashoffset 1s linear, stroke 0.5s;
+    transition: stroke-dashoffset 1s linear, stroke 0.4s;
   }
   .timer-ring circle.progress.danger { stroke: var(--threat); }
-  .timer-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 0.82rem; font-weight: bold; }
+  .timer-num {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 0.85rem; font-weight: bold;
+  }
 
-  /* Opponents */
+  .whose-turn-label { font-size: 0.66rem; color: var(--ink-dim); }
+  .whose-turn-name { font-size: 0.82rem; font-weight: 800; color: var(--accent); }
+
   .opponents-row {
-    display: flex; gap: 8px; padding: 10px 16px;
+    display: flex; gap: 10px; padding: 10px 20px;
     overflow-x: auto; flex-shrink: 0;
     background: rgba(0,0,0,0.25);
+    border-bottom: 1px solid var(--border-soft);
   }
   .opponent-card {
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-sm);
     padding: 10px 14px;
-    min-width: 130px;
+    min-width: 132px;
     text-align: center;
     transition: all 0.3s;
     position: relative;
+    flex-shrink: 0;
   }
-  .opponent-card.active-turn { border-color: var(--accent); box-shadow: 0 0 14px rgba(199,125,255,0.35); }
-  .opponent-card.eliminated { opacity: 0.4; filter: grayscale(1); }
-  .opp-avatar { font-size: 1.5rem; }
-  .opp-name { font-size: 0.78rem; font-weight: 700; margin-top: 4px; }
+  .opponent-card.active-turn { border-color: var(--accent); box-shadow: 0 0 18px rgba(157,123,255,0.25); }
+  .opponent-card.eliminated { opacity: 0.35; filter: grayscale(1); }
+  .opponent-card.threatened { border-color: var(--threat); animation: threatpulse 1s infinite; }
+  @keyframes threatpulse { 0%,100%{box-shadow:0 0 0 rgba(255,77,106,0);} 50%{box-shadow:0 0 16px rgba(255,77,106,0.5);} }
+  .opp-avatar { width: 34px; height: 34px; border-radius: 9px; margin: 0 auto; overflow: hidden; display:flex;align-items:center;justify-content:center; background: var(--bg); font-size: 1.3rem; }
+  .opp-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .opp-name { font-size: 0.76rem; font-weight: 700; margin-top: 5px; }
   .opp-hp { display: flex; gap: 3px; justify-content: center; margin-top: 6px; }
   .hp-coin {
     width: 16px; height: 16px; border-radius: 50%;
-    background: linear-gradient(135deg, #c2185b, #ff80ab);
-    border: 1px solid rgba(255,128,171,0.5);
-    font-size: 0.5rem; display: flex; align-items: center; justify-content: center;
-    color: white; font-weight: 900;
-    box-shadow: 0 0 6px rgba(255,128,171,0.4);
+    background: linear-gradient(135deg, #1d8f78, #5ed6c0);
+    border: 1px solid rgba(94,214,192,0.4);
+    box-shadow: 0 0 6px rgba(94,214,192,0.3);
   }
-  .hp-coin.lost { background: var(--surface2); border-color: var(--border); box-shadow: none; }
-  .opp-cards { font-size: 0.68rem; color: var(--text-dim); margin-top: 4px; }
+  .hp-coin.lost { background: var(--surface2); border-color: var(--border-soft); box-shadow: none; }
+  .opp-cards { font-size: 0.66rem; color: var(--ink-dim); margin-top: 4px; font-family: var(--mono); }
 
-  /* Play area */
   .play-area {
     flex: 1; display: flex; align-items: center; justify-content: center;
-    gap: 30px; position: relative; padding: 10px; overflow: hidden;
+    gap: 40px; position: relative; padding: 10px; overflow: hidden;
   }
-  .deck-zone, .discard-zone { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-  .deck-label { font-size: 0.62rem; font-family: var(--mono); color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; }
+  .deck-zone, .discard-zone { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .deck-label {
+    font-size: 0.6rem;
+    font-family: var(--mono);
+    color: var(--ink-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: var(--surface);
+    padding: 3px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border-soft);
+  }
 
   /* ─── CARDS ─── */
   .card {
     width: var(--card-w);
     height: var(--card-h);
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     border: 2px solid var(--border);
     cursor: pointer;
-    transition: all 0.25s;
+    transition: all 0.2s;
     position: relative;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     user-select: none;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+    background: var(--surface);
   }
-  .card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
-  .card.selected { transform: translateY(-14px); border-color: var(--gold); box-shadow: 0 0 22px rgba(255,157,226,0.6); }
+  .card:hover:not(.card-back):not(.not-playable) { transform: translateY(-6px); box-shadow: 0 14px 32px rgba(0,0,0,0.7); }
+  .card.selected { transform: translateY(-16px); border-color: var(--accent2); box-shadow: 0 0 28px rgba(255,111,174,0.5); }
   .card.playable { border-color: var(--accent3); }
   .card.playable::after {
     content: '';
-    position: absolute; inset: 0; border-radius: 10px;
+    position: absolute; inset: 0; border-radius: 9px;
     box-shadow: inset 0 0 0 2px var(--accent3);
-    animation: pulse-border 1.5s ease-in-out infinite;
+    animation: pulse-border 1.6s ease-in-out infinite;
+    pointer-events: none;
   }
-  @keyframes pulse-border { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+  @keyframes pulse-border { 0%,100% { opacity:1; } 50% { opacity:0.25; } }
+  .card.not-playable { cursor: default; }
 
-  /* Card backs — Kuromi pattern */
   .card-back {
-    background: var(--surface);
+    background: var(--surface2);
     background-image:
-      repeating-linear-gradient(45deg, rgba(199,125,255,0.04) 0, rgba(199,125,255,0.04) 1px, transparent 1px, transparent 9px),
-      repeating-linear-gradient(-45deg, rgba(255,107,157,0.04) 0, rgba(255,107,157,0.04) 1px, transparent 1px, transparent 9px);
-    border-color: var(--kuro-purple);
+      repeating-linear-gradient(45deg, rgba(157,123,255,0.06) 0, rgba(157,123,255,0.06) 1px, transparent 1px, transparent 10px),
+      repeating-linear-gradient(-45deg, rgba(255,111,174,0.06) 0, rgba(255,111,174,0.06) 1px, transparent 1px, transparent 10px);
+    border-color: var(--border);
+    align-items: center; justify-content: center;
   }
-  .card-back::before {
-    content: '🖤';
-    position: absolute;
-    top: 6px; right: 8px;
-    font-size: 0.7rem;
-    opacity: 0.5;
-  }
-  .card-back-icon { font-size: 2rem; filter: drop-shadow(0 0 8px var(--accent)); }
+  .card-back-mark { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, var(--accent), var(--accent2)); display:flex;align-items:center;justify-content:center; filter: drop-shadow(0 0 10px rgba(157,123,255,0.5)); }
+  .card-back-mark svg { width: 20px; height: 20px; }
 
-  /* Card type backgrounds */
-  .card-threat  { background: linear-gradient(160deg, #1a0010, #33001a); border-color: #ff3366; }
-  .card-defense { background: linear-gradient(160deg, #0d0020, #1a0035); border-color: #b39ddb; }
-  .card-action  { background: linear-gradient(160deg, #18002a, #2d0050); border-color: #e040fb; }
-  .card-recovery{ background: linear-gradient(160deg, #1a0020, #2a0035); border-color: #ff80ab; }
-
-  /* Kuromi skull corner on threat cards */
-  .card-threat::before {
-    content: '💀';
-    position: absolute; top: 4px; right: 6px;
-    font-size: 0.65rem; opacity: 0.4;
-  }
+  .card-threat  { border-color: var(--threat); }
+  .card-defense { border-color: var(--defense); }
+  .card-action  { border-color: var(--action); }
+  .card-recovery{ border-color: var(--recovery); }
 
   .card-type-badge {
-    position: absolute; top: 6px; left: 6px;
-    font-size: 0.52rem; font-family: var(--mono);
-    padding: 2px 5px; border-radius: 5px;
-    text-transform: uppercase; letter-spacing: 1px; font-weight: 700;
+    position: absolute; top: 6px; left: 6px; z-index: 2;
+    font-size: 0.46rem; font-family: var(--mono);
+    padding: 2px 6px; border-radius: 4px;
+    text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;
+    background: rgba(11,7,18,0.7);
   }
-  .badge-threat   { background: rgba(255,51,102,0.25); color: #ff3366; border: 1px solid #ff3366; }
-  .badge-defense  { background: rgba(179,157,219,0.2); color: #b39ddb; border: 1px solid #b39ddb; }
-  .badge-action   { background: rgba(224,64,251,0.2);  color: #e040fb; border: 1px solid #e040fb; }
-  .badge-recovery { background: rgba(255,128,171,0.2); color: #ff80ab; border: 1px solid #ff80ab; }
+  .badge-threat   { color: var(--threat); border: 1px solid var(--threat); }
+  .badge-defense  { color: var(--defense); border: 1px solid var(--defense); }
+  .badge-action   { color: var(--action); border: 1px solid var(--action); }
+  .badge-recovery { color: var(--recovery); border: 1px solid var(--recovery); }
 
-  /*
-  ╔══════════════════════════════════════════════════════════╗
-  ║  📸 พิกัดใส่รูปการ์ด (CARD IMAGE AREA)                  ║
-  ║  ขนาด: 70×70px ตรงกลางการ์ด                            ║
-  ║  ถ้าไม่มีรูป → แสดง emoji ของการ์ดนั้น                  ║
-  ║  วิธีใส่รูป: คลิก "🖼️ จัดการรูปการ์ด" หน้าแรก          ║
-  ║  หรืออัปโหลดรูป 70×70px (JPG/PNG) ผ่าน Image Manager   ║
-  ╚══════════════════════════════════════════════════════════╝
-  */
   .card-img-area {
-    width: 70px; height: 70px;
-    border-radius: 10px;
+    width: 100%; height: 64%;
     overflow: hidden;
-    margin: 22px auto 4px;
-    background: rgba(255,255,255,0.04);
+    background: var(--bg);
     display: flex; align-items: center; justify-content: center;
-    font-size: 2rem;
-    border: 1px solid rgba(199,125,255,0.15);
-    /* ← รูปที่อัปโหลดจะแสดงตรงนี้ (70×70px) */
+    font-size: 2.6rem;
+    flex-shrink: 0;
+    position: relative;
   }
-  .card-img-area img { width: 100%; height: 100%; object-fit: cover; }
+  .card-img-area img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-  .card-name  { font-size: 0.68rem; font-weight: 800; text-align: center; padding: 0 5px; line-height: 1.2; margin-bottom: 2px; }
-  .card-effect { font-size: 0.58rem; text-align: center; padding: 0 5px; color: rgba(255,255,255,0.5); line-height: 1.3; display: none; }
+  .card-name  { font-size: 0.66rem; font-weight: 800; text-align: center; padding: 5px 5px 0; line-height: 1.2; }
+  .card-effect { font-size: 0.5rem; text-align: center; padding: 2px 5px 4px; color: var(--ink-faint); line-height: 1.25; flex: 1; overflow: hidden; }
   .card-value {
-    position: absolute; bottom: 6px; right: 8px;
-    font-family: var(--mono); font-size: 0.8rem; font-weight: 800;
+    position: absolute; bottom: 5px; right: 7px;
+    font-family: var(--mono); font-size: 0.78rem; font-weight: 800;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
   }
 
-  /* Deck pile */
   .deck-pile { position: relative; width: var(--card-w); height: var(--card-h); }
   .deck-pile::before, .deck-pile::after {
     content: '';
     position: absolute;
     width: var(--card-w); height: var(--card-h);
-    border-radius: 12px; border: 2px solid var(--border);
+    border-radius: var(--radius-sm); border: 2px solid var(--border-soft);
     background: var(--surface);
   }
-  .deck-pile::before { top: -4px; left: 2px; opacity: 0.4; }
-  .deck-pile::after  { top: -2px; left: 1px; opacity: 0.65; }
+  .deck-pile::before { top: -5px; left: 3px; opacity: 0.3; }
+  .deck-pile::after  { top: -3px; left: 1px; opacity: 0.6; }
   .deck-pile .card { position: relative; z-index: 1; }
   .deck-count {
     position: absolute; top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    font-family: var(--mono); font-size: 1.2rem; font-weight: bold;
+    font-family: var(--mono); font-size: 1.3rem; font-weight: bold;
     color: var(--accent); z-index: 2; pointer-events: none;
-    text-shadow: 0 0 10px var(--accent);
+    text-shadow: 0 0 18px var(--accent);
   }
 
-  /* My section */
   .my-section {
-    background: rgba(10,0,16,0.7);
-    border-top: 1px solid var(--border);
-    padding: 10px 16px 16px;
+    background: rgba(11,7,18,0.88);
+    border-top: 1px solid var(--border-soft);
+    padding: 12px 20px 16px;
     flex-shrink: 0;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(10px);
+    position: relative; z-index: 5;
   }
-  .my-info { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .my-info { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
   .my-name-hp { display: flex; align-items: center; gap: 12px; }
+  .my-avatar-img { width: 30px; height: 30px; border-radius: 8px; overflow:hidden; display:flex;align-items:center;justify-content:center; background: var(--surface2); font-size:1.2rem; }
+  .my-avatar-img img { width:100%;height:100%;object-fit:cover; }
   .my-name { font-weight: 800; font-size: 0.95rem; }
   .my-hp { display: flex; gap: 4px; }
   .hp-big {
     width: 22px; height: 22px; border-radius: 50%;
-    background: linear-gradient(135deg, #c2185b, #ff80ab);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.68rem; font-weight: 900; color: white;
-    box-shadow: 0 0 8px rgba(255,128,171,0.5);
+    background: linear-gradient(135deg, #1d8f78, #5ed6c0);
+    box-shadow: 0 0 8px rgba(94,214,192,0.35);
   }
-  .hp-big.lost { background: #1e0030; box-shadow: none; }
+  .hp-big.lost { background: var(--surface2); box-shadow: none; }
 
   .turn-indicator {
     font-size: 0.72rem; font-family: var(--mono);
-    padding: 5px 13px; border-radius: 20px; border: 1px solid var(--border);
+    padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border-soft);
   }
-  .turn-indicator.my-turn { border-color: var(--accent3); color: var(--accent3); background: rgba(224,64,251,0.1); animation: blink 1s ease-in-out infinite; }
-  .turn-indicator.wait { color: var(--text-dim); }
-  @keyframes blink { 0%,100%{ opacity:1; } 50%{ opacity:0.5; } }
+  .turn-indicator.my-turn { border-color: var(--accent3); color: var(--accent3); background: rgba(255,184,77,0.1); animation: blink 1.1s ease-in-out infinite; }
+  .turn-indicator.wait { color: var(--ink-dim); }
+  .turn-indicator.threatened { border-color: var(--threat); color: var(--threat); background: rgba(255,77,106,0.1); animation: blink 0.8s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{ opacity:1; } 50%{ opacity:0.45; } }
 
-  .hand-cards { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; justify-content: center; }
-  .hand-cards::-webkit-scrollbar { height: 4px; }
-  .hand-cards::-webkit-scrollbar-track { background: transparent; }
-  .hand-cards::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-  .hand-card { --card-w: 95px; --card-h: 138px; flex-shrink: 0; }
+  .hand-cards { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; justify-content: center; min-height: 124px; flex-wrap: wrap; }
+  .hand-card { --card-w: 96px; --card-h: 140px; flex-shrink: 0; }
   .draw-btn-wrap { text-align: center; margin-top: 10px; }
+  .hand-empty { color: var(--ink-faint); font-size: 0.8rem; padding: 20px; width: 100%; text-align: center; }
 
   /* ─── MODALS ─── */
   .modal-overlay {
     display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(6px);
+    background: rgba(8,5,13,0.86);
+    backdrop-filter: blur(8px);
     z-index: 1000; align-items: center; justify-content: center; padding: 20px;
   }
   .modal-overlay.open { display: flex; }
   .modal {
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 18px;
+    border: 1px solid var(--border-soft);
+    border-radius: 20px;
     padding: 28px;
-    width: 100%; max-width: 420px;
-    animation: slide-up 0.3s ease;
+    width: 100%; max-width: 440px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slide-up 0.25s ease;
     position: relative;
-    overflow: hidden;
+    box-shadow: var(--shadow);
   }
   .modal::before {
     content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; height: 2px;
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, var(--accent2), var(--accent3), var(--accent));
   }
-  @keyframes slide-up { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
-  .modal h2 { font-size: 1.15rem; margin-bottom: 16px; font-weight: 800; }
-  .modal p { font-size: 0.88rem; color: var(--text-dim); margin-bottom: 18px; line-height: 1.6; }
+  @keyframes slide-up { from { opacity:0; transform: translateY(24px); } to { opacity:1; transform: translateY(0); } }
+  .modal h2 { font-family: var(--display); font-size: 1.1rem; margin-bottom: 14px; font-weight: 700; }
+  .modal p { font-size: 0.86rem; color: var(--ink-dim); margin-bottom: 16px; line-height: 1.6; }
 
-  /* Threat modal */
   .threat-alert-modal .modal { border-color: var(--threat); }
-  .threat-alert-modal .modal::before { background: linear-gradient(90deg, var(--threat), #ff80ab); }
-  .threat-alert-icon { font-size: 3rem; text-align: center; margin-bottom: 12px; animation: shake 0.5s ease; }
+  .threat-alert-modal .modal::before { background: linear-gradient(90deg, var(--threat), var(--accent2)); }
+  .threat-alert-icon { font-size: 2.8rem; text-align: center; margin-bottom: 10px; animation: shake 0.6s ease; }
   @keyframes shake { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-8deg)} 75%{transform:rotate(8deg)} }
   .threat-card-preview {
-    background: rgba(255,51,102,0.08);
+    background: rgba(255,77,106,0.07);
     border: 1px solid var(--threat);
-    border-radius: 12px;
+    border-radius: 14px;
     padding: 16px; margin: 12px 0; text-align: center;
   }
-  .threat-damage { font-size: 2rem; font-weight: 900; color: var(--threat); font-family: var(--mono); }
+  .threat-img { width: 64px; height: 64px; border-radius: 12px; margin: 0 auto 8px; overflow: hidden; display:flex;align-items:center;justify-content:center; background: var(--bg); font-size: 2.2rem; }
+  .threat-img img { width:100%;height:100%;object-fit:cover; }
+  .threat-damage { font-size: 2.2rem; font-weight: 900; color: var(--threat); font-family: var(--mono); }
 
-  /* Image manager */
-  .img-manager-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-height: 380px; overflow-y: auto; }
-  .img-slot {
-    background: var(--bg);
-    border: 1px dashed var(--border);
-    border-radius: 10px;
-    padding: 12px; text-align: center;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .img-slot:hover { border-color: var(--accent); background: rgba(199,125,255,0.05); }
-  .img-slot-preview { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; margin: 0 auto 6px; display: block; }
-  .img-slot-emoji { font-size: 2rem; margin-bottom: 4px; }
-  .img-slot-name { font-size: 0.75rem; font-weight: 700; }
-  .img-slot-hint { font-size: 0.62rem; color: var(--text-dim); margin-top: 2px; }
-
-  /* Log */
   .game-log {
     position: absolute; bottom: 10px; left: 10px;
-    width: 220px; max-height: 100px;
+    width: 230px; max-height: 110px;
     overflow-y: auto; pointer-events: none;
   }
-  .log-entry { font-size: 0.68rem; font-family: var(--mono); color: var(--text-dim); padding: 2px 0; animation: fade-in 0.3s ease; }
+  .log-entry { font-size: 0.64rem; font-family: var(--mono); color: var(--ink-dim); padding: 2px 0; animation: fade-in 0.3s ease; }
   .log-entry.threat   { color: var(--threat); }
   .log-entry.defense  { color: var(--defense); }
   .log-entry.action   { color: var(--action); }
@@ -579,54 +623,54 @@
   .log-entry.system   { color: var(--accent); }
   @keyframes fade-in { from{ opacity:0; } to{ opacity:1; } }
 
-  /* Toast */
-  .toast-container { position: fixed; top: 80px; right: 16px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; }
+  .toast-container { position: fixed; top: 80px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; max-width: calc(100vw - 40px); }
   .toast {
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 16px;
-    font-size: 0.82rem;
-    max-width: 260px;
-    animation: slide-in 0.3s ease;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 0.85rem;
+    max-width: 290px;
+    animation: slide-in 0.25s ease;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+    font-weight: 600;
   }
   @keyframes slide-in { from{ transform:translateX(100%); opacity:0; } to{ transform:translateX(0); opacity:1; } }
   .toast.success { border-color: var(--defense); }
   .toast.danger  { border-color: var(--threat); }
   .toast.info    { border-color: var(--accent); }
 
-  /* Winner */
   .winner-overlay {
     display: none; position: fixed; inset: 0;
-    background: rgba(10,0,16,0.95);
+    background: rgba(8,5,13,0.97);
     z-index: 3000;
     align-items: center; justify-content: center;
-    flex-direction: column; gap: 20px;
+    flex-direction: column; gap: 18px;
     text-align: center; padding: 20px;
   }
   .winner-overlay.open { display: flex; }
-  .winner-trophy { font-size: 5rem; animation: bounce 0.8s ease infinite alternate; }
-  @keyframes bounce { from{ transform:scale(1) rotate(-3deg); } to{ transform:scale(1.1) rotate(3deg); } }
-  .winner-name { font-size: 2rem; font-weight: 900; color: var(--gold); text-shadow: 0 0 20px rgba(255,157,226,0.6); }
+  .winner-trophy { font-size: 4.6rem; animation: bounce 0.8s ease infinite alternate; }
+  @keyframes bounce { from{ transform:scale(1) rotate(-3deg); } to{ transform:scale(1.08) rotate(3deg); } }
+  .winner-avatar { width: 84px; height: 84px; border-radius: 22px; overflow: hidden; margin: 0 auto; display:flex;align-items:center;justify-content:center; background: var(--surface2); font-size: 3rem; border: 2px solid var(--accent3); }
+  .winner-avatar img { width:100%;height:100%;object-fit:cover; }
+  .winner-name { font-family: var(--display); font-size: 2.1rem; font-weight: 700; color: var(--accent3); text-shadow: 0 0 26px rgba(255,184,77,0.5); }
 
-  /* Target selector */
   .target-list { display: flex; flex-direction: column; gap: 8px; }
   .target-item {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px; display: flex; align-items: center; gap: 12px;
-    cursor: pointer; transition: border-color 0.2s, background 0.2s;
+    background: var(--surface3);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px; display: flex; align-items: center; gap: 12px;
+    cursor: pointer; transition: all 0.18s;
   }
-  .target-item:hover { border-color: var(--accent); background: rgba(199,125,255,0.05); }
-  .target-avatar { font-size: 1.5rem; }
+  .target-item:hover { border-color: var(--accent); background: rgba(157,123,255,0.08); transform: translateX(3px); }
+  .target-avatar { width: 36px; height: 36px; border-radius: 10px; overflow: hidden; display:flex;align-items:center;justify-content:center; background: var(--bg); font-size: 1.4rem; }
+  .target-avatar img { width:100%;height:100%;object-fit:cover; }
   .target-name { font-weight: 700; }
-  .target-hp { font-size: 0.78rem; color: var(--text-dim); }
+  .target-hp { font-size: 0.76rem; color: var(--ink-dim); }
 
-  /* Sound toggle */
   .sound-toggle {
-    width: 44px; height: 24px;
+    width: 42px; height: 23px;
     background: var(--border); border-radius: 12px;
     position: relative; cursor: pointer;
     transition: background 0.2s; border: none; flex-shrink: 0;
@@ -634,79 +678,61 @@
   .sound-toggle.on { background: var(--accent); }
   .sound-toggle::after {
     content: ''; position: absolute;
-    width: 18px; height: 18px; background: white;
+    width: 17px; height: 17px; background: white;
     border-radius: 50%; top: 3px; left: 3px;
     transition: left 0.2s;
   }
-  .sound-toggle.on::after { left: 23px; }
+  .sound-toggle.on::after { left: 22px; }
 
-  /* Chat */
   .chat-panel {
     position: absolute; bottom: 10px; right: 10px;
     width: 220px;
     background: var(--surface);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-soft);
     border-radius: 12px;
     overflow: hidden;
+    box-shadow: var(--shadow);
   }
   .chat-msgs { height: 80px; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 3px; }
   .chat-msg { font-size: 0.68rem; }
   .chat-msg .sender { color: var(--accent); font-weight: 700; }
-  .chat-input-row { display: flex; border-top: 1px solid var(--border); }
+  .chat-input-row { display: flex; border-top: 1px solid var(--border-soft); }
   .chat-input {
     flex: 1; background: transparent; border: none;
     padding: 6px 8px; font-size: 0.72rem;
-    color: var(--text); font-family: var(--font); outline: none;
+    color: var(--ink); font-family: var(--font); outline: none;
   }
-  .chat-send { background: transparent; border: none; color: var(--accent); padding: 0 8px; cursor: pointer; font-size: 0.8rem; }
+  .chat-send { background: transparent; border: none; color: var(--accent); padding: 0 10px; cursor: pointer; font-size: 0.8rem; }
 
-  /* Reactions */
-  .reactions-row { display: flex; gap: 4px; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+  .reactions-row { display: flex; gap: 4px; padding: 4px 8px; border-bottom: 1px solid var(--border-soft); }
   .reaction-btn {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 6px; padding: 2px 6px; font-size: 0.85rem;
+    background: var(--surface2); border: 1px solid var(--border-soft);
+    border-radius: 6px; padding: 2px 8px; font-size: 0.85rem;
     cursor: pointer; transition: transform 0.1s;
   }
-  .reaction-btn:active { transform: scale(1.35); }
+  .reaction-btn:active { transform: scale(1.3); }
 
-  /* Floating emoji */
   .float-emoji {
-    position: fixed; font-size: 2rem; pointer-events: none;
-    z-index: 9998; animation: float-up 1.5s ease forwards;
+    position: fixed; font-size: 2.2rem; pointer-events: none;
+    z-index: 9998; animation: float-up 1.6s ease forwards;
   }
-  @keyframes float-up { from{ opacity:1; transform:translateY(0) scale(1); } to{ opacity:0; transform:translateY(-110px) scale(1.5); } }
-
-  /* Tabs */
-  .tabs { display: flex; gap: 4px; margin-bottom: 12px; }
-  .tab {
-    padding: 8px 15px; border-radius: 8px 8px 0 0;
-    border: 1px solid transparent; border-bottom: none;
-    cursor: pointer; font-size: 0.78rem; font-family: var(--font); font-weight: 600;
-    background: transparent; color: var(--text-dim); transition: all 0.2s;
-  }
-  .tab.active { background: var(--surface); border-color: var(--border); color: var(--text); }
+  @keyframes float-up { from{ opacity:1; transform:translateY(0) scale(1); } to{ opacity:0; transform:translateY(-120px) scale(1.4); } }
 
   ::-webkit-scrollbar { width: 4px; height: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-  .conn-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); display: inline-block; }
-  .conn-dot.connected { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
-  .conn-label { font-size: 0.68rem; color: var(--text-dim); font-family: var(--mono); }
-
-  /* Kuromi skull decorations */
-  .kuro-deco {
-    font-size: 0.8rem;
-    opacity: 0.3;
-    pointer-events: none;
-    user-select: none;
-  }
+  .skeleton { background: linear-gradient(90deg, var(--surface2) 25%, var(--surface3) 50%, var(--surface2) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 8px; }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
   @media (max-width: 480px) {
-    :root { --card-w: 90px; --card-h: 130px; }
-    .logo-title { font-size: 1.8rem; }
-    .hand-cards { --card-w: 80px; --card-h: 116px; }
+    :root { --card-w: 92px; --card-h: 132px; }
+    .logo-title { font-size: 1.85rem; }
+    .hand-card { --card-w: 82px; --card-h: 118px; }
     .game-log, .chat-panel { display: none; }
+    .play-area { gap: 16px; }
+    .lobby-code { font-size: 1.8rem; letter-spacing: 9px; padding: 6px 16px; }
+    .timer-ring { width: 40px; height: 40px; }
   }
 </style>
 </head>
@@ -715,116 +741,113 @@
 <!-- HOME -->
 <div id="screen-home" class="screen active">
   <div class="logo">
-    <div class="kuromi-face">🖤</div>
-    <div class="logo-title">🔐 CYBERSCAM</div>
-    <div class="logo-sub">
-      <span class="logo-bow">🎀</span>
-      เกมการ์ดต้านภัยไซเบอร์ • Multiplayer
-      <span class="logo-bow">🎀</span>
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L4 6v6c0 5 3.4 8.6 8 10 4.6-1.4 8-5 8-10V6l-8-4z" fill="white" fill-opacity="0.95"/><path d="M9.5 12l2 2 4-4" stroke="#6c3fd4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="logo-title">CYBERSCAM</div>
+    <div class="logo-sub">เกมการ์ดต้านภัยไซเบอร์ · เล่นหลายคนสด</div>
+  </div>
+
+  <div class="home-col">
+    <div class="panel">
+      <div class="panel-title">ตั้งค่าผู้เล่น</div>
+      <div class="input-group">
+        <label>ชื่อผู้เล่น</label>
+        <input id="playerNameInput" type="text" placeholder="ใส่ชื่อเล่นของคุณ..." maxlength="16" />
+      </div>
+      <div class="input-group" style="margin-bottom:0;">
+        <label>อวาตาร์</label>
+        <div class="avatar-grid" id="avatar-selector"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="tabs">
+        <button class="tab active" data-tab="create" onclick="switchTab('create')">สร้างห้อง</button>
+        <button class="tab" data-tab="join" onclick="switchTab('join')">ใส่โค้ด</button>
+        <button class="tab" data-tab="public" onclick="switchTab('public')">ห้องสาธารณะ</button>
+      </div>
+
+      <div id="tab-create" class="tab-content">
+        <div class="input-group">
+          <label>ชื่อห้อง</label>
+          <input id="roomNameInput" type="text" placeholder="ตั้งชื่อห้อง..." maxlength="30" />
+        </div>
+        <div class="input-group">
+          <label>จำนวนผู้เล่นสูงสุด</label>
+          <select id="maxPlayersInput">
+            <option value="2">2 คน</option>
+            <option value="3">3 คน</option>
+            <option value="4" selected>4 คน</option>
+            <option value="5">5 คน</option>
+            <option value="6">6 คน</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>ประเภทห้อง</label>
+          <select id="roomTypeInput">
+            <option value="public">สาธารณะ — มองเห็นในรายการ</option>
+            <option value="private">ส่วนตัว — ใช้โค้ดเข้าเท่านั้น</option>
+          </select>
+        </div>
+        <button class="btn btn-primary btn-full" id="createRoomBtn" onclick="createRoom()">สร้างห้อง</button>
+      </div>
+
+      <div id="tab-join" class="tab-content" style="display:none;">
+        <div class="input-group">
+          <label>รหัสห้อง (4 ตัวอักษร)</label>
+          <input id="joinCodeInput" type="text" placeholder="เช่น AB12" maxlength="6"
+            style="text-transform:uppercase;font-family:var(--mono);font-size:1.25rem;letter-spacing:6px;text-align:center;" />
+        </div>
+        <button class="btn btn-primary btn-full" id="joinCodeBtn" onclick="joinRoomByCode()">เข้าร่วม</button>
+      </div>
+
+      <div id="tab-public" class="tab-content" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <span style="font-size:0.78rem;color:var(--ink-dim);" id="room-count">กำลังโหลด...</span>
+          <button class="btn btn-ghost btn-sm" onclick="loadPublicRooms()">รีเฟรช</button>
+        </div>
+        <div class="room-list" id="public-room-list">
+          <div class="empty-state">กำลังโหลดห้อง...</div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="panel" style="max-width:600px;width:100%;">
-    <div class="panel-title">💜 ตั้งค่าผู้เล่น</div>
-    <div class="input-group">
-      <label>ชื่อผู้เล่น</label>
-      <input id="playerNameInput" type="text" placeholder="ใส่ชื่อเล่นของคุณ..." maxlength="16" />
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <span style="font-size:0.82rem;color:var(--text-dim);">อวาตาร์:</span>
-      <div id="avatar-selector" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
-    </div>
-  </div>
-
-  <div class="panel" style="max-width:600px;width:100%;">
-    <div class="tabs">
-      <button class="tab active" onclick="switchTab('create')">🏗️ สร้างห้อง</button>
-      <button class="tab" onclick="switchTab('join')">🔑 ใส่โค้ด</button>
-      <button class="tab" onclick="switchTab('public')">🌐 ห้องสาธารณะ</button>
-    </div>
-
-    <div id="tab-create" class="tab-content">
-      <div class="input-group">
-        <label>ชื่อห้อง</label>
-        <input id="roomNameInput" type="text" placeholder="ตั้งชื่อห้อง..." maxlength="30" />
-      </div>
-      <div class="input-group">
-        <label>จำนวนผู้เล่นสูงสุด</label>
-        <select id="maxPlayersInput">
-          <option value="2">2 คน</option>
-          <option value="3">3 คน</option>
-          <option value="4" selected>4 คน</option>
-          <option value="5">5 คน</option>
-        </select>
-      </div>
-      <div class="input-group">
-        <label>ประเภทห้อง</label>
-        <select id="roomTypeInput">
-          <option value="public">🌐 สาธารณะ</option>
-          <option value="private">🔒 ส่วนตัว</option>
-        </select>
-      </div>
-      <button class="btn btn-primary btn-full" onclick="createRoom()">🚀 สร้างห้อง</button>
-    </div>
-
-    <div id="tab-join" class="tab-content" style="display:none;">
-      <div class="input-group">
-        <label>รหัสห้อง (4 ตัวอักษร)</label>
-        <input id="joinCodeInput" type="text" placeholder="เช่น AB12" maxlength="6"
-          style="text-transform:uppercase;font-family:var(--mono);font-size:1.3rem;letter-spacing:6px;text-align:center;" />
-      </div>
-      <button class="btn btn-primary btn-full" onclick="joinRoomByCode()">🔑 เข้าร่วม</button>
-    </div>
-
-    <div id="tab-public" class="tab-content" style="display:none;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-        <span style="font-size:0.78rem;color:var(--text-dim);" id="room-count">กำลังโหลด...</span>
-        <button class="btn btn-ghost" style="padding:5px 12px;font-size:0.72rem;" onclick="loadPublicRooms()">🔄 รีเฟรช</button>
-      </div>
-      <div class="room-list" id="public-room-list">
-        <div class="empty-state">กำลังโหลดห้อง...</div>
-      </div>
-    </div>
-  </div>
-
-  <div style="display:flex;align-items:center;justify-content:center;gap:14px;max-width:600px;width:100%;">
+  <div class="footer-row">
     <div style="display:flex;align-items:center;gap:8px;">
       <span class="conn-dot" id="conn-dot"></span>
       <span class="conn-label" id="conn-label">กำลังเชื่อมต่อ...</span>
     </div>
-    <button class="btn btn-ghost" style="padding:5px 12px;font-size:0.72rem;" onclick="openImgManager()">🖼️ จัดการรูปการ์ด</button>
   </div>
 </div>
 
 <!-- LOBBY -->
 <div id="screen-lobby" class="screen">
-  <div class="lobby-header" style="padding:30px 20px 0;">
-    <div class="logo-title" style="font-size:1.5rem;">🖤 ห้องรอเกม</div>
-    <div class="lobby-code-label" style="margin-top:16px;">รหัสห้อง – แชร์ให้เพื่อน</div>
+  <div class="lobby-header">
+    <div class="logo-title" style="font-size:1.5rem;">ห้องรอเกม</div>
+    <div class="lobby-code-label" style="margin-top:18px;">รหัสห้อง — แชร์ให้เพื่อน</div>
     <div class="lobby-code" id="lobby-code-display">----</div>
-    <div style="font-size:0.78rem;color:var(--text-dim);margin-top:6px;" id="lobby-room-name"></div>
-    <button class="btn btn-ghost" style="margin-top:8px;padding:6px 14px;font-size:0.72rem;" onclick="copyRoomCode()">📋 คัดลอกโค้ด</button>
+    <div style="font-size:0.78rem;color:var(--ink-dim);margin-top:8px;" id="lobby-room-name"></div>
+    <button class="btn btn-ghost btn-sm" style="margin-top:10px;" onclick="copyRoomCode()">คัดลอกโค้ด</button>
   </div>
 
-  <div class="player-slots" id="lobby-players" style="padding:0 20px;"></div>
+  <div class="player-slots" id="lobby-players"></div>
 
-  <div style="max-width:700px;width:100%;padding:0 20px;display:flex;flex-direction:column;gap:10px;">
-    <div class="panel">
-      <div class="panel-title">⚙️ ตั้งเวลาต่อเทิร์น</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-        <span style="font-size:0.82rem;">เวลาต่อเทิร์น</span>
-        <span style="font-family:var(--mono);color:var(--accent);" id="timer-setting-display">60 วินาที</span>
+  <div class="lobby-panel-wrap">
+    <div class="panel" id="timer-settings-panel">
+      <div class="panel-title">ตั้งเวลาต่อเทิร์น</div>
+      <div class="slider-row">
+        <span>เวลาต่อเทิร์น</span>
+        <span class="slider-val" id="timer-setting-display">60 วินาที</span>
       </div>
-      <input type="range" id="timerSetting" min="30" max="120" step="15" value="60"
-        style="width:100%;accent-color:var(--accent);" oninput="updateTimerDisplay(this.value)" />
-      <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:var(--text-dim);">
-        <span>30s</span><span>60s</span><span>120s</span>
-      </div>
+      <input type="range" id="timerSetting" min="30" max="120" step="15" value="60" oninput="updateTimerDisplay(this.value)" />
+      <div class="slider-scale"><span>30s</span><span>60s</span><span>120s</span></div>
     </div>
 
     <div style="display:flex;gap:10px;" id="lobby-actions">
-      <button class="btn btn-danger" style="flex:1;" onclick="leaveRoom()">🚪 ออกจากห้อง</button>
-      <button class="btn btn-gold" style="flex:1;display:none;" id="start-game-btn" onclick="startGame()">🎀 เริ่มเกม!</button>
+      <button class="btn btn-danger" style="flex:1;" onclick="leaveRoom()">ออกจากห้อง</button>
+      <button class="btn btn-gold" style="flex:1;display:none;" id="start-game-btn" onclick="startGame()">เริ่มเกม!</button>
     </div>
   </div>
 </div>
@@ -834,8 +857,8 @@
   <div class="game-layout">
     <div class="game-topbar">
       <div>
-        <div class="game-title-small">🖤 CYBERSCAM</div>
-        <div style="font-size:0.68rem;color:var(--text-dim);font-family:var(--mono);">ห้อง: <span id="g-room-code">----</span></div>
+        <div class="game-title-small">CYBERSCAM</div>
+        <div style="font-size:0.64rem;color:var(--ink-dim);font-family:var(--mono);">ห้อง: <span id="g-room-code">----</span></div>
       </div>
       <div class="timer-wrap">
         <div class="timer-ring" id="timer-ring">
@@ -846,13 +869,13 @@
           <div class="timer-num" id="timer-num">60</div>
         </div>
         <div>
-          <div style="font-size:0.68rem;color:var(--text-dim);">เทิร์นของ</div>
-          <div style="font-size:0.78rem;font-weight:800;" id="whose-turn-label">-</div>
+          <div class="whose-turn-label">เทิร์นของ</div>
+          <div class="whose-turn-name" id="whose-turn-label">-</div>
         </div>
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
         <button class="sound-toggle on" id="sound-toggle-btn" onclick="toggleSound(this)" title="เสียง"></button>
-        <button class="btn btn-ghost" style="padding:6px 10px;font-size:0.75rem;" onclick="leaveGameToHome()">🚪</button>
+        <button class="btn btn-ghost btn-sm" onclick="leaveGameToHome()">ออก</button>
       </div>
     </div>
 
@@ -863,7 +886,7 @@
         <div class="deck-label">กองจั่ว</div>
         <div class="deck-pile">
           <div class="card card-back" id="draw-pile-card" onclick="drawCard()" title="จั่วการ์ด">
-            <div class="card-back-icon">🖤</div>
+            <div class="card-back-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6v6c0 5 3.4 8.6 8 10 4.6-1.4 8-5 8-10V6l-8-4z" fill="white"/></svg></div>
           </div>
           <div class="deck-count" id="deck-count">--</div>
         </div>
@@ -871,9 +894,9 @@
 
       <div class="discard-zone">
         <div class="deck-label">กองทิ้ง</div>
-        <div class="card" id="discard-top" style="background:var(--surface2);">
-          <div style="font-size:2rem;color:var(--text-dim);">💀</div>
-          <div style="font-size:0.62rem;color:var(--text-dim);margin-top:4px;">ว่าง</div>
+        <div class="card" id="discard-top" style="background:var(--surface2);align-items:center;justify-content:center;">
+          <div style="font-size:2.2rem;color:var(--ink-faint);">—</div>
+          <div style="font-size:0.6rem;color:var(--ink-faint);margin-top:4px;">ว่าง</div>
         </div>
       </div>
 
@@ -881,9 +904,9 @@
 
       <div class="chat-panel">
         <div class="reactions-row">
-          <button class="reaction-btn" onclick="sendReaction('🖤')">🖤</button>
+          <button class="reaction-btn" onclick="sendReaction('🔐')">🔐</button>
           <button class="reaction-btn" onclick="sendReaction('💀')">💀</button>
-          <button class="reaction-btn" onclick="sendReaction('🎀')">🎀</button>
+          <button class="reaction-btn" onclick="sendReaction('🛡️')">🛡️</button>
           <button class="reaction-btn" onclick="sendReaction('😈')">😈</button>
           <button class="reaction-btn" onclick="sendReaction('😱')">😱</button>
         </div>
@@ -898,7 +921,7 @@
     <div class="my-section">
       <div class="my-info">
         <div class="my-name-hp">
-          <div style="font-size:1.2rem;" id="my-avatar-display">🖤</div>
+          <div class="my-avatar-img" id="my-avatar-display">🔐</div>
           <div class="my-name" id="my-name-display">คุณ</div>
           <div class="my-hp" id="my-hp-display"></div>
         </div>
@@ -906,7 +929,7 @@
       </div>
       <div class="hand-cards" id="hand-cards"></div>
       <div class="draw-btn-wrap" id="draw-btn-wrap" style="display:none;">
-        <button class="btn btn-primary" onclick="drawCard()">🎴 จั่วการ์ด (จบเทิร์น)</button>
+        <button class="btn btn-primary" onclick="drawCard()">จั่วการ์ด (จบเทิร์น)</button>
       </div>
     </div>
   </div>
@@ -914,66 +937,58 @@
 
 <!-- MODALS -->
 
-<!-- THREAT -->
 <div class="modal-overlay threat-alert-modal" id="modal-threat">
   <div class="modal">
     <div class="threat-alert-icon">⚠️</div>
     <h2 style="text-align:center;color:var(--threat);" id="threat-title">ภัยคุกคาม!</h2>
     <div class="threat-card-preview">
-      <div style="font-size:2rem;" id="threat-emoji">🎣</div>
+      <div class="threat-img" id="threat-img-wrap"><span id="threat-emoji">🎣</span></div>
       <div style="font-weight:800;margin:6px 0;" id="threat-name">-</div>
       <div class="threat-damage" id="threat-damage">-1</div>
-      <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;" id="threat-desc">-</div>
+      <div style="font-size:0.72rem;color:var(--ink-dim);margin-top:4px;" id="threat-desc">-</div>
     </div>
     <p id="threat-modal-desc" style="text-align:center;"></p>
     <div style="display:flex;flex-direction:column;gap:8px;" id="threat-actions"></div>
   </div>
 </div>
 
-<!-- TARGET -->
 <div class="modal-overlay" id="modal-target">
   <div class="modal">
-    <h2>🎯 เลือกเป้าหมาย</h2>
+    <h2 id="target-modal-title">เลือกเป้าหมาย</h2>
     <p id="target-modal-desc">เลือกผู้เล่นที่ต้องการส่งผลไปให้:</p>
     <div class="target-list" id="target-list"></div>
-    <button class="btn btn-ghost btn-full" style="margin-top:12px;" onclick="closeModal('modal-target')">❌ ยกเลิก</button>
+    <button class="btn btn-ghost btn-full" style="margin-top:12px;" onclick="cancelPendingAction()">ยกเลิก</button>
   </div>
 </div>
 
-<!-- IMAGE MANAGER -->
-<div class="modal-overlay" id="modal-img-manager">
-  <div class="modal" style="max-width:500px;">
-    <h2>🖼️ จัดการรูปภาพการ์ด</h2>
-    <p>
-      📌 <strong>พิกัดรูป:</strong> แต่ละการ์ดมีช่องรูปขนาด <strong>70×70px</strong> ตรงกลาง<br>
-      คลิกที่ช่องการ์ดด้านล่าง → เลือกไฟล์รูป (JPG/PNG) → รูปจะแสดงบนการ์ดทันที<br>
-      รูปถูกเก็บใน browser นี้เท่านั้น (localStorage)
-    </p>
-    <div class="img-manager-grid" id="img-manager-grid"></div>
-    <button class="btn btn-ghost btn-full" style="margin-top:16px;" onclick="closeModal('modal-img-manager')">✅ เสร็จแล้ว</button>
-    <input type="file" id="img-upload-input" accept="image/*" style="display:none;" onchange="handleImgUpload(event)" />
-  </div>
-</div>
-
-<!-- SEE FUTURE -->
 <div class="modal-overlay" id="modal-see-future">
   <div class="modal">
-    <h2>🔮 แอบส่องระบบ</h2>
+    <h2>แอบส่องระบบ</h2>
     <p>การ์ด 3 ใบบนสุดของกองจั่ว (เรียงจากบนลงล่าง):</p>
-    <div id="see-future-cards" style="display:flex;gap:10px;justify-content:center;margin:16px 0;"></div>
-    <button class="btn btn-primary btn-full" onclick="closeModal('modal-see-future')">✅ จดจำแล้ว</button>
+    <div id="see-future-cards" style="display:flex;gap:10px;justify-content:center;margin:16px 0;flex-wrap:wrap;"></div>
+    <button class="btn btn-primary btn-full" onclick="closeModal('modal-see-future')">จดจำแล้ว</button>
   </div>
 </div>
 
-<!-- WINNER -->
+<div class="modal-overlay" id="modal-confirm">
+  <div class="modal">
+    <h2 id="confirm-title">ยืนยัน</h2>
+    <p id="confirm-desc"></p>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-ghost" style="flex:1;" onclick="closeModal('modal-confirm')">ยกเลิก</button>
+      <button class="btn btn-danger" style="flex:1;" id="confirm-action-btn">ยืนยัน</button>
+    </div>
+  </div>
+</div>
+
 <div class="winner-overlay" id="winner-overlay">
-  <div style="font-size:2rem;">🖤🎀🖤</div>
   <div class="winner-trophy">🏆</div>
+  <div class="winner-avatar" id="winner-avatar">🔐</div>
   <div class="winner-name" id="winner-name">ผู้ชนะ!</div>
-  <div style="font-size:0.88rem;color:var(--text-dim);margin-top:8px;" id="winner-desc"></div>
-  <div style="display:flex;gap:12px;margin-top:20px;">
-    <button class="btn btn-primary" onclick="playAgain()">🔄 เล่นอีกครั้ง</button>
-    <button class="btn btn-ghost" onclick="leaveGameToHome()">🏠 กลับหน้าหลัก</button>
+  <div style="font-size:0.88rem;color:var(--ink-dim);margin-top:4px;" id="winner-desc"></div>
+  <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;justify-content:center;">
+    <button class="btn btn-primary" onclick="playAgain()">เล่นอีกครั้ง</button>
+    <button class="btn btn-ghost" onclick="leaveGameToHome()">กลับหน้าหลัก</button>
   </div>
 </div>
 
@@ -992,6 +1007,13 @@ const FIREBASE_CONFIG = {
   measurementId: "G-F6VCN0TBL9"
 };
 
+/* ── Static asset paths ──
+   Drop matching PNG files next to this index.html. Missing files fall back to emoji automatically. */
+const CARD_IMG = (id) => `${id}.png`;
+const AVATAR_IMG = (n) => `avatar${n}.png`;
+const AVATAR_COUNT = 6;
+const AVATAR_FALLBACK = ['🔐','🛡️','🦊','🌙','⚡','🎭'];
+
 const CARD_DEFS = {
   phishing:     { id:'phishing',     type:'threat',   name:'Phishing',        emoji:'🎣', damage:-1, desc:'เผลอกดลิงก์รับของรางวัลฟรีใน LINE', color:'threat' },
   fake_shop:    { id:'fake_shop',    type:'threat',   name:'ร้านออนไลน์ปลอม', emoji:'🛍️', damage:-2, desc:'ซื้อของโจร ไม่ได้ของ เสียเงินฟรี!', color:'threat' },
@@ -1000,7 +1022,7 @@ const CARD_DEFS = {
   double_check: { id:'double_check', type:'defense',  name:'ตรวจสอบสองชั้น',  emoji:'✅', defends:'fake_shop', desc:'ป้องกัน ร้านออนไลน์ปลอม ได้', color:'defense' },
   block:        { id:'block',        type:'defense',  name:'วางสาย/บล็อก',    emoji:'🚫', defends:'scammer',   desc:'ป้องกัน Scammers ได้', color:'defense' },
   forward:      { id:'forward',      type:'action',   name:'แชร์ส่งต่อ',       emoji:'📤', desc:'บังคับคนถัดไปเล่น 2 เทิร์นติด', color:'action' },
-  reverse:      { id:'reverse',      type:'action',   name:'เปลี่ยนทิศ',       emoji:'🔄', desc:'เปลี่ยนทิศการเล่น / สะท้อน Forward กลับ', color:'action' },
+  reverse:      { id:'reverse',      type:'action',   name:'เปลี่ยนทิศ',       emoji:'🔄', desc:'เปลี่ยนทิศการเล่น / สะท้อนกลับ', color:'action' },
   skip:         { id:'skip',         type:'action',   name:'Skip',             emoji:'⏭️', desc:'ข้ามเทิร์นตัวเอง ไม่ต้องจั่วเสี่ยง', color:'action' },
   see_future:   { id:'see_future',   type:'action',   name:'แอบส่องระบบ',     emoji:'🔮', desc:'ดูการ์ด 3 ใบบนสุดของกองจั่ว', color:'action' },
   wallet_switch:{ id:'wallet_switch',type:'action',   name:'สลับบัญชี',        emoji:'💱', desc:'สลับแต้มกับผู้เล่นคนอื่น', color:'action' },
@@ -1011,17 +1033,36 @@ const CARD_DEFS = {
   lucky:        { id:'lucky',        type:'recovery', name:'ถูกรางวัลที่ 5!',  emoji:'🎰', heal:2, desc:'ได้แต้มคืน +2 ไม่มีเงื่อนไข', color:'recovery' },
 };
 
+const MAX_HP = 5;
+const ROOM_STALE_MS = 1000 * 60 * 60 * 3; // rooms idle longer than this get auto-pruned
+
 let db = null, firebaseApp = null;
 let myId = 'p_' + Math.random().toString(36).slice(2, 9);
-let myName = 'ผู้เล่น', myAvatar = '🖤';
+let myName = 'ผู้เล่น', myAvatar = 1;
 let currentRoomId = null, isHost = false;
-let gameState = null, roomListener = null;
-let timerInterval = null, selectedCards = [];
-let pendingAction = null, cardImages = {}, soundOn = true;
-let currentTab = 'create', threatModalShownFor = null;
+let gameState = null, roomListener = null, roomVal = null;
+let timerInterval = null;
+let pendingAction = null, soundOn = true;
+let threatModalShownFor = null;
+let myDisconnectRefs = [];
+let lastDrawAt = 0;
 
-const AVATARS = ['🖤','🎀','💀','🌸','🌙','⭐','🦇','👾','🎃','🌺','💜','🐱'];
+/* ───────── image helper ───────── */
+function imgOrFallback(src, fallbackHtml) {
+  const safeFallback = fallbackHtml.replace(/"/g, '&quot;');
+  return `<img src="${src}" alt="" onerror="this.outerHTML=&quot;${safeFallback}&quot;" />`;
+}
+function avatarHtml(n) {
+  const idx = (parseInt(n,10) || 1);
+  const fallback = `<span class="fallback">${AVATAR_FALLBACK[(idx-1) % AVATAR_FALLBACK.length]}</span>`;
+  return imgOrFallback(AVATAR_IMG(idx), fallback);
+}
+function cardImgHtml(def) {
+  const fallback = `<span>${def.emoji}</span>`;
+  return imgOrFallback(CARD_IMG(def.id), fallback);
+}
 
+/* ───────── audio ───────── */
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let actx = null;
 function getACtx() { if (!actx) actx = new AudioCtx(); return actx; }
@@ -1053,51 +1094,69 @@ function playSound(name) {
   }
 }
 
-// ใช้แหล่งเดียว (gstatic) เวอร์ชันเดียวกับที่ Firebase Console แนะนำ
-// ห้ามมี <script type="module"> อื่นที่ import firebase-app.js คนละเวอร์ชันในหน้านี้
-// เพราะจะทำให้เกิด Firebase app registry คนละตัว -> getDatabase() พัง ("Service database is not available")
+/* ───────── firebase bootstrap ───────── */
 const FIREBASE_SDK_VERSION = '12.15.0';
-const FIREBASE_SDK_SOURCES = [
-  `https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}/`,
-];
+const FIREBASE_SDK_BASE = `https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}/`;
 
 async function loadFirebaseSdk() {
-  let lastErr;
-  for (const base of FIREBASE_SDK_SOURCES) {
-    try {
-      const appMod = await import(base + 'firebase-app.js');
-      const dbMod  = await import(base + 'firebase-database.js');
-      return { appMod, dbMod, base };
-    } catch(e) { lastErr = e; }
-  }
-  throw lastErr || new Error('โหลด Firebase ไม่สำเร็จ');
+  const appMod = await import(FIREBASE_SDK_BASE + 'firebase-app.js');
+  const dbMod  = await import(FIREBASE_SDK_BASE + 'firebase-database.js');
+  return { appMod, dbMod };
 }
 
 async function connectFirebase() {
   try {
+    document.getElementById('conn-dot').className = 'conn-dot pending';
     document.getElementById('conn-label').textContent = 'กำลังเชื่อมต่อ...';
-    const { appMod, dbMod, base } = await loadFirebaseSdk();
+    const { appMod, dbMod } = await loadFirebaseSdk();
     const { initializeApp, getApps, getApp } = appMod;
-    const { getDatabase, ref, set, get, push, onValue, off, update, serverTimestamp, remove } = dbMod;
+    const {
+      getDatabase, ref, set, get, push, onValue, off, update, remove,
+      serverTimestamp, runTransaction, onDisconnect
+    } = dbMod;
     firebaseApp = getApps().length > 0 ? getApp() : initializeApp(FIREBASE_CONFIG);
     db = getDatabase(firebaseApp);
-    window._fb = { ref, set, get, push, onValue, off, update, serverTimestamp, remove };
+    window._fb = { ref, set, get, push, onValue, off, update, remove, serverTimestamp, runTransaction, onDisconnect };
     try {
-      const { getAnalytics, isSupported } = await import(base + 'firebase-analytics.js');
+      const { getAnalytics, isSupported } = await import(FIREBASE_SDK_BASE + 'firebase-analytics.js');
       if (await isSupported()) getAnalytics(firebaseApp);
     } catch(e) {}
     const testRef = ref(db, '.info/connected');
     onValue(testRef, (snap) => {
       const ok = snap.val();
       document.getElementById('conn-dot').className = 'conn-dot' + (ok ? ' connected' : '');
-      document.getElementById('conn-label').textContent = ok ? 'เชื่อมต่อแล้ว ✓' : 'ไม่ได้เชื่อมต่อ';
+      document.getElementById('conn-label').textContent = ok ? 'เชื่อมต่อแล้ว' : 'ไม่ได้เชื่อมต่อ';
+      if (ok) reattachDisconnectHandlers();
     });
     loadPublicRooms();
   } catch(e) {
-    showToast('❌ เชื่อมต่อ Firebase ไม่สำเร็จ', 'danger');
-    document.getElementById('conn-label').innerHTML = 'ล้มเหลว <a href="#" onclick="connectFirebase();return false;" style="color:var(--accent);">ลองใหม่</a>';
+    showToast('เชื่อมต่อ Firebase ไม่สำเร็จ', 'danger');
+    document.getElementById('conn-dot').className = 'conn-dot';
+    const lbl = document.getElementById('conn-label');
+    lbl.innerHTML = 'ล้มเหลว <a href="#" id="retry-conn-link">ลองใหม่</a>';
+    document.getElementById('retry-conn-link')?.addEventListener('click', (e)=>{ e.preventDefault(); connectFirebase(); });
     db = null; console.error(e);
   }
+}
+
+/* If this tab disconnects (closed, crashed, lost network) Firebase
+   automatically removes us from the room instead of leaving a ghost
+   "host" forever occupying it — this is what fixes "leave then come back
+   and I'm still the owner". */
+function reattachDisconnectHandlers() {
+  if (!db || !currentRoomId) return;
+  const { ref, onDisconnect } = window._fb;
+  try {
+    const playerRef = ref(db, `rooms/${currentRoomId}/players/${myId}`);
+    onDisconnect(playerRef).remove();
+    myDisconnectRefs = [playerRef];
+  } catch(e) {}
+}
+function clearDisconnectHandlers() {
+  const { onDisconnect } = window._fb || {};
+  if (!onDisconnect) return;
+  myDisconnectRefs.forEach(r => { try { onDisconnect(r).cancel(); } catch(e){} });
+  myDisconnectRefs = [];
 }
 
 function genCode() {
@@ -1105,24 +1164,41 @@ function genCode() {
   return Array.from({length:4}, ()=>chars[Math.floor(Math.random()*chars.length)]).join('');
 }
 
+function setBtnLoading(btn, loading, normalText) {
+  if (!btn) return;
+  btn.disabled = loading;
+  btn.innerHTML = loading ? `<span class="spinner"></span> กำลังดำเนินการ...` : normalText;
+}
+
+/* ───────── room create / join ───────── */
 async function createRoom() {
   if (!db) { showToast('กรุณาเชื่อมต่อ Firebase ก่อน','danger'); return; }
   validatePlayerInfo();
-  const roomName = document.getElementById('roomNameInput').value.trim() || `ห้องของ ${myName}`;
-  const maxPlayers = parseInt(document.getElementById('maxPlayersInput').value);
-  const isPrivate = document.getElementById('roomTypeInput').value === 'private';
-  const timerSec = parseInt(document.getElementById('timerSetting').value);
-  const code = genCode();
-  const { ref, set, serverTimestamp } = window._fb;
-  await set(ref(db, `rooms/${code}`), {
-    code, name: roomName, host: myId, maxPlayers, isPrivate, timerSec,
-    status: 'waiting', createdAt: serverTimestamp(),
-    players: { [myId]: { id:myId, name:myName, avatar:myAvatar, hp:5, handCount:0, joinedAt:serverTimestamp() } },
-    settings: { timerSec }
-  });
-  currentRoomId = code; isHost = true;
-  showToast('🖤 สร้างห้องแล้ว รอเพื่อน...','success');
-  enterLobby(code);
+  const btn = document.getElementById('createRoomBtn');
+  setBtnLoading(btn, true, 'สร้างห้อง');
+  try {
+    const roomName = document.getElementById('roomNameInput').value.trim() || `ห้องของ ${myName}`;
+    const maxPlayers = parseInt(document.getElementById('maxPlayersInput').value);
+    const isPrivate = document.getElementById('roomTypeInput').value === 'private';
+    const timerSec = parseInt(document.getElementById('timerSetting').value) || 60;
+    const code = genCode();
+    const { ref, set, serverTimestamp } = window._fb;
+    await set(ref(db, `rooms/${code}`), {
+      code, name: roomName, host: myId, maxPlayers, isPrivate, timerSec,
+      status: 'waiting', createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
+      players: { [myId]: { id:myId, name:myName, avatar:myAvatar, hp:MAX_HP, joinedAt:serverTimestamp() } },
+      settings: { timerSec }
+    });
+    currentRoomId = code; isHost = true;
+    reattachDisconnectHandlers();
+    showToast('สร้างห้องแล้ว รอเพื่อน...','success');
+    enterLobby(code);
+  } catch(e) {
+    console.error(e);
+    showToast('สร้างห้องไม่สำเร็จ ลองใหม่อีกครั้ง','danger');
+  } finally {
+    setBtnLoading(btn, false, 'สร้างห้อง');
+  }
 }
 
 async function joinRoomByCode() {
@@ -1130,63 +1206,117 @@ async function joinRoomByCode() {
   validatePlayerInfo();
   const code = document.getElementById('joinCodeInput').value.trim().toUpperCase();
   if (!code || code.length < 4) { showToast('กรุณากรอกรหัสห้อง','danger'); return; }
-  await joinRoom(code);
+  const btn = document.getElementById('joinCodeBtn');
+  setBtnLoading(btn, true, 'เข้าร่วม');
+  try { await joinRoom(code); }
+  finally { setBtnLoading(btn, false, 'เข้าร่วม'); }
 }
 
+/* Joining uses a transaction so two players clicking "join" at the same
+   instant can't both squeeze past the max-player check (the old
+   get-then-update pattern raced and could overfill a room or silently fail). */
 async function joinRoom(code) {
   if (!db) { showToast('กรุณาเชื่อมต่อ Firebase ก่อน','danger'); return; }
   validatePlayerInfo();
-  const { ref, get, update, serverTimestamp } = window._fb;
-  const snap = await get(ref(db, `rooms/${code}`));
-  if (!snap.exists()) { showToast('❌ ไม่พบห้องนี้','danger'); return; }
-  const room = snap.val();
-  if (room.status === 'playing') { showToast('⚠️ เกมกำลังดำเนินอยู่','danger'); return; }
-  if (Object.keys(room.players||{}).length >= room.maxPlayers) { showToast('⚠️ ห้องเต็มแล้ว','danger'); return; }
-  await update(ref(db, `rooms/${code}/players/${myId}`), { id:myId, name:myName, avatar:myAvatar, hp:5, handCount:0, joinedAt:serverTimestamp() });
-  currentRoomId = code; isHost = room.host === myId;
-  playSound('join'); enterLobby(code);
+  const { ref, runTransaction } = window._fb;
+  let joinResult = null;
+  try {
+    const res = await runTransaction(ref(db, `rooms/${code}`), (room) => {
+      if (room === null) { joinResult = 'missing'; return room; }
+      if (room.status === 'playing') { joinResult = 'playing'; return; }
+      const players = room.players || {};
+      if (!players[myId] && Object.keys(players).length >= room.maxPlayers) { joinResult = 'full'; return; }
+      players[myId] = { id:myId, name:myName, avatar:myAvatar, hp:MAX_HP, joinedAt: Date.now() };
+      room.players = players;
+      room.updatedAt = Date.now();
+      joinResult = 'ok';
+      return room;
+    });
+    if (joinResult === 'missing') { showToast('ไม่พบห้องนี้','danger'); return; }
+    if (joinResult === 'playing') { showToast('เกมกำลังดำเนินอยู่','danger'); return; }
+    if (joinResult === 'full') { showToast('ห้องเต็มแล้ว','danger'); return; }
+    if (joinResult !== 'ok') { showToast('เข้าร่วมห้องไม่สำเร็จ','danger'); return; }
+  } catch(e) {
+    console.error(e);
+    showToast('เข้าร่วมห้องไม่สำเร็จ','danger');
+    return;
+  }
+  currentRoomId = code;
+  const { get } = window._fb;
+  const hostSnap = await get(ref(db, `rooms/${code}/host`));
+  isHost = hostSnap.val() === myId;
+  reattachDisconnectHandlers();
+  playSound('join');
+  enterLobby(code);
 }
 
 function enterLobby(code) {
   showScreen('lobby');
   document.getElementById('lobby-code-display').textContent = code;
+  document.getElementById('lobby-players').innerHTML = `<div class="skeleton" style="height:96px;grid-column:1/-1;"></div>`;
   listenRoom(code);
 }
 
 function listenRoom(code) {
   if (roomListener) { window._fb.off(roomListener); }
   const { ref, onValue } = window._fb;
-  const roomRef = ref(db, `rooms/${code}`);
-  onValue(roomRef, (snap) => {
-    if (!snap.exists()) { showToast('ห้องถูกปิดแล้ว','danger'); showScreen('home'); return; }
+  const rRef = ref(db, `rooms/${code}`);
+  onValue(rRef, (snap) => {
+    if (!snap.exists()) {
+      if (currentRoomId === code) {
+        showToast('ห้องถูกปิดแล้ว','danger');
+        teardownRoomState();
+        showScreen('home');
+        loadPublicRooms();
+      }
+      return;
+    }
     const room = snap.val();
-    renderLobby(room);
-    if (room.status === 'playing' && room.gameState) {
+    roomVal = room;
+    isHost = room.host === myId;
+    if (room.status === 'waiting') {
+      gameState = null;
+      clearInterval(timerInterval);
+      if (!document.getElementById('screen-lobby').classList.contains('active')) {
+        showScreen('lobby');
+      }
+      document.getElementById('lobby-code-display').textContent = code;
+      renderLobby(room);
+    } else if (room.status === 'playing' && room.gameState) {
       gameState = room.gameState;
-      startGameScreen(room);
+      enterGameScreen();
     }
   });
-  roomListener = roomRef;
+  roomListener = rRef;
   listenChat(code);
 }
 
+function teardownRoomState() {
+  clearDisconnectHandlers();
+  currentRoomId = null; isHost = false; gameState = null; roomVal = null;
+  threatModalShownFor = null; pendingAction = null;
+  clearInterval(timerInterval);
+  if (roomListener) { window._fb.off(roomListener); roomListener = null; }
+}
+
 function renderLobby(room) {
-  document.getElementById('lobby-room-name').textContent = room.name + (room.isPrivate?' 🔒':' 🌐');
+  document.getElementById('lobby-room-name').textContent = room.name + (room.isPrivate ? ' · ส่วนตัว' : ' · สาธารณะ');
   document.getElementById('timerSetting').value = room.settings?.timerSec || 60;
   updateTimerDisplay(room.settings?.timerSec || 60);
-  const players = Object.values(room.players || {});
+  document.getElementById('timer-settings-panel').style.display = (room.host === myId) ? '' : 'none';
+  const players = Object.values(room.players || {}).sort((a,b)=>(a.joinedAt||0)-(b.joinedAt||0));
   const slotsEl = document.getElementById('lobby-players');
   slotsEl.innerHTML = '';
   for (let i = 0; i < room.maxPlayers; i++) {
     const p = players[i];
     const slot = document.createElement('div');
-    slot.className = 'player-slot'+(p?' filled':'')+(p?.id===myId?' me':'');
+    slot.className = 'player-slot'+(p?' filled':'')+(p?.id===myId?' me':'')+(p?.id===room.host?' host-slot':'');
     if (p) {
-      slot.innerHTML = `<div class="player-avatar">${p.avatar}</div>
-        <div class="player-name">${p.name}${p.id===myId?' (คุณ)':''}</div>
-        <div class="player-status">${p.id===room.host?'👑 Host':'✅ พร้อม'}</div>`;
+      slot.innerHTML = `<div class="player-avatar-big">${avatarHtml(p.avatar)}</div>
+        <div class="player-name">${escapeHtml(p.name)}${p.id===myId?' (คุณ)':''}</div>
+        <div class="player-status">${p.id===room.host?'★ เจ้าของห้อง':'พร้อมเล่น'}</div>`;
     } else {
-      slot.innerHTML = `<div style="color:var(--text-dim);font-size:1.5rem;">➕</div><div class="slot-empty">รอผู้เล่น...</div>`;
+      slot.innerHTML = `<div class="slot-plus">+</div><div class="slot-empty">รอผู้เล่น...</div>`;
     }
     slotsEl.appendChild(slot);
   }
@@ -1194,7 +1324,7 @@ function renderLobby(room) {
   if (room.host !== myId) { startBtn.style.display='none'; return; }
   startBtn.style.display = '';
   if (players.length >= 2) {
-    startBtn.disabled = false; startBtn.textContent = '🎀 เริ่มเกม!';
+    startBtn.disabled = false; startBtn.textContent = 'เริ่มเกม!';
   } else {
     startBtn.disabled = true; startBtn.textContent = `รอผู้เล่นอีก ${2-players.length} คน`;
   }
@@ -1202,13 +1332,24 @@ function renderLobby(room) {
 
 async function startGame() {
   if (!db || !currentRoomId) return;
-  const { ref, get, update } = window._fb;
-  const snap = await get(ref(db, `rooms/${currentRoomId}`));
-  const room = snap.val();
-  const players = Object.values(room.players || {});
-  if (players.length < 2) { showToast('ต้องการผู้เล่นอย่างน้อย 2 คน','danger'); return; }
-  const gs = buildInitialGameState(players, room.settings?.timerSec || 60);
-  await update(ref(db, `rooms/${currentRoomId}`), { status:'playing', gameState:gs });
+  const btn = document.getElementById('start-game-btn');
+  setBtnLoading(btn, true, 'เริ่มเกม!');
+  try {
+    const { ref, get, update } = window._fb;
+    const snap = await get(ref(db, `rooms/${currentRoomId}`));
+    const room = snap.val();
+    if (!room) { showToast('ห้องนี้ถูกปิดไปแล้ว','danger'); return; }
+    const players = Object.values(room.players || {});
+    if (players.length < 2) { showToast('ต้องการผู้เล่นอย่างน้อย 2 คน','danger'); return; }
+    const timerSec = parseInt(document.getElementById('timerSetting').value) || room.settings?.timerSec || 60;
+    const gs = buildInitialGameState(players, timerSec);
+    await update(ref(db, `rooms/${currentRoomId}`), { status:'playing', gameState:gs, settings:{timerSec}, updatedAt: Date.now() });
+  } catch(e) {
+    console.error(e);
+    showToast('เริ่มเกมไม่สำเร็จ ลองใหม่','danger');
+  } finally {
+    setBtnLoading(btn, false, 'เริ่มเกม!');
+  }
 }
 
 function buildInitialGameState(players, timerSec) {
@@ -1217,7 +1358,7 @@ function buildInitialGameState(players, timerSec) {
   const hands = {}, playerStates = {};
   players.forEach(p => {
     hands[p.id] = [];
-    playerStates[p.id] = { id:p.id, name:p.name, avatar:p.avatar, hp:5, eliminated:false };
+    playerStates[p.id] = { id:p.id, name:p.name, avatar:p.avatar, hp:MAX_HP, eliminated:false };
     for (let i = 0; i < 5; i++) { if (shuffled.length > 0) hands[p.id].push(shuffled.pop()); }
   });
   return {
@@ -1225,21 +1366,32 @@ function buildInitialGameState(players, timerSec) {
     players: playerStates,
     playerOrder: players.map(p=>p.id),
     currentTurnIdx: 0, direction: 1, timerSec,
-    turnStartTime: Date.now(), turnsLeft: 1, log: [],
-    pendingThreat: null, extraTurns: {}, phase: 'action', version: 1,
+    turnStartTime: Date.now(), turnsLeft: 1, log: [{msg:'เกมเริ่มแล้ว! ขอให้โชคดี', type:'system', t:Date.now()}],
+    pendingThreat: null, extraTurns: {}, version: 1, winnerId: null,
   };
 }
 
 function buildDeck(playerCount) {
   const cards = [];
-  const add = (id, count) => { for(let i=0;i<count;i++) cards.push({id:Date.now()+Math.random(), defId:id, ...CARD_DEFS[id]}); };
+  let seq = 0;
+  const add = (id, count) => { for(let i=0;i<count;i++) cards.push({ uid: `${id}_${seq++}_${Math.random().toString(36).slice(2,7)}`, defId:id }); };
   const n = Math.max(2, playerCount);
-  add('phishing', n+1); add('fake_shop', n); add('scammer', Math.max(1, playerCount-1));
-  add('awareness', n+2); add('double_check', n+1); add('block', n);
-  add('forward', playerCount+1); add('reverse', playerCount); add('skip', playerCount+1);
-  add('see_future', playerCount); add('wallet_switch', playerCount-1);
-  add('draw_bottom', playerCount); add('shuffle', 2);
-  add('bonus', playerCount+2); add('cyber_police', playerCount); add('lucky', playerCount+1);
+  add('phishing', n+2);
+  add('fake_shop', n+1);
+  add('scammer', Math.max(1, playerCount));
+  add('awareness', n+2);
+  add('double_check', n+1);
+  add('block', n);
+  add('forward', playerCount+1);
+  add('reverse', playerCount);
+  add('skip', playerCount+1);
+  add('see_future', playerCount);
+  add('wallet_switch', Math.max(1, playerCount-1));
+  add('draw_bottom', playerCount);
+  add('shuffle', 2);
+  add('bonus', playerCount+2);
+  add('cyber_police', playerCount);
+  add('lucky', playerCount+1);
   return cards;
 }
 
@@ -1251,62 +1403,109 @@ function shuffleArr(arr) {
   return arr;
 }
 
+/* ───────── public room list + cleanup ───────── */
 async function loadPublicRooms() {
   if (!db) { document.getElementById('room-count').textContent='กรุณาเชื่อมต่อก่อน'; return; }
   const { ref, get } = window._fb;
-  const snap = await get(ref(db, 'rooms'));
   const listEl = document.getElementById('public-room-list');
+  listEl.innerHTML = `<div class="skeleton" style="height:54px;margin-bottom:8px;"></div><div class="skeleton" style="height:54px;"></div>`;
+  let snap;
+  try { snap = await get(ref(db, 'rooms')); }
+  catch(e) { listEl.innerHTML = '<div class="empty-state">โหลดห้องไม่สำเร็จ</div>'; return; }
   listEl.innerHTML = '';
   if (!snap.exists()) {
-    listEl.innerHTML = '<div class="empty-state">ยังไม่มีห้อง สร้างห้องแรกเลย! 🖤</div>';
+    listEl.innerHTML = '<div class="empty-state">ยังไม่มีห้อง สร้างห้องแรกเลย!</div>';
     document.getElementById('room-count').textContent = '0 ห้อง';
     return;
   }
   const rooms = snap.val();
+  pruneStaleRooms(rooms);
   const publicRooms = Object.values(rooms).filter(r => !r.isPrivate);
   document.getElementById('room-count').textContent = `${publicRooms.length} ห้องสาธารณะ`;
   if (publicRooms.length === 0) { listEl.innerHTML = '<div class="empty-state">ไม่มีห้องสาธารณะ</div>'; return; }
-  publicRooms.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  publicRooms.sort((a,b)=>(b.updatedAt||b.createdAt||0)-(a.updatedAt||a.createdAt||0));
   publicRooms.forEach(room => {
     const playerCount = Object.keys(room.players||{}).length;
     const isPlaying = room.status === 'playing';
+    const isFull = playerCount >= room.maxPlayers;
     const item = document.createElement('div');
-    item.className = `room-item ${isPlaying?'playing':'waiting'}`;
+    item.className = `room-item ${isPlaying?'playing':(isFull?'full':'waiting')}`;
+    const badge = isPlaying ? `<span class="room-badge badge-playing">กำลังเล่น</span>`
+      : isFull ? `<span class="room-badge badge-full">เต็มแล้ว</span>`
+      : `<span class="room-badge badge-waiting">รอคน</span>`;
+    const canDelete = room.host === myId;
     item.innerHTML = `
-      <div>
-        <div class="room-name">${room.name}</div>
-        <div class="room-meta">👥 ${playerCount}/${room.maxPlayers} • ⏱️ ${room.timerSec||60}s/เทิร์น</div>
+      <div class="room-click-area" style="flex:1;min-width:0;">
+        <div class="room-name">${escapeHtml(room.name)}</div>
+        <div class="room-meta">${playerCount}/${room.maxPlayers} คน · ${room.timerSec||60}s ต่อเทิร์น</div>
       </div>
-      <span class="room-badge ${isPlaying?'badge-playing':'badge-waiting'}">${isPlaying?'🎮 กำลังเล่น':'⏳ รอคน'}</span>`;
-    if (!isPlaying && playerCount < room.maxPlayers) item.onclick = () => joinRoom(room.code);
+      ${badge}
+      ${canDelete ? `<button class="room-del-btn" title="ลบห้องนี้">ลบ</button>` : ''}`;
+    if (!isPlaying && !isFull) {
+      item.querySelector('.room-click-area').onclick = () => joinRoom(room.code);
+    }
+    const delBtn = item.querySelector('.room-del-btn');
+    if (delBtn) {
+      delBtn.onclick = (e) => { e.stopPropagation(); confirmDeleteRoom(room.code, room.name); };
+    }
     listEl.appendChild(item);
   });
 }
 
-function startGameScreen(room) {
-  showScreen('game');
-  document.getElementById('g-room-code').textContent = currentRoomId;
-  renderGame();
-  startTurnTimer();
-  const { ref, onValue } = window._fb;
-  onValue(ref(db, `rooms/${currentRoomId}/gameState`), (snap) => {
-    if (snap.exists()) {
-      gameState = snap.val();
-      renderGame();
-      checkWin();
-      checkPendingThreatForMe();
+function confirmDeleteRoom(code, name) {
+  document.getElementById('confirm-title').textContent = 'ลบห้องนี้?';
+  document.getElementById('confirm-desc').textContent = `ห้อง "${name}" จะถูกลบถาวรและผู้เล่นทุกคนจะถูกเตะออก`;
+  const btn = document.getElementById('confirm-action-btn');
+  btn.textContent = 'ลบห้อง';
+  btn.onclick = async () => {
+    closeModal('modal-confirm');
+    try {
+      await window._fb.remove(window._fb.ref(db, `rooms/${code}`));
+      showToast('ลบห้องแล้ว','success');
+      loadPublicRooms();
+    } catch(e) { showToast('ลบห้องไม่สำเร็จ','danger'); }
+  };
+  openModal('modal-confirm');
+}
+
+/* Opportunistic client-side cleanup: rooms that are empty or have been
+   idle for hours get removed whenever anyone loads the public room list,
+   so the lobby doesn't get cluttered with abandoned rooms. */
+function pruneStaleRooms(rooms) {
+  if (!db) return;
+  const now = Date.now();
+  Object.entries(rooms).forEach(([code, room]) => {
+    const playerCount = Object.keys(room.players||{}).length;
+    const lastActivity = room.updatedAt || room.createdAt || 0;
+    const isStale = typeof lastActivity === 'number' && (now - lastActivity) > ROOM_STALE_MS;
+    const isEmpty = playerCount === 0;
+    if (isEmpty || isStale) {
+      window._fb.remove(window._fb.ref(db, `rooms/${code}`)).catch(()=>{});
     }
   });
+}
+
+/* ───────── game screen ───────── */
+function enterGameScreen() {
+  const alreadyOnGameScreen = document.getElementById('screen-game').classList.contains('active');
+  if (!alreadyOnGameScreen) {
+    showScreen('game');
+    document.getElementById('g-room-code').textContent = currentRoomId;
+    startTurnTimer();
+  }
+  renderGame();
+  checkWin();
+  checkPendingThreatForMe();
 }
 
 function checkPendingThreatForMe() {
   if (!gameState) return;
   const threat = gameState.pendingThreat;
   if (threat && threat.targetId === myId) {
-    const key = threat.card.id;
+    const key = threat.card.uid;
     if (threatModalShownFor !== key) {
       threatModalShownFor = key;
-      showThreatModal(threat.card, gameState.hands[myId] || []);
+      showThreatModal(threat.card);
     }
   } else {
     threatModalShownFor = null;
@@ -1321,36 +1520,58 @@ function renderGame() {
   if (!myState) return;
   const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
   const isMyTurn = currentPlayerId === myId && !myState.eliminated;
-  document.getElementById('whose-turn-label').textContent = isMyTurn ? '🌸 เทิร์นคุณ!' : (gs.players[currentPlayerId]?.name||'-');
+  const iAmThreatened = gs.pendingThreat && gs.pendingThreat.targetId === myId;
+
+  document.getElementById('whose-turn-label').textContent = isMyTurn ? 'คุณ!' : (gs.players[currentPlayerId]?.name||'-');
   const indicator = document.getElementById('turn-indicator');
-  indicator.className = 'turn-indicator'+(isMyTurn?' my-turn':' wait');
-  const extra = isMyTurn && (gs.turnsLeft||1) > 1 ? ` (อีก ${gs.turnsLeft} เทิร์น)` : '';
-  indicator.textContent = isMyTurn ? `🎀 เทิร์นของคุณ!${extra}` : `รอ ${gs.players[currentPlayerId]?.name}...`;
-  document.getElementById('draw-btn-wrap').style.display = isMyTurn ? '' : 'none';
-  document.getElementById('draw-pile-card').style.cursor = isMyTurn ? 'pointer' : 'default';
+  if (iAmThreatened) {
+    indicator.className = 'turn-indicator threatened';
+    indicator.textContent = 'ภัยคุกคามรอคุณตอบสนอง!';
+  } else {
+    indicator.className = 'turn-indicator'+(isMyTurn?' my-turn':' wait');
+    const extra = isMyTurn && (gs.turnsLeft||1) > 1 ? ` (เหลืออีก ${gs.turnsLeft} เทิร์น)` : '';
+    indicator.textContent = isMyTurn ? `เทิร์นของคุณ!${extra}` : `รอ ${gs.players[currentPlayerId]?.name||'...'}`;
+  }
+  const canAct = isMyTurn && !gs.pendingThreat && !myState.eliminated;
+  document.getElementById('draw-btn-wrap').style.display = canAct ? '' : 'none';
+  document.getElementById('draw-pile-card').style.cursor = canAct ? 'pointer' : 'default';
+  document.getElementById('draw-pile-card').style.opacity = canAct ? '1' : '0.6';
+
   renderMyHP(myState.hp);
   document.getElementById('my-name-display').textContent = myState.name;
-  document.getElementById('my-avatar-display').textContent = myState.avatar;
-  document.getElementById('deck-count').textContent = gs.deck?.length || 0;
+  document.getElementById('my-avatar-display').innerHTML = avatarHtml(myState.avatar);
+  document.getElementById('deck-count').textContent = gs.deck?.length ?? 0;
+
   const discardEl = document.getElementById('discard-top');
   const topDiscard = gs.discard?.[gs.discard.length-1];
   if (topDiscard) {
-    const def = CARD_DEFS[topDiscard.defId] || topDiscard;
-    discardEl.className = `card card-${def.color||'action'}`;
-    discardEl.innerHTML = renderCardInner(def);
+    const def = CARD_DEFS[topDiscard.defId];
+    if (def) {
+      discardEl.className = `card card-${def.color||'action'}`;
+      discardEl.style.cssText = '';
+      discardEl.innerHTML = renderCardInner(def);
+    }
+  } else {
+    discardEl.className = 'card';
+    discardEl.style.cssText = 'background:var(--surface2);align-items:center;justify-content:center;';
+    discardEl.innerHTML = `<div style="font-size:2.2rem;color:var(--ink-faint);">—</div><div style="font-size:0.6rem;color:var(--ink-faint);margin-top:4px;">ว่าง</div>`;
   }
+
   renderOpponents(gs, currentPlayerId);
-  renderHand(gs.hands[myId]||[], isMyTurn);
+  if (myState.eliminated) {
+    document.getElementById('hand-cards').innerHTML = `<div class="hand-empty">คุณตกรอบแล้ว — รอดูผลการแข่งขัน</div>`;
+  } else {
+    renderHand(gs.hands[myId]||[], canAct);
+  }
   renderLog(gs.log||[]);
 }
 
 function renderMyHP(hp) {
   const el = document.getElementById('my-hp-display');
   el.innerHTML = '';
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < MAX_HP; i++) {
     const coin = document.createElement('div');
     coin.className = 'hp-big'+(i>=hp?' lost':'');
-    coin.textContent = i<hp?'♥':'';
     el.appendChild(coin);
   }
 }
@@ -1361,41 +1582,45 @@ function renderOpponents(gs, currentPlayerId) {
   gs.playerOrder.forEach(pid => {
     if (pid === myId) return;
     const p = gs.players[pid]; if (!p) return;
+    const isThreatened = gs.pendingThreat && gs.pendingThreat.targetId === pid;
     const div = document.createElement('div');
-    div.className = 'opponent-card'+(pid===currentPlayerId?' active-turn':'')+(p.eliminated?' eliminated':'');
+    div.className = 'opponent-card'+(pid===currentPlayerId?' active-turn':'')+(p.eliminated?' eliminated':'')+(isThreatened?' threatened':'');
     let hpHtml = '';
-    for (let i=0;i<5;i++) hpHtml += `<div class="hp-coin${i>=p.hp?' lost':''}">♥</div>`;
-    div.innerHTML = `<div class="opp-avatar">${p.avatar}</div>
-      <div class="opp-name">${p.name}${p.eliminated?' 💀':''}</div>
+    for (let i=0;i<MAX_HP;i++) hpHtml += `<div class="hp-coin${i>=p.hp?' lost':''}"></div>`;
+    div.innerHTML = `<div class="opp-avatar">${avatarHtml(p.avatar)}</div>
+      <div class="opp-name">${escapeHtml(p.name)}${p.eliminated?' (ตกรอบ)':''}</div>
       <div class="opp-hp">${hpHtml}</div>
-      <div class="opp-cards">🃏 ${gs.hands[pid]?.length||0} ใบ</div>`;
+      <div class="opp-cards">${gs.hands[pid]?.length||0} ใบในมือ</div>`;
     row.appendChild(div);
   });
 }
 
-function renderHand(hand, isMyTurn) {
+function renderHand(hand, canAct) {
   const el = document.getElementById('hand-cards');
   el.innerHTML = '';
-  hand.forEach((card, idx) => {
-    const def = CARD_DEFS[card.defId] || card;
+  if (!hand || hand.length === 0) {
+    el.innerHTML = '<div class="hand-empty">ไม่มีใบในมือ</div>';
+    return;
+  }
+  hand.forEach((card) => {
+    const def = CARD_DEFS[card.defId];
+    if (!def) return;
     const div = document.createElement('div');
-    div.className = `card hand-card card-${def.color||'action'}${selectedCards.includes(idx)?' selected':''}${isMyTurn&&def.type!=='threat'?' playable':''}`;
-    div.innerHTML = renderCardInner(def, card);
-    div.onclick = () => isMyTurn && onHandCardClick(idx, card, def);
+    const isPlayable = canAct && (def.type === 'action' || def.type === 'recovery');
+    div.className = `card hand-card card-${def.color||'action'}${isPlayable?' playable':' not-playable'}`;
+    div.innerHTML = renderCardInner(def);
+    div.onclick = () => onHandCardClick(card, def, canAct);
     div.title = def.desc || '';
     el.appendChild(div);
   });
 }
 
-function renderCardInner(def, cardData) {
-  const imgSrc = cardImages[def.id] || null;
+function renderCardInner(def) {
   const badgeClass = `badge-${def.color||'action'}`;
   const typeLabel = {threat:'ภัยคุกคาม',defense:'เกราะป้องกัน',action:'แอคชั่น',recovery:'ฟื้นฟู'}[def.type]||def.type;
   return `
     <div class="card-type-badge ${badgeClass}">${typeLabel}</div>
-    <div class="card-img-area">
-      ${imgSrc ? `<img src="${imgSrc}" alt="${def.name}" />` : `<span>${def.emoji}</span>`}
-    </div>
+    <div class="card-img-area">${cardImgHtml(def)}</div>
     <div class="card-name">${def.name}</div>
     <div class="card-effect">${def.desc||''}</div>
     ${def.damage ? `<div class="card-value" style="color:var(--threat);">${def.damage}</div>` : ''}
@@ -1406,7 +1631,8 @@ function renderCardInner(def, cardData) {
 function renderLog(log) {
   const el = document.getElementById('game-log');
   el.innerHTML = '';
-  log.slice(-6).forEach(entry => {
+  if (!log) return;
+  log.slice(-8).forEach(entry => {
     const div = document.createElement('div');
     div.className = 'log-entry '+(entry.type||'system');
     div.textContent = entry.msg;
@@ -1415,210 +1641,376 @@ function renderLog(log) {
   el.scrollTop = el.scrollHeight;
 }
 
-async function onHandCardClick(idx, card, def) {
-  if (!gameState) return;
-  const currentPlayerId = gameState.playerOrder[gameState.currentTurnIdx % gameState.playerOrder.length];
-  if (currentPlayerId !== myId) return;
-  if (gameState.pendingThreat) { showToast('ต้องจัดการภัยคุกคามก่อน','info'); return; }
-  if (def.type === 'threat') { showToast('การ์ดภัยคุกคามออกมาเมื่อจั่ว','info'); return; }
+function onHandCardClick(card, def, canAct) {
+  if (!canAct) {
+    if (gameState?.pendingThreat?.targetId === myId) showToast('ต้องจัดการภัยคุกคามก่อน (ดูป็อปอัพ)','info');
+    else if (gameState?.pendingThreat) showToast('รอผู้เล่นอื่นจัดการภัยคุกคามก่อน','info');
+    else if (def.type === 'defense') showToast('การ์ดเกราะใช้ได้เมื่อเจอภัยคุกคามเท่านั้น','info');
+    else if (def.type === 'threat') showToast('การ์ดภัยคุกคามจะออกเองตอนจั่ว วางเองไม่ได้','info');
+    else showToast('ยังไม่ใช่เทิร์นของคุณ','info');
+    return;
+  }
+  if (def.type === 'defense') { showToast('การ์ดเกราะใช้ได้เมื่อเจอภัยคุกคามเท่านั้น','info'); return; }
+  if (def.type === 'threat') { showToast('การ์ดภัยคุกคามจะออกเองตอนจั่ว','info'); return; }
   playSound('play');
-  if (def.type === 'action') await playActionCard(idx, card, def);
-  else if (def.type === 'defense') showToast('การ์ดเกราะใช้ได้เมื่อเจอภัยคุกคามเท่านั้น','info');
-  else if (def.type === 'recovery') await playRecoveryCard(idx, card, def);
+  if (def.type === 'action') playActionCard(card, def);
+  else if (def.type === 'recovery') playRecoveryCard(card, def);
 }
 
-async function playActionCard(idx, card, def) {
-  const gs = JSON.parse(JSON.stringify(gameState));
+/* ───────── transactional state mutation core ─────────
+   Every gameplay mutation goes through runGameTransaction, which hands the
+   mutator the *latest* server copy of gameState (not a possibly-stale local
+   copy). This is the fix for "draw a damage card and then can't do anything,
+   forward doesn't work, etc." — those were caused by concurrent
+   read-modify-write races where one client's write silently overwrote
+   another's. Firebase transactions retry automatically on conflict. */
+async function runGameTransaction(mutator, opts = {}) {
+  if (!db || !currentRoomId) return false;
+  const { ref, runTransaction } = window._fb;
+  try {
+    const res = await runTransaction(ref(db, `rooms/${currentRoomId}/gameState`), (gs) => {
+      if (gs === null || gs === undefined) return gs;
+      const result = mutator(JSON.parse(JSON.stringify(gs)));
+      if (!result) return; // mutator signalled abort (invalid move / already handled)
+      result.version = (gs.version||0) + 1;
+      return result;
+    });
+    if (!res.committed && !opts.silent) {
+      showToast('ทำรายการไม่สำเร็จ (อาจช้าไปหนึ่งจังหวะ) ลองใหม่','info');
+    }
+    return res.committed;
+  } catch(e) {
+    console.error(e);
+    if (!opts.silent) showToast('เกิดข้อผิดพลาด ลองใหม่อีกครั้ง','danger');
+    return false;
+  }
+}
+
+function addLog(gs, msg, type='system') {
+  gs.log = gs.log||[];
+  gs.log.push({msg, type, t:Date.now()});
+  if (gs.log.length > 50) gs.log = gs.log.slice(-50);
+}
+function removeFromHandByUid(gs, pid, uid) {
+  const hand = gs.hands[pid]||[];
+  const i = hand.findIndex(c => c.uid === uid);
+  if (i === -1) return null;
+  return hand.splice(i,1)[0];
+}
+
+async function playActionCard(card, def) {
   if (def.id === 'see_future') {
-    const top3 = gs.deck.slice(-3).reverse();
-    showSeeFuture(top3);
-    removeFromHand(gs, myId, idx);
-    gs.discard.push(card);
-    addLog(gs, `${myName} แอบส่องกองจั่ว 🔮`, 'action');
-    await saveGS(gs); return;
+    let snapshot = null;
+    const ok = await runGameTransaction(gs => {
+      const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
+      if (currentPlayerId !== myId || gs.pendingThreat) return;
+      const taken = removeFromHandByUid(gs, myId, card.uid);
+      if (!taken) return;
+      gs.discard = gs.discard||[]; gs.discard.push(taken);
+      snapshot = gs.deck.slice(-3).reverse();
+      addLog(gs, `${myName} แอบส่องกองจั่ว`, 'action');
+      return gs;
+    });
+    if (ok && snapshot) showSeeFuture(snapshot);
+    return;
   }
   if (def.id === 'shuffle') {
-    gs.deck = shuffleArr([...gs.deck]);
-    removeFromHand(gs, myId, idx); gs.discard.push(card);
-    addLog(gs, `${myName} สับกองการ์ดใหม่ 🔀`, 'action');
-    await saveGS(gs); return;
+    await runGameTransaction(gs => {
+      const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
+      if (currentPlayerId !== myId || gs.pendingThreat) return;
+      const taken = removeFromHandByUid(gs, myId, card.uid);
+      if (!taken) return;
+      gs.deck = shuffleArr([...gs.deck]);
+      gs.discard = gs.discard||[]; gs.discard.push(taken);
+      addLog(gs, `${myName} สับกองการ์ดใหม่`, 'action');
+      return gs;
+    });
+    return;
   }
   if (def.id === 'skip') {
-    removeFromHand(gs, myId, idx); gs.discard.push(card);
-    addLog(gs, `${myName} ข้ามเทิร์น ⏭️`, 'action');
-    advanceTurn(gs); await saveGS(gs); return;
+    await runGameTransaction(gs => {
+      const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
+      if (currentPlayerId !== myId || gs.pendingThreat) return;
+      const taken = removeFromHandByUid(gs, myId, card.uid);
+      if (!taken) return;
+      gs.discard = gs.discard||[]; gs.discard.push(taken);
+      addLog(gs, `${myName} ข้ามเทิร์น`, 'action');
+      advanceTurn(gs);
+      return gs;
+    });
+    return;
   }
   if (def.id === 'reverse') {
-    gs.direction *= -1;
-    removeFromHand(gs, myId, idx); gs.discard.push(card);
-    addLog(gs, `${myName} เปลี่ยนทิศการเล่น 🔄`, 'action');
-    playSound('reverse'); advanceTurn(gs); await saveGS(gs); return;
+    const ok = await runGameTransaction(gs => {
+      const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
+      if (currentPlayerId !== myId || gs.pendingThreat) return;
+      const taken = removeFromHandByUid(gs, myId, card.uid);
+      if (!taken) return;
+      gs.direction *= -1;
+      gs.discard = gs.discard||[]; gs.discard.push(taken);
+      addLog(gs, `${myName} เปลี่ยนทิศการเล่น`, 'action');
+      advanceTurn(gs);
+      return gs;
+    });
+    if (ok) playSound('reverse');
+    return;
   }
   if (def.id === 'draw_bottom') {
-    const bottomCard = gs.deck.shift();
-    if (bottomCard) {
-      gs.hands[myId].push(bottomCard);
-      removeFromHand(gs, myId, idx); gs.discard.push(card);
-      addLog(gs, `${myName} จั่วจากใต้กอง ⬇️`, 'action');
-      advanceTurn(gs); await saveGS(gs);
-    }
+    await runGameTransaction(gs => {
+      const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
+      if (currentPlayerId !== myId || gs.pendingThreat) return;
+      const taken = removeFromHandByUid(gs, myId, card.uid);
+      if (!taken) return;
+      if (gs.deck.length === 0) reshuffleDeck(gs);
+      const bottomCard = gs.deck.shift();
+      gs.discard = gs.discard||[]; gs.discard.push(taken);
+      if (bottomCard) {
+        const bDef = CARD_DEFS[bottomCard.defId];
+        if (bDef?.type === 'threat') {
+          gs.pendingThreat = { targetId: myId, card: bottomCard };
+          addLog(gs, `${myName} จั่วจากใต้กอง และเจอ "${bDef.name}"!`, 'threat');
+        } else {
+          gs.hands[myId] = gs.hands[myId]||[];
+          gs.hands[myId].push(bottomCard);
+          addLog(gs, `${myName} จั่วจากใต้กอง`, 'action');
+          advanceTurn(gs);
+        }
+      } else {
+        advanceTurn(gs);
+      }
+      return gs;
+    });
     return;
   }
   if (['forward','wallet_switch'].includes(def.id)) {
-    pendingAction = { idx, card, def };
-    showTargetModal(def.id==='forward'?'บังคับเล่น 2 เทิร์น':'สลับแต้มกับ');
+    pendingAction = { uid: card.uid, def };
+    showTargetModal(def.id==='forward' ? 'บังคับเล่น 2 เทิร์นติด' : 'สลับแต้มกับ');
     return;
   }
 }
 
-async function playActionCardWithTarget(target) {
+async function playActionCardWithTarget(targetId) {
   if (!pendingAction) return;
-  const { idx, card, def } = pendingAction;
+  const { uid, def } = pendingAction;
   pendingAction = null; closeModal('modal-target');
-  const gs = JSON.parse(JSON.stringify(gameState));
-  if (def.id === 'forward') {
-    gs.extraTurns = gs.extraTurns || {};
-    gs.extraTurns[target] = (gs.extraTurns[target]||0) + 1;
-    addLog(gs, `${myName} ส่งต่อ Forward ให้ ${gs.players[target]?.name} 📤`, 'action');
-  } else if (def.id === 'wallet_switch') {
-    const myHp = gs.players[myId].hp, tHp = gs.players[target].hp;
-    gs.players[myId].hp = Math.min(5, tHp);
-    gs.players[target].hp = Math.min(5, myHp);
-    addLog(gs, `${myName} สลับบัญชีกับ ${gs.players[target]?.name} 💱`, 'action');
-  }
-  removeFromHand(gs, myId, idx); gs.discard.push(card);
-  advanceTurn(gs); await saveGS(gs);
+  await runGameTransaction(gs => {
+    const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
+    if (currentPlayerId !== myId || gs.pendingThreat) return;
+    if (!gs.players[targetId] || gs.players[targetId].eliminated) return;
+    const taken = removeFromHandByUid(gs, myId, uid);
+    if (!taken) return;
+    gs.discard = gs.discard||[]; gs.discard.push(taken);
+    if (def.id === 'forward') {
+      gs.extraTurns = gs.extraTurns || {};
+      gs.extraTurns[targetId] = (gs.extraTurns[targetId]||0) + 1;
+      addLog(gs, `${myName} ส่งการ์ด Forward ให้ ${gs.players[targetId]?.name} (เล่น 2 เทิร์นติด)`, 'action');
+    } else if (def.id === 'wallet_switch') {
+      const myHp = gs.players[myId].hp, tHp = gs.players[targetId].hp;
+      gs.players[myId].hp = tHp;
+      gs.players[targetId].hp = myHp;
+      addLog(gs, `${myName} สลับบัญชีกับ ${gs.players[targetId]?.name}`, 'action');
+    }
+    advanceTurn(gs);
+    return gs;
+  });
 }
 
-async function playRecoveryCard(idx, card, def) {
-  const gs = JSON.parse(JSON.stringify(gameState));
-  const p = gs.players[myId];
-  const oldHp = p.hp;
-  p.hp = Math.min(5, p.hp + (def.heal||1));
-  removeFromHand(gs, myId, idx); gs.discard.push(card);
-  addLog(gs, `${myName} ฟื้นฟู +${p.hp-oldHp} แต้ม ${def.emoji}`, 'recovery');
-  playSound('defense'); await saveGS(gs);
+function cancelPendingAction() {
+  pendingAction = null;
+  closeModal('modal-target');
+}
+
+async function playRecoveryCard(card, def) {
+  const ok = await runGameTransaction(gs => {
+    const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
+    if (currentPlayerId !== myId || gs.pendingThreat) return;
+    const taken = removeFromHandByUid(gs, myId, card.uid);
+    if (!taken) return;
+    const p = gs.players[myId];
+    const oldHp = p.hp;
+    p.hp = Math.min(MAX_HP, p.hp + (def.heal||1));
+    gs.discard = gs.discard||[]; gs.discard.push(taken);
+    addLog(gs, `${myName} ฟื้นฟู +${p.hp-oldHp} แต้ม`, 'recovery');
+    return gs;
+  });
+  if (ok) playSound('defense');
 }
 
 async function drawCard() {
   if (!gameState) return;
-  if (gameState.pendingThreat) { showToast('ต้องจัดการภัยคุกคามก่อน','info'); return; }
-  const gs = JSON.parse(JSON.stringify(gameState));
-  const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
-  if (currentPlayerId !== myId) { showToast('ยังไม่ใช่เทิร์นคุณ!','danger'); return; }
-  if (gs.deck.length === 0) reshuffleDeck(gs);
-  if (gs.deck.length === 0) { showToast('กองการ์ดหมดแล้ว!','danger'); return; }
-  const drawn = gs.deck.pop();
-  playSound('draw');
-  if (drawn.type === 'threat') {
-    gs.pendingThreat = { card: drawn, targetId: myId };
-    addLog(gs, `${myName} จั่วได้ "${drawn.name}" ⚠️`, 'threat');
-    await saveGS(gs);
-    threatModalShownFor = drawn.id;
-    showThreatModal(drawn, gs.hands[myId]||[]);
-  } else {
-    gs.hands[myId] = gs.hands[myId]||[];
-    gs.hands[myId].push(drawn);
-    addLog(gs, `${myName} จั่วการ์ด 1 ใบ`, 'system');
-    advanceTurn(gs); await saveGS(gs);
+  const now = Date.now();
+  if (now - lastDrawAt < 400) return; // debounce double-clicks
+  lastDrawAt = now;
+  let drawnThreat = null;
+  const ok = await runGameTransaction(gs => {
+    const currentPlayerId = gs.playerOrder[gs.currentTurnIdx % gs.playerOrder.length];
+    if (currentPlayerId !== myId) return;
+    if (gs.pendingThreat) return;
+    if (gs.players[myId]?.eliminated) return;
+    if (gs.deck.length === 0) reshuffleDeck(gs);
+    if (gs.deck.length === 0) { addLog(gs,'กองการ์ดหมดแล้ว! ข้ามเทิร์น','system'); advanceTurn(gs); return gs; }
+    const drawn = gs.deck.pop();
+    const def = CARD_DEFS[drawn.defId];
+    if (def?.type === 'threat') {
+      gs.pendingThreat = { card: drawn, targetId: myId };
+      addLog(gs, `${myName} จั่วได้ "${def.name}"!`, 'threat');
+      drawnThreat = drawn;
+    } else {
+      gs.hands[myId] = gs.hands[myId]||[];
+      gs.hands[myId].push(drawn);
+      addLog(gs, `${myName} จั่วการ์ด 1 ใบ`, 'system');
+      advanceTurn(gs);
+    }
+    return gs;
+  }, { silent: true });
+  if (ok) {
+    playSound('draw');
+    if (drawnThreat) {
+      threatModalShownFor = drawnThreat.uid;
+      showThreatModal(drawnThreat);
+    }
   }
 }
 
-function showThreatModal(card, hand) {
-  const def = CARD_DEFS[card.defId]||card;
-  document.getElementById('threat-title').textContent = '⚠️ ภัยคุกคาม!';
-  document.getElementById('threat-emoji').textContent = def.emoji;
+function showThreatModal(card) {
+  const def = CARD_DEFS[card.defId];
+  if (!def) return;
+  document.getElementById('threat-title').textContent = 'ภัยคุกคาม!';
+  document.getElementById('threat-img-wrap').innerHTML = cardImgHtml(def);
   document.getElementById('threat-name').textContent = def.name;
   document.getElementById('threat-damage').textContent = def.damage;
   document.getElementById('threat-desc').textContent = def.desc;
-  document.getElementById('threat-modal-desc').textContent = gameState?.pendingThreat?.fromReverse
+  const isReflected = !!gameState?.pendingThreat?.fromReverse;
+  document.getElementById('threat-modal-desc').textContent = isReflected
     ? 'ภัยคุกคามถูกสะท้อนมาที่คุณ! เลือกวิธีรับมือ:'
     : 'คุณได้รับการ์ดภัยคุกคาม! เลือกวิธีรับมือ:';
   playSound('threat');
-  const defCards = hand.map((c,i)=>({c,i,def:CARD_DEFS[c.defId]})).filter(x=>x.def?.type==='defense'&&x.def?.defends===card.defId);
-  const actionCards = hand.map((c,i)=>({c,i,def:CARD_DEFS[c.defId]})).filter(x=>['reverse','forward'].includes(x.def?.id));
+
+  const currentHand = gameState?.hands?.[myId] || [];
+  const defCards = currentHand.filter(c => CARD_DEFS[c.defId]?.type==='defense' && CARD_DEFS[c.defId]?.defends===card.defId);
+  const reverseCards = currentHand.filter(c => CARD_DEFS[c.defId]?.id==='reverse');
+  const forwardCards = currentHand.filter(c => CARD_DEFS[c.defId]?.id==='forward');
+  const otherAlivePlayers = (gameState?.playerOrder||[]).filter(pid => pid!==myId && !gameState.players[pid]?.eliminated);
+
   const actionsEl = document.getElementById('threat-actions');
   actionsEl.innerHTML = '';
+
   const acceptBtn = document.createElement('button');
   acceptBtn.className = 'btn btn-danger btn-full';
-  acceptBtn.textContent = `😰 ยอมรับ (${def.damage} แต้ม)`;
+  acceptBtn.textContent = `ยอมรับความเสียหาย (${def.damage} แต้ม)`;
   acceptBtn.onclick = () => resolveThreat('accept');
   actionsEl.appendChild(acceptBtn);
-  defCards.forEach(({c,i,def:dDef}) => {
+
+  defCards.forEach((c) => {
+    const dDef = CARD_DEFS[c.defId];
     const btn = document.createElement('button');
     btn.className = 'btn btn-success btn-full';
-    btn.textContent = `🛡️ ใช้ "${dDef.name}" ป้องกัน!`;
-    btn.onclick = () => resolveThreat('defend', i, c);
+    btn.textContent = `ใช้ "${dDef.name}" ป้องกัน`;
+    btn.onclick = () => resolveThreat('defend', c.uid);
     actionsEl.appendChild(btn);
   });
-  actionCards.forEach(({c,i,def:aDef}) => {
-    if (aDef.id === 'reverse') {
-      const btn = document.createElement('button');
-      btn.className = 'btn btn-ghost btn-full'; btn.style.borderColor='var(--action)';
-      btn.textContent = '🔄 ใช้ Reverse โยนกลับ!';
-      btn.onclick = () => resolveThreat('reverse',i,c); actionsEl.appendChild(btn);
-    }
-    if (aDef.id === 'forward') {
-      const btn = document.createElement('button');
-      btn.className = 'btn btn-ghost btn-full'; btn.style.borderColor='var(--action)';
-      btn.textContent = '📤 ใช้ Forward โยนให้คนถัดไป!';
-      btn.onclick = () => resolveThreat('forward',i,c); actionsEl.appendChild(btn);
-    }
-  });
+
+  if (reverseCards.length && otherAlivePlayers.length) {
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-ghost btn-full'; btn.style.borderColor='var(--action)'; btn.style.color='var(--action)';
+    btn.textContent = 'ใช้ Reverse โยนกลับให้คนก่อนหน้า';
+    btn.onclick = () => resolveThreat('reverse', reverseCards[0].uid);
+    actionsEl.appendChild(btn);
+  }
+  if (forwardCards.length && otherAlivePlayers.length) {
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-ghost btn-full'; btn.style.borderColor='var(--action)'; btn.style.color='var(--action)';
+    btn.textContent = 'ใช้ Forward โยนให้คนถัดไป';
+    btn.onclick = () => resolveThreat('forward', forwardCards[0].uid);
+    actionsEl.appendChild(btn);
+  }
   openModal('modal-threat');
 }
 
-async function resolveThreat(action, cardIdx, card) {
-  if (!gameState?.pendingThreat || gameState.pendingThreat.targetId !== myId) { closeModal('modal-threat'); return; }
-  closeModal('modal-threat'); threatModalShownFor = null;
-  const gs = JSON.parse(JSON.stringify(gameState));
-  const threat = gs.pendingThreat; if (!threat) return;
-  const threatDef = CARD_DEFS[threat.card.defId];
-  gs.pendingThreat = null;
-  if (action === 'accept') {
-    gs.players[myId].hp = Math.max(0, gs.players[myId].hp + threatDef.damage);
-    addLog(gs, `${myName} โดน ${threatDef.name} ${threatDef.damage} แต้ม 💸`, 'threat');
-    playSound('lose');
-    if (gs.players[myId].hp <= 0) { gs.players[myId].eliminated = true; addLog(gs, `${myName} ตกรอบ! 💀`, 'threat'); }
-    reshuffleOneCard(gs, threat.card); advanceTurn(gs);
-  } else if (action === 'defend') {
-    removeFromHand(gs, myId, cardIdx); gs.discard.push(card);
-    addLog(gs, `${myName} ใช้ "${CARD_DEFS[card.defId]?.name}" ป้องกัน ${threatDef.name}! 🛡️`, 'defense');
-    playSound('defense'); reshuffleOneCard(gs, threat.card); advanceTurn(gs);
-  } else if (action === 'reverse') {
-    gs.direction *= -1;
-    removeFromHand(gs, myId, cardIdx); gs.discard.push(card);
-    const nextIdx = getNextPlayerIdx(gs, gs.currentTurnIdx, gs.direction);
-    const nextId = gs.playerOrder[nextIdx];
-    gs.pendingThreat = { card: threat.card, targetId: nextId, fromReverse: true };
-    addLog(gs, `${myName} สะท้อน ${threatDef.name} ไปให้ ${gs.players[nextId]?.name}! 🔄`, 'action');
-  } else if (action === 'forward') {
-    removeFromHand(gs, myId, cardIdx); gs.discard.push(card);
-    const nextIdx = getNextPlayerIdx(gs, gs.currentTurnIdx, gs.direction);
-    const nextId = gs.playerOrder[nextIdx];
-    gs.pendingThreat = { card: threat.card, targetId: nextId };
-    gs.extraTurns = gs.extraTurns||{};
-    gs.extraTurns[nextId] = (gs.extraTurns[nextId]||0)+1;
-    addLog(gs, `${myName} ส่งต่อ ${threatDef.name} ให้ ${gs.players[nextId]?.name}! 📤`, 'action');
+async function resolveThreat(action, cardUid) {
+  closeModal('modal-threat');
+  threatModalShownFor = null;
+  let result = null;
+  const ok = await runGameTransaction(gs => {
+    const threat = gs.pendingThreat;
+    if (!threat || threat.targetId !== myId) return;
+    const threatDef = CARD_DEFS[threat.card.defId];
+    if (!threatDef) return;
+    gs.pendingThreat = null;
+
+    if (action === 'accept') {
+      gs.players[myId].hp = Math.max(0, gs.players[myId].hp + threatDef.damage);
+      addLog(gs, `${myName} โดน "${threatDef.name}" ${threatDef.damage} แต้ม`, 'threat');
+      result = 'accept';
+      if (gs.players[myId].hp <= 0 && !gs.players[myId].eliminated) {
+        gs.players[myId].eliminated = true;
+        addLog(gs, `${myName} ตกรอบ!`, 'threat');
+      }
+      reshuffleOneCard(gs, threat.card);
+      maybeFinishGame(gs);
+      if (!gs.winnerId) advanceTurn(gs);
+      return gs;
+    }
+
+    const taken = removeFromHandByUid(gs, myId, cardUid);
+    if (!taken) { gs.pendingThreat = threat; return; } // card already gone (stale click) — restore and abort
+
+    if (action === 'defend') {
+      const dDef = CARD_DEFS[taken.defId];
+      gs.discard = gs.discard||[]; gs.discard.push(taken);
+      addLog(gs, `${myName} ใช้ "${dDef?.name}" ป้องกัน "${threatDef.name}" สำเร็จ!`, 'defense');
+      result = 'defend';
+      reshuffleOneCard(gs, threat.card);
+      advanceTurn(gs);
+      return gs;
+    }
+    if (action === 'reverse') {
+      gs.direction *= -1;
+      gs.discard = gs.discard||[]; gs.discard.push(taken);
+      const nextIdx = getNextPlayerIdx(gs, gs.currentTurnIdx, gs.direction);
+      const nextId = gs.playerOrder[nextIdx];
+      gs.pendingThreat = { card: threat.card, targetId: nextId, fromReverse: true };
+      addLog(gs, `${myName} สะท้อน "${threatDef.name}" ไปให้ ${gs.players[nextId]?.name}!`, 'action');
+      result = 'reverse';
+      return gs;
+    }
+    if (action === 'forward') {
+      gs.discard = gs.discard||[]; gs.discard.push(taken);
+      const nextIdx = getNextPlayerIdx(gs, gs.currentTurnIdx, gs.direction);
+      const nextId = gs.playerOrder[nextIdx];
+      gs.pendingThreat = { card: threat.card, targetId: nextId };
+      gs.extraTurns = gs.extraTurns||{};
+      gs.extraTurns[nextId] = (gs.extraTurns[nextId]||0)+1;
+      addLog(gs, `${myName} ส่งต่อ "${threatDef.name}" ให้ ${gs.players[nextId]?.name}!`, 'action');
+      result = 'forward';
+      return gs;
+    }
+    return;
+  }, { silent: true });
+  if (ok) {
+    if (result === 'accept') playSound('lose');
+    else if (result === 'defend') playSound('defense');
+  } else {
+    checkPendingThreatForMe();
   }
-  await saveGS(gs);
 }
 
 function reshuffleOneCard(gs, card) {
+  gs.deck = gs.deck || [];
   const insertAt = Math.floor(Math.random()*Math.max(1, gs.deck.length));
   gs.deck.splice(insertAt, 0, card);
 }
 
 function reshuffleDeck(gs) {
-  gs.deck = shuffleArr([...gs.discard]); gs.discard = [];
-  addLog(gs, 'สับกองทิ้งกลับเป็นกองจั่ว 🔀', 'system');
+  if (!gs.discard || gs.discard.length === 0) return;
+  gs.deck = shuffleArr([...(gs.deck||[]), ...gs.discard]);
+  gs.discard = [];
+  addLog(gs, 'สับกองทิ้งกลับเป็นกองจั่ว', 'system');
 }
-
-function removeFromHand(gs, pid, idx) { gs.hands[pid].splice(idx, 1); }
 
 function advanceTurn(gs) {
   const alive = gs.playerOrder.filter(id => !gs.players[id]?.eliminated);
-  if (alive.length <= 1) return;
+  if (alive.length <= 1) { maybeFinishGame(gs); return; }
   gs.turnsLeft = (typeof gs.turnsLeft==='number' ? gs.turnsLeft : 1) - 1;
   if (gs.turnsLeft > 0) { gs.turnStartTime = Date.now(); return; }
   const dir = gs.direction;
@@ -1637,6 +2029,16 @@ function advanceTurn(gs) {
   gs.turnStartTime = Date.now();
 }
 
+function maybeFinishGame(gs) {
+  const alive = gs.playerOrder.filter(id => !gs.players[id]?.eliminated);
+  if (alive.length === 1) {
+    gs.winnerId = alive[0];
+    addLog(gs, `${gs.players[alive[0]]?.name} ชนะเกม!`, 'system');
+  } else if (alive.length === 0) {
+    gs.winnerId = 'draw';
+  }
+}
+
 function getNextPlayerIdx(gs, fromIdx, dir) {
   let nextIdx = fromIdx, steps = 0;
   do {
@@ -1647,37 +2049,31 @@ function getNextPlayerIdx(gs, fromIdx, dir) {
   return nextIdx;
 }
 
-function addLog(gs, msg, type='system') {
-  gs.log = gs.log||[];
-  gs.log.push({msg, type, t:Date.now()});
-  if (gs.log.length > 50) gs.log = gs.log.slice(-50);
-}
-
-async function saveGS(gs) {
-  if (!db || !currentRoomId) return;
-  gs.version = (gs.version||0)+1;
-  await window._fb.update(window._fb.ref(db,`rooms/${currentRoomId}`), {gameState:gs});
-}
-
 function checkWin() {
-  if (!gameState) return;
-  const alive = gameState.playerOrder.filter(id => !gameState.players[id]?.eliminated);
-  if (alive.length === 1) {
-    const winner = gameState.players[alive[0]];
-    document.getElementById('winner-name').textContent = `${winner.avatar} ${winner.name}`;
-    document.getElementById('winner-desc').textContent = alive[0]===myId
-      ? '🎀 คุณชนะ! คุณคือผู้เชี่ยวชาญ Cybersecurity!'
+  if (!gameState || !gameState.winnerId) return;
+  if (document.getElementById('winner-overlay').classList.contains('open')) return;
+  if (gameState.winnerId === 'draw') {
+    document.getElementById('winner-name').textContent = 'เสมอกัน';
+    document.getElementById('winner-avatar').innerHTML = '🤝';
+    document.getElementById('winner-desc').textContent = 'ไม่มีผู้รอดชีวิต!';
+  } else {
+    const winner = gameState.players[gameState.winnerId];
+    if (!winner) return;
+    document.getElementById('winner-avatar').innerHTML = avatarHtml(winner.avatar);
+    document.getElementById('winner-name').textContent = winner.name;
+    document.getElementById('winner-desc').textContent = gameState.winnerId===myId
+      ? 'คุณชนะ! คุณคือผู้เชี่ยวชาญ Cybersecurity!'
       : `${winner.name} รักษาเงินในกระเป๋าได้ดีที่สุด!`;
-    document.getElementById('winner-overlay').className = 'winner-overlay open';
-    if (alive[0]===myId) playSound('win'); else playSound('lose');
-    clearInterval(timerInterval);
+    if (gameState.winnerId===myId) playSound('win'); else playSound('lose');
   }
+  document.getElementById('winner-overlay').className = 'winner-overlay open';
+  clearInterval(timerInterval);
 }
 
 function startTurnTimer() {
   clearInterval(timerInterval);
   timerInterval = setInterval(() => {
-    if (!gameState) return;
+    if (!gameState || gameState.winnerId) { clearInterval(timerInterval); return; }
     const elapsed = (Date.now()-(gameState.turnStartTime||Date.now()))/1000;
     const total = gameState.timerSec||60;
     const remaining = Math.max(0, total-elapsed);
@@ -1687,31 +2083,37 @@ function startTurnTimer() {
     const circle = document.getElementById('timer-circle');
     circle.style.strokeDashoffset = circumference*(1-pct);
     circle.className = 'progress'+(remaining<10?' danger':'');
-    if (remaining < 10 && Math.ceil(remaining)%2===0) playSound('timer_warn');
-    if (remaining <= 0 && !gameState.pendingThreat) {
-      const currentPlayerId = gameState.playerOrder[gameState.currentTurnIdx%gameState.playerOrder.length];
-      if (currentPlayerId === myId) { showToast('⏰ หมดเวลา! จั่วอัตโนมัติ','danger'); drawCard(); }
+    if (remaining < 10 && remaining > 0 && Math.ceil(remaining)%2===0) playSound('timer_warn');
+
+    const currentPlayerId = gameState.playerOrder[gameState.currentTurnIdx%gameState.playerOrder.length];
+    if (remaining <= 0) {
+      if (gameState.pendingThreat) {
+        if (gameState.pendingThreat.targetId === myId) resolveThreat('accept');
+      } else if (currentPlayerId === myId && !gameState.players[myId]?.eliminated) {
+        showToast('หมดเวลา! จั่วอัตโนมัติ','danger');
+        drawCard();
+      }
     }
-    if (remaining <= 0 && gameState.pendingThreat && gameState.pendingThreat.targetId===myId) resolveThreat('accept');
   }, 500);
 }
 
+/* ───────── chat ───────── */
 function listenChat(code) {
   if (!db) return;
   const { ref, onValue } = window._fb;
   onValue(ref(db, `rooms/${code}/chat`), (snap) => {
-    if (!snap.exists()) return;
-    const msgs = Object.values(snap.val()).sort((a,b)=>a.t-b.t);
     const el = document.getElementById('chat-msgs');
+    if (!snap.exists()) { el.innerHTML=''; return; }
+    const msgs = Object.values(snap.val()).sort((a,b)=>a.t-b.t);
+    const wasNearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 20;
     el.innerHTML = '';
     msgs.slice(-20).forEach(m => {
       const div = document.createElement('div');
       div.className = 'chat-msg';
-      div.innerHTML = `<span class="sender">${m.avatar}${m.name}</span>: ${m.text}`;
+      div.innerHTML = `<span class="sender">${escapeHtml(m.name)}</span>: ${escapeHtml(m.text)}`;
       el.appendChild(div);
     });
-    el.scrollTop = el.scrollHeight;
-    playSound('chat');
+    if (wasNearBottom) el.scrollTop = el.scrollHeight;
   });
 }
 
@@ -1719,14 +2121,19 @@ async function sendChat() {
   const input = document.getElementById('chat-input');
   const text = input.value.trim();
   if (!text||!db||!currentRoomId) return;
-  await window._fb.push(window._fb.ref(db,`rooms/${currentRoomId}/chat`), {name:myName, avatar:myAvatar, text, t:Date.now()});
   input.value = '';
+  try {
+    await window._fb.push(window._fb.ref(db,`rooms/${currentRoomId}/chat`), {name:myName, avatar:myAvatar, text, t:Date.now()});
+    playSound('chat');
+  } catch(e) { showToast('ส่งข้อความไม่สำเร็จ','danger'); }
 }
 
 async function sendReaction(emoji) {
   floatEmoji(emoji);
   if (!db||!currentRoomId) return;
-  await window._fb.push(window._fb.ref(db,`rooms/${currentRoomId}/chat`), {name:myName, avatar:myAvatar, text:emoji, t:Date.now()});
+  try {
+    await window._fb.push(window._fb.ref(db,`rooms/${currentRoomId}/chat`), {name:myName, avatar:myAvatar, text:emoji, t:Date.now()});
+  } catch(e) {}
 }
 
 function floatEmoji(emoji) {
@@ -1735,49 +2142,14 @@ function floatEmoji(emoji) {
   el.style.left = (20+Math.random()*60)+'vw';
   el.style.bottom = '80px';
   document.body.appendChild(el);
-  setTimeout(()=>el.remove(), 1500);
+  setTimeout(()=>el.remove(), 1600);
 }
 
-function openImgManager() {
-  const grid = document.getElementById('img-manager-grid');
-  grid.innerHTML = '';
-  Object.values(CARD_DEFS).forEach(def => {
-    const slot = document.createElement('div');
-    slot.className = 'img-slot';
-    const imgSrc = cardImages[def.id];
-    slot.innerHTML = imgSrc
-      ? `<img class="img-slot-preview" src="${imgSrc}" />`
-      : `<div class="img-slot-emoji">${def.emoji}</div>`;
-    slot.innerHTML += `<div class="img-slot-name">${def.name}</div>
-      <div class="img-slot-hint">${imgSrc ? '✅ มีรูปแล้ว (70×70px)' : '📸 คลิกเพื่ออัปโหลดรูป 70×70px'}</div>`;
-    slot.onclick = () => {
-      document.getElementById('img-upload-input').dataset.cardId = def.id;
-      document.getElementById('img-upload-input').click();
-    };
-    grid.appendChild(slot);
-  });
-  openModal('modal-img-manager');
-}
-
-function handleImgUpload(event) {
-  const file = event.target.files[0];
-  const cardId = event.target.dataset.cardId;
-  if (!file||!cardId) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    cardImages[cardId] = e.target.result;
-    localStorage.setItem('cyberscam_card_images', JSON.stringify(cardImages));
-    showToast(`✅ อัปโหลดรูป "${CARD_DEFS[cardId]?.name}" สำเร็จ!`, 'success');
-    openImgManager();
-  };
-  reader.readAsDataURL(file);
-}
-
+/* ───────── misc ui ───────── */
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-'+name).classList.add('active');
 }
-
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
@@ -1789,11 +2161,7 @@ function showToast(msg, type='info') {
 }
 
 function switchTab(name) {
-  currentTab = name;
-  document.querySelectorAll('.tab').forEach((t,i) => {
-    const tabs=['create','join','public'];
-    t.classList.toggle('active', tabs[i]===name);
-  });
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab===name));
   document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none');
   document.getElementById('tab-'+name).style.display='';
   if (name==='public') loadPublicRooms();
@@ -1804,27 +2172,38 @@ function updateTimerDisplay(val) { document.getElementById('timer-setting-displa
 function validatePlayerInfo() {
   const nameInput = document.getElementById('playerNameInput').value.trim();
   if (nameInput) myName = nameInput;
+  else if (!myName || myName === 'ผู้เล่น') myName = 'ผู้เล่น' + Math.floor(Math.random()*1000);
   localStorage.setItem('cyberscam_name', myName);
-  localStorage.setItem('cyberscam_avatar', myAvatar);
+  localStorage.setItem('cyberscam_avatar', String(myAvatar));
 }
 
-function copyRoomCode() { navigator.clipboard?.writeText(currentRoomId||'').then(()=>showToast('คัดลอกโค้ดแล้ว! 📋','success')); }
-function toggleSound(btn) { soundOn=!soundOn; btn.classList.toggle('on',soundOn); }
+function copyRoomCode() {
+  navigator.clipboard?.writeText(currentRoomId||'').then(()=>showToast('คัดลอกโค้ดแล้ว','success'))
+    .catch(()=>showToast('คัดลอกไม่สำเร็จ','danger'));
+}
+function toggleSound(btn) { soundOn=!soundOn; btn.classList.toggle('on',soundOn); localStorage.setItem('cyberscam_sound', soundOn?'1':'0'); }
 
 function showTargetModal(action) {
   if (!gameState) return;
   document.getElementById('target-modal-desc').textContent = `เลือกผู้เล่นที่ต้องการ "${action}":`;
   const list = document.getElementById('target-list'); list.innerHTML = '';
+  let hasTarget = false;
   gameState.playerOrder.forEach(pid => {
     if (pid===myId||gameState.players[pid]?.eliminated) return;
+    hasTarget = true;
     const p = gameState.players[pid];
     const item = document.createElement('div');
     item.className = 'target-item';
-    item.innerHTML = `<div class="target-avatar">${p.avatar}</div>
-      <div><div class="target-name">${p.name}</div><div class="target-hp">💜 ${p.hp} แต้ม</div></div>`;
+    item.innerHTML = `<div class="target-avatar">${avatarHtml(p.avatar)}</div>
+      <div><div class="target-name">${escapeHtml(p.name)}</div><div class="target-hp">${p.hp} แต้ม</div></div>`;
     item.onclick = () => playActionCardWithTarget(pid);
     list.appendChild(item);
   });
+  if (!hasTarget) {
+    list.innerHTML = '<div style="color:var(--ink-dim);padding:12px;">ไม่มีเป้าหมายที่ใช้งานได้</div>';
+    pendingAction = null;
+    setTimeout(() => closeModal('modal-target'), 1200);
+  }
   openModal('modal-target');
 }
 
@@ -1832,58 +2211,104 @@ function showSeeFuture(cards) {
   const el = document.getElementById('see-future-cards'); el.innerHTML = '';
   cards.forEach(card => {
     if (!card) return;
-    const def = CARD_DEFS[card.defId]||card;
+    const def = CARD_DEFS[card.defId];
+    if (!def) return;
     const div = document.createElement('div');
     div.className = `card card-${def.color||'action'}`;
-    div.style.setProperty('--card-w','90px'); div.style.setProperty('--card-h','130px');
-    div.innerHTML = renderCardInner(def, card);
+    div.style.setProperty('--card-w','92px'); div.style.setProperty('--card-h','132px');
+    div.innerHTML = renderCardInner(def);
     el.appendChild(div);
   });
   openModal('modal-see-future');
 }
 
+/* ───────── leaving / room lifecycle ─────────
+   Leaving always removes *this player* from the room. If the leaver was
+   the host, the whole room is deleted (host leaving = room disbanded),
+   rather than leaving a stale host pointer that previously caused the
+   leaver to "still own" the room when rejoining it later. */
+async function doLeaveRoom() {
+  if (!db || !currentRoomId) { teardownRoomState(); return; }
+  const code = currentRoomId;
+  clearDisconnectHandlers();
+  try {
+    const { ref, remove, get } = window._fb;
+    const roomSnap = await get(ref(db, `rooms/${code}`));
+    const room = roomSnap.val();
+    if (room && room.host === myId) {
+      await remove(ref(db, `rooms/${code}`));
+      showToast('ห้องถูกยุบแล้ว (เจ้าของออกจากห้อง)', 'info');
+    } else if (room) {
+      await remove(ref(db, `rooms/${code}/players/${myId}`));
+      const playersSnap = await get(ref(db, `rooms/${code}/players`));
+      if (!playersSnap.exists()) {
+        await remove(ref(db, `rooms/${code}`));
+      }
+      showToast('ออกจากห้องแล้ว', 'info');
+    }
+  } catch(e) { console.error(e); }
+  teardownRoomState();
+}
+
 async function leaveRoom() {
-  if (!db||!currentRoomId) { showScreen('home'); return; }
-  const { ref, remove, get } = window._fb;
-  await remove(ref(db,`rooms/${currentRoomId}/players/${myId}`));
-  const snap = await get(ref(db,`rooms/${currentRoomId}/players`));
-  if (!snap.exists()) await remove(ref(db,`rooms/${currentRoomId}`));
-  currentRoomId = null; showScreen('home');
+  await doLeaveRoom();
+  showScreen('home');
+  loadPublicRooms();
 }
 
 function leaveGameToHome() {
-  clearInterval(timerInterval); currentRoomId=null; gameState=null; threatModalShownFor=null;
-  showScreen('home');
+  doLeaveRoom().finally(() => {
+    showScreen('home');
+    loadPublicRooms();
+  });
 }
 
 async function playAgain() {
   document.getElementById('winner-overlay').className='winner-overlay';
-  if (isHost&&currentRoomId) {
-    await window._fb.update(window._fb.ref(db,`rooms/${currentRoomId}`), {status:'waiting', gameState:null});
-    showScreen('lobby');
-  } else { showScreen('lobby'); }
+  if (isHost && currentRoomId && db) {
+    try {
+      await window._fb.update(window._fb.ref(db,`rooms/${currentRoomId}`), {status:'waiting', gameState:null, updatedAt: Date.now()});
+    } catch(e) {}
+  }
+  if (currentRoomId) showScreen('lobby');
+  else showScreen('home');
 }
 
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str ?? '';
+  return div.innerHTML;
+}
+
+/* ───────── init ───────── */
 function init() {
   const savedName = localStorage.getItem('cyberscam_name');
   const savedAvatar = localStorage.getItem('cyberscam_avatar');
-  const savedImages = localStorage.getItem('cyberscam_card_images');
+  const savedSound = localStorage.getItem('cyberscam_sound');
   if (savedName) { myName=savedName; document.getElementById('playerNameInput').value=savedName; }
-  if (savedAvatar) myAvatar = savedAvatar;
-  if (savedImages) try { cardImages=JSON.parse(savedImages); } catch(e){}
+  if (savedAvatar) myAvatar = parseInt(savedAvatar,10) || 1;
+  if (savedSound !== null) {
+    soundOn = savedSound === '1';
+    document.getElementById('sound-toggle-btn').classList.toggle('on', soundOn);
+  }
   const sel = document.getElementById('avatar-selector');
-  AVATARS.forEach((av) => {
+  for (let n = 1; n <= AVATAR_COUNT; n++) {
     const btn = document.createElement('button');
-    btn.textContent = av;
-    btn.style.cssText = `background:var(--surface2);border:2px solid ${av===myAvatar?'var(--accent)':'var(--border)'};border-radius:8px;padding:4px 8px;font-size:1.3rem;cursor:pointer;transition:all 0.2s;`;
+    btn.className = 'avatar-pick'+(n===myAvatar?' selected':'');
+    btn.type = 'button';
+    btn.innerHTML = avatarHtml(n);
     btn.onclick = () => {
-      myAvatar=av;
-      document.querySelectorAll('#avatar-selector button').forEach(b=>b.style.borderColor='var(--border)');
-      btn.style.borderColor='var(--accent)';
-      localStorage.setItem('cyberscam_avatar',av);
+      myAvatar = n;
+      document.querySelectorAll('.avatar-pick').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+      localStorage.setItem('cyberscam_avatar', String(n));
     };
-    if (av===myAvatar) btn.style.borderColor='var(--accent)';
     sel.appendChild(btn);
+  }
+  window.addEventListener('beforeunload', () => {
+    if (currentRoomId && db) {
+      try { window._fb.remove(window._fb.ref(db, `rooms/${currentRoomId}/players/${myId}`)); } catch(e){}
+    }
   });
   connectFirebase();
 }
@@ -1893,9 +2318,8 @@ window.joinRoom = joinRoom; window.loadPublicRooms = loadPublicRooms; window.con
 window.startGame = startGame; window.leaveRoom = leaveRoom; window.leaveGameToHome = leaveGameToHome;
 window.playAgain = playAgain; window.drawCard = drawCard; window.resolveThreat = resolveThreat;
 window.toggleSound = toggleSound; window.copyRoomCode = copyRoomCode; window.updateTimerDisplay = updateTimerDisplay;
-window.openImgManager = openImgManager; window.handleImgUpload = handleImgUpload;
 window.closeModal = closeModal; window.sendChat = sendChat; window.sendReaction = sendReaction;
-window.playActionCardWithTarget = playActionCardWithTarget;
+window.playActionCardWithTarget = playActionCardWithTarget; window.cancelPendingAction = cancelPendingAction;
 
 init();
 </script>
