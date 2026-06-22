@@ -1683,12 +1683,12 @@
     }
 
     /* ═══════════════════════════════════════════════════════════
-    DECK COMPOSITION  (total = 65 cards)
+    DECK COMPOSITION  (total = 60 cards)
     ───────────────────────────────────────────────────────────
-    ▸ Threats    : 12  (reduced from 15 — หายากขึ้น ไม่เจอถี่)
-    ▸ Defense    : 12  (1:1 ratio vs threats)
-    ▸ Action     : 30  (backbone of gameplay)
-    ▸ Recovery   :  9  (เพิ่มขึ้น — ฟื้นฟูได้บ่อยขึ้น)
+    ▸ Threats    : 16  (เพิ่มขึ้นจาก 12 — เจอภัยคุกคามถี่ขึ้น ~27% ของกอง)
+    ▸ Defense    : 14  (ตามสัดส่วนภัยคุกคามที่เพิ่มขึ้น เพื่อความสมดุล)
+    ▸ Action     : 22  (backbone of gameplay, ตัดให้กระชับขึ้น)
+    ▸ Recovery   :  8  (ยังคงฟื้นฟูได้พอประมาณ)
     ─────────────────────────────────────────────────────────── */
     function buildDeck() {
     const cards = [];
@@ -1697,29 +1697,29 @@
         for(let i=0;i<count;i++)
         cards.push({ uid:`${id}_${seq++}_${Math.random().toString(36).slice(2,7)}`, defId:id });
     };
-    // Threats (12 total — spread: mild/moderate/serious = 5/4/3)
-    add('phishing',     5);
-    add('fake_shop',    4);
-    add('scammer',      3);
-    // Defense (12 total — one per threat type × ~4)
-    add('awareness',    5);
-    add('double_check', 4);
+    // Threats (16 total — spread: mild/moderate/serious = 7/5/4)
+    add('phishing',     7);
+    add('fake_shop',    5);
+    add('scammer',      4);
+    // Defense (14 total — one per threat type, scaled to match threats)
+    add('awareness',    6);
+    add('double_check', 5);
     add('block',        3);
-    // Action (30 total)
-    add('forward',      5);
-    add('reverse',      4);
-    add('skip',         4);
-    add('see_future',   3);
-    add('wallet_switch',3);
-    add('draw_bottom',  3);
-    add('shuffle',      3);
-    add('steal',        4);
-    add('joker',        3);
-    // Recovery (9 total)
-    add('bonus',        5);
+    // Action (22 total)
+    add('forward',      4);
+    add('reverse',      3);
+    add('skip',         3);
+    add('see_future',   2);
+    add('wallet_switch',2);
+    add('draw_bottom',  2);
+    add('shuffle',      2);
+    add('steal',        2);
+    add('joker',        2);
+    // Recovery (8 total)
+    add('bonus',        4);
     add('cyber_police', 3);
     add('lucky',        1);
-    return cards; // total = 12+12+30+9 = 63 cards
+    return cards; // total = 16+14+22+8 = 60 cards
     }
 
     /* ═══════════════════════════════════════════════════════════
